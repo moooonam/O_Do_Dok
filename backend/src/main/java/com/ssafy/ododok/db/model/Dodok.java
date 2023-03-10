@@ -21,11 +21,11 @@ public class Dodok {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int dodokId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name="team_id")
     private Team team;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name="book_id")
     private Book book;
 

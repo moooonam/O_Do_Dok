@@ -20,11 +20,11 @@ public class TeamUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int teamUserId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name="user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name="team_id")
     private Team team;
 

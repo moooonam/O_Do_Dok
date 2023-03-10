@@ -22,13 +22,13 @@ public class ReviewEnd {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int reviewEndId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name="dodok_id")
     private Dodok dodok;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="team_user_id")
-    private TeamUser teamUser;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
 
     @Column(nullable = false)
     private String reviewEndContent;

@@ -20,7 +20,7 @@ public class Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int genreResultId;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name="team_id")
     private Team team;
 

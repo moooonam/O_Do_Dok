@@ -30,11 +30,11 @@ public class Notice {
     @Column(nullable = false)
     private LocalDate noticeDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name="team_id")
     private Team team;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="team_user_id")
-    private TeamUser teamUser;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
 }

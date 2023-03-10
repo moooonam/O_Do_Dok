@@ -20,7 +20,7 @@ public class UserSurvey {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userSurveyId;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name="user_id")
     private User user;
 

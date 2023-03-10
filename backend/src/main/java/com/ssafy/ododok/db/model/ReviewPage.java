@@ -21,13 +21,13 @@ public class ReviewPage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int reviewPageId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name="dodok_id")
     private Dodok dodok;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="team_user_id")
-    private TeamUser teamUser;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
 
     @Column(nullable = false)
     private int reviewPagePage;
