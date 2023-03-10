@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -14,22 +15,30 @@ import javax.persistence.*;
 @Builder
 @Entity
 @DynamicInsert
-public class TeamUser {
+public class Board {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int teamUserId;
+    private int boardId;
 
-    @OneToOne
-    @JoinColumn(name="user_id")
-    private User user;
+    @Column(nullable = false)
+    private String boardTitle;
+
+    @Column(nullable = false)
+    private String boardContent;
+
+    @Column(nullable = false)
+    private LocalDate boardDate;
 
     @ManyToOne
     @JoinColumn(name="team_id")
     private Team team;
 
     @ManyToOne
-    @JoinColumn(name="role_name")
-    private Role role;
+    @JoinColumn(name="user_id")
+    private User user;
 
+    @ManyToOne
+    @JoinColumn(name="board_type")
+    private BoardType boardType;
 }

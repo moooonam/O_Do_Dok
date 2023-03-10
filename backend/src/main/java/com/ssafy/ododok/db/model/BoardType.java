@@ -15,9 +15,8 @@ import javax.persistence.Id;
 @Builder
 @Entity
 @DynamicInsert
-public class Role {
+public class BoardType {
 
     @Id
-    private String roleName;
-
+    private String boardType;
 }

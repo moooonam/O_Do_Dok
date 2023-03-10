@@ -15,26 +15,19 @@ import java.time.LocalDate;
 @Builder
 @Entity
 @DynamicInsert
-public class Notice {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int noticeId;
+    private int commentId;
 
     @Column(nullable = false)
-    private String noticeTitle;
+    private String commentContent;
 
     @Column(nullable = false)
-    private String noticeContent;
-
-    @Column(nullable = false)
-    private LocalDate noticeDate;
+    private LocalDate commentDate;
 
     @ManyToOne
-    @JoinColumn(name="team_id")
-    private Team team;
-
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    private User user;
+    @JoinColumn(name="board_id")
+    private Board board;
 }
