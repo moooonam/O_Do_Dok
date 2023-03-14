@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif&family=Noto+Serif+KR:wght@300&display=swap');
+@import url('./reset.css');
+.wrap-header {
+    color: white;
+    height: 90px;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 7vw;
+    padding-right: 7vw;
+    align-items: center;
+    font-size: 20px;
+    .wrap-content {
+        display: flex;
+        font-size: 18px;
+        font-family: 'Noto Serif KR', serif;
+        .header-btn{
+            margin: 15px;
+        }
+    }
+    .header-logo-btn{
+        font-family: 'Noto Serif', serif;
+        font-size: 30px;
+    }
+    background-color: #486C45;
+    .header-login-btn {
+        font-family: 'Noto Serif KR', serif;
+    }
+}
+

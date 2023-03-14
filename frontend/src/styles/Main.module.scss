@@ -1,0 +1,20 @@
+// @import url('./reset.css');
+.wrap-carousel {
+    width: 100vw;
+    height: 50vh;
+    overflow: hidden;
+}
+.flexbox {
+    display: flex;
+    .img1 {
+        width: 100vw;
+        height: 50vh;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        background-size: cover;
+        flex: none;
+        background-image: url("../assets/img/testimg2.jpg");
+        margin: 0 0;
+    }
+
+}

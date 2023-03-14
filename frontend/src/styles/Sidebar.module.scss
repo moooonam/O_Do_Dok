@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif&family=Noto+Serif+KR:wght@300&display=swap');
+// @import url('./reset.css');
+.myteam-container {
+    display: flex;
+}
+.sidebar {
+    flex: 1;
+    background-color: #F5F5F5;;
+    height: 100vh;
+}
+.others {
+    flex: 4;
+}
+
+.wrap-sidebar {
+    padding-top: 80px;
+    padding-left: 20px;
+}
+
+.sidebar-list {
+    list-style-type: none;
+    padding-top: 10px;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    .selected-menu {
+        opacity: 1;
+    }
+    li {
+        margin-top: 50px;
+        opacity: 0.5;
+    }
+}
