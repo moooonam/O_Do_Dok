@@ -39,8 +39,7 @@ public class User {
     @Column
     private String userImage;
 
-    @Column(nullable = false)
     @ColumnDefault("0")
-    private int userReviewcnt;
+    private Integer userReviewcnt;
 
 }
