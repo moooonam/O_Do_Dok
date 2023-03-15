@@ -14,16 +14,19 @@
         font-size: 18px;
         font-family: 'Noto Serif KR', serif;
         .header-btn{
-            margin: 15px;
+            margin: 20px;
+            cursor: pointer;
         }
     }
     .header-logo-btn{
         font-family: 'Noto Serif', serif;
         font-size: 30px;
+        cursor: pointer;
     }
     background-color: #486C45;
     .header-login-btn {
         font-family: 'Noto Serif KR', serif;
+        cursor: pointer;
     }
 }
 

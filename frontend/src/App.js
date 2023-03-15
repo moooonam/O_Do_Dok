@@ -10,6 +10,17 @@ import MyTeamDodokPage from "./pages/MyTeam/MyTeamDodokPage";
 import MyTeamArticlePage from "./pages/MyTeam/MyTeamArticlePage";
 import MyTeamRecordPage from "./pages/MyTeam/MyTeamRecordPage";
 
+// 소개 페이지
+import AboutUsPage from "./pages/AboutUsPage";
+
+// 모임신청 관련
+
+import TeamsMainPage from "./pages/Teams/TeamsMainPage";
+
+//오도독 책장
+
+import OpenReviewsPage from "./pages/OpenReviewsPage"; 
+
 function App() {
   return (
     <div>
@@ -23,6 +34,10 @@ function App() {
         <Route exact path="/myteamdodok" element={<MyTeamDodokPage/>}/>
         <Route exact path="/myteamarticle" element={<MyTeamArticlePage/>}/>
         <Route exact path="/myteamrecord" element={<MyTeamRecordPage/>}/>
+        <Route exact path="/about-us" element={<AboutUsPage/>}/>
+        <Route exact path="/teams" element={<TeamsMainPage/>}/>
+        <Route exact path="/openreviews" element={<OpenReviewsPage/>}/>
+
       </Routes>
     </BrowserRouter>
     </div>
