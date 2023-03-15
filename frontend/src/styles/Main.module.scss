@@ -1,0 +1,62 @@
+// @import url('./reset.css');
+
+// 캐러셀쪽
+.wrap-carousel {
+    width: 100%;
+    height: 30%;
+    overflow: hidden;
+    margin: 0 auto;
+    // background-size: contain;
+}
+.flexbox {
+    display: flex;
+    .img1 {
+        width: 100vw;
+        height: 50vh;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        background-size: cover;
+        flex: none;
+        background-image: url("../assets/img/testimg2.jpg");
+        margin: 0 0;
+    }
+
+}
+.img1 {
+    width: 100vw;
+    height: 60vh;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    flex: none;
+    background-image: url("../assets/img/testimg.png");
+    margin: 0 0;
+}
+
+//추천 도서쪽
+.wrap-recomendbook {
+    background-color: #012405;
+    height: 500px;
+    .recomendbook-title{
+        font-size: 20px;
+        color: white;
+        font-family: 'Noto Serif KR', serif;
+        margin-left: 30px;
+        padding-top: 30px;
+    }
+}
+
+// 베스트 리뷰쪽
+
+.wrap-bestreview {
+    background-color: #2C1500;
+    height: 500px;
+    margin-top: 50px;
+    .bestreview-title{
+        font-size: 20px;
+        color: white;
+        font-family: 'Noto Serif KR', serif;
+        margin-left: 30px;
+        padding-top: 30px;
+    }
+}

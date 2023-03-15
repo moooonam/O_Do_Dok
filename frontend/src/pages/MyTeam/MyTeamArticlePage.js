@@ -1,15 +1,15 @@
 import React from 'react'
 import SideBar from '../../components/SideBar'
 import styles from '../../styles/Sidebar.module.scss'
-function MyTeamMainPage() {
+function MyTeamArticlePage() {
   return (
     <div className={styles['myteam-container']}> 
         <SideBar/>
         <div className={styles.others}>
-            MyTeamMainPage
+            MyTeamArticlePage
         </div>
     </div>
   )
 }
 
-export default MyTeamMainPage
+export default MyTeamArticlePage
