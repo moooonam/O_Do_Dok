@@ -10,8 +10,9 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-//
 
+// datepicker
+import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -24,14 +25,79 @@ function SignupPage() {
     password: "",
     passwordConfirm: "",
     gender: "",
-    year: "",
-    month: "",
-    day: "",
-    genre: [],
     onoff: "",
     area: "",
     frequency: "",
   });
+
+
+  // 날짜 데이터
+  const [birth, setBirth] = React.useState(dayjs("2022-04-17"));
+  // 날짜 형식 변경
+  const dateFormat = dayjs(birth.$d).format("YYYY-MM-DD");
+
+
+  // 장르 리스트
+  const [userGenre, setUserGenre] = useState([]);
+  // 장르 데이터 
+  const [genreList, setGenreList] = useState({
+    one: false,
+    two: false,
+    three: false,
+    four: false,
+    five: false,
+  });
+
+  // 장르 클릭
+  const clickone = () => {
+    if (genreList.one) {
+      setGenreList({ ...genreList, one: false })
+    } else {
+      setGenreList({ ...genreList, one: true })
+    }
+  };
+  const clicktwo = () => {
+    if (genreList.two) {
+      setGenreList({ ...genreList, two: false })
+    } else {
+      setGenreList({ ...genreList, two: true })
+    }
+  };
+  const clickthree = () => {
+    if (genreList.three) {
+      setGenreList({ ...genreList, three: false })
+    } else {
+      setGenreList({ ...genreList, three: true })
+    }
+  };
+  const clickfour = () => {
+    if (genreList.four) {
+      setGenreList({ ...genreList, four: false })
+    } else {
+      setGenreList({ ...genreList, four: true })
+    }
+  };
+  const clickfive = () => {
+    if (genreList.five) {
+      setGenreList({ ...genreList, five: false })
+    } else {
+      setGenreList({ ...genreList, five: true })
+    }
+  };
+
+  // 가입하기 함수
+  const userSignup = () => {
+    for (let i in genreList) {
+      if (genreList[i]=== true) {
+        console.log(i)
+        setUserGenre([...userGenre, i])
+        console.log(userGenre)
+      } 
+    }
+    console.log(form);
+    console.log(dateFormat);
+    console.log(userGenre)
+  };
   return (
     <Grid
       container
@@ -39,8 +105,9 @@ function SignupPage() {
       justifyContent="center"
       alignItems="center"
     >
+      <h2>Oh Do Dok!</h2>
       <div className={styles["signupBox"]}>
-      <h3 className={styles["title"]}>회원가입</h3>
+        <h3 className={styles["title"]}>회원가입</h3>
         <Grid container direction="row" columnGap={10}>
           <p className={styles["signup-blank"]}>이름</p>
           <TextField
@@ -64,7 +131,11 @@ function SignupPage() {
             variant="standard"
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
-          <Button variant="outlined" color="success" className={styles["signup-dupli"]}>
+          <Button
+            variant="outlined"
+            color="success"
+            className={styles["signup-dupli"]}
+          >
             중복확인
           </Button>
         </Grid>
@@ -79,7 +150,11 @@ function SignupPage() {
             variant="standard"
             onChange={(e) => setForm({ ...form, nickname: e.target.value })}
           />
-          <Button variant="outlined" className={styles["signup-dupli"]}  color="success" >
+          <Button
+            variant="outlined"
+            className={styles["signup-dupli"]}
+            color="success"
+          >
             중복확인
           </Button>
         </Grid>
@@ -117,8 +192,18 @@ function SignupPage() {
             aria-labelledby="demo-row-radio-buttons-group-label"
             name="row-radio-buttons-group"
           >
-            <FormControlLabel value="male" control={<Radio />} label="남성" />
-            <FormControlLabel value="female" control={<Radio />} label="여성" />
+            <FormControlLabel
+              value="male"
+              control={<Radio />}
+              label="남성"
+              onChange={(e) => setForm({ ...form, gender: e.target.value })}
+            />
+            <FormControlLabel
+              value="female"
+              control={<Radio />}
+              label="여성"
+              onChange={(e) => setForm({ ...form, gender: e.target.value })}
+            />
           </RadioGroup>
         </FormControl>
         <br />
@@ -126,20 +211,34 @@ function SignupPage() {
         <div>
           <p>생년월일</p>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker />
+            <DatePicker
+              value={birth}
+              onChange={(newValue) => setBirth(newValue)}
+            />
           </LocalizationProvider>
         </div>
         <br />
         <div>
-          <p>선호장르</p>
+          <p>선호 장르</p>
           <Grid container direction="row" columnGap={3}>
-            <div className={styles["signup-genre"]}>#소설</div>
-            <div className={styles["signup-genre"]}>#자서전</div>
-            <div className={styles["signup-genre"]}>#스릴러</div>
-            <div className={styles["signup-genre"]}>#추리</div>
-            <div className={styles["signup-genre"]}>#로맨스</div>
+            <div onClick={clickone} className={ genreList.one ? styles['active'] : styles['notActive'] }>
+              #소설
+            </div>
+            <div onClick={clicktwo} className={ genreList.two ? styles['active'] : styles['notActive'] }>
+              #자서전
+            </div>
+            <div onClick={clickthree} className={ genreList.three ? styles['active'] : styles['notActive'] }>
+              #스릴러
+            </div>
+            <div onClick={clickfour} className={ genreList.four ? styles['active'] : styles['notActive'] }>
+              #추리
+            </div>
+            <div onClick={clickfive} className={ genreList.five ? styles['active'] : styles['notActive'] }>
+              #로맨스
+            </div>
           </Grid>
         </div>
+        <br />
         <br />
         <FormControl>
           <FormLabel id="demo-row-radio-buttons-group-label">
@@ -154,13 +253,20 @@ function SignupPage() {
               value="online"
               control={<Radio />}
               label="온라인"
+              onChange={(e) => setForm({ ...form, onoff: e.target.value })}
             />
             <FormControlLabel
               value="offline"
               control={<Radio />}
               label="오프라인"
+              onChange={(e) => setForm({ ...form, onoff: e.target.value })}
             />
-            <FormControlLabel value="onoff" control={<Radio />} label="병행" />
+            <FormControlLabel
+              value="onoff"
+              control={<Radio />}
+              label="병행"
+              onChange={(e) => setForm({ ...form, onoff: e.target.value })}
+            />
           </RadioGroup>
         </FormControl>
         <br />
@@ -191,23 +297,34 @@ function SignupPage() {
               value="undertwo"
               control={<Radio />}
               label="2권 이하"
+              onChange={(e) => setForm({ ...form, frequency: 2 })}
             />
             <FormControlLabel
               value="threefive"
               control={<Radio />}
               label="3권 ~ 5권"
+              onChange={(e) => setForm({ ...form, frequency: 5 })}
             />
             <FormControlLabel
               value="oversix"
               control={<Radio />}
               label="6권 이상"
+              onChange={(e) => setForm({ ...form, frequency: 6 })}
             />
           </RadioGroup>
         </FormControl>
-        <br /><br />
-        <Button variant="contained" color="success" fullWidth>
+        <br />
+        <br />
+        <Button
+          variant="contained"
+          color="success"
+          fullWidth
+          onClick={userSignup}
+        >
           가입하기
         </Button>
+        <br />
+        <br />
       </div>
     </Grid>
   );

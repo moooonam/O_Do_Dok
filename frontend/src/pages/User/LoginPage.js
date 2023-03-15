@@ -16,6 +16,7 @@ function LoginPage() {
       justifyContent="center"
       alignItems="center"
     >
+      <h2>Oh Do Dok!</h2>
       <div className={styles["loginBox"]}>
         <h3 className={styles["title"]}>로그인</h3>
         <Grid container direction="row" columnGap={10}>
@@ -48,7 +49,13 @@ function LoginPage() {
         </Grid>
         <hr />
         <br />
-        <Grid container direction="row" justifyContent="center" alignItems="center" columnGap={2}>
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          columnGap={2}
+        >
           <Button variant="contained">취소</Button>
           <Button variant="contained" color="success">
             로그인
