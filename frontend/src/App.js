@@ -21,9 +21,12 @@ import TeamsMainPage from "./pages/Teams/TeamsMainPage";
 
 import OpenReviewsPage from "./pages/OpenReviewsPage"; 
 
+// css
+import styles from './styles/App.module.scss'
+
 function App() {
   return (
-    <div>
+    <div className={styles.app}>
     <BrowserRouter>
       <Heaader/>
       <Routes>
