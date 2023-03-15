@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import styles from "../../styles/Signup.module.scss";
 import Grid from "@mui/material/Grid"; // Grid version 1
@@ -9,7 +9,7 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
+// import FormLabel from "@mui/material/FormLabel";
 
 // datepicker
 import dayjs from "dayjs";
@@ -85,8 +85,20 @@ function SignupPage() {
     }
   };
 
+  useEffect(() => {
+    // setUserGenre([])
+    for (let i in genreList) {
+      if (genreList[i]=== true) {
+        console.log(i)
+        setUserGenre([...userGenre, i])
+        console.log(userGenre)
+      } 
+    }
+  },[genreList]);
+
   // 가입하기 함수
   const userSignup = () => {
+    setUserGenre([])
     for (let i in genreList) {
       if (genreList[i]=== true) {
         console.log(i)
@@ -186,7 +198,7 @@ function SignupPage() {
         </Grid>
         <br /> <br />
         <FormControl>
-          <FormLabel id="demo-row-radio-buttons-group-label">성별</FormLabel>
+          <p id="demo-row-radio-buttons-group-label">성별</p>
           <RadioGroup
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
@@ -210,6 +222,7 @@ function SignupPage() {
         <br />
         <div>
           <p>생년월일</p>
+          <br />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               value={birth}
@@ -217,9 +230,10 @@ function SignupPage() {
             />
           </LocalizationProvider>
         </div>
-        <br />
+        <br /><br />
         <div>
           <p>선호 장르</p>
+          <br />
           <Grid container direction="row" columnGap={3}>
             <div onClick={clickone} className={ genreList.one ? styles['active'] : styles['notActive'] }>
               #소설
@@ -241,9 +255,9 @@ function SignupPage() {
         <br />
         <br />
         <FormControl>
-          <FormLabel id="demo-row-radio-buttons-group-label">
+          <p id="demo-row-radio-buttons-group-label">
             온/오프라인
-          </FormLabel>
+          </p>
           <RadioGroup
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
@@ -283,11 +297,12 @@ function SignupPage() {
             onChange={(e) => setForm({ ...form, area: e.target.value })}
           />
         </Grid>
-        <br />
+        <br /><br />
         <FormControl>
-          <FormLabel id="demo-row-radio-buttons-group-label">
+          <p id="demo-row-radio-buttons-group-label">
             독서빈도
-          </FormLabel>
+          </p>
+          <br />
           <RadioGroup
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
