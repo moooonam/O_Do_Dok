@@ -34,10 +34,10 @@ public class UserSurvey {
     @Column(nullable = false)
     private String userGenre1;
 
-    @Column(nullable = false)
+    @Column
     private String userGenre2;
 
-    @Column(nullable = false)
+    @Column
     private String userGenre3;
 
     @Column(nullable = false)
