@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import styles from "../../styles/Signup.module.scss";
 import Grid from "@mui/material/Grid"; // Grid version 1
 import Button from "@mui/material/Button";
+import axios from "axios";
 
 // radio
 import Radio from "@mui/material/Radio";
@@ -26,20 +27,18 @@ function SignupPage() {
     passwordConfirm: "",
     gender: "",
     onoff: "",
-    area: "",
+    region: "",
     frequency: "",
   });
-
 
   // 날짜 데이터
   const [birth, setBirth] = React.useState(dayjs("2022-04-17"));
   // 날짜 형식 변경
   const dateFormat = dayjs(birth.$d).format("YYYY-MM-DD");
 
-
   // 장르 리스트
   const [userGenre, setUserGenre] = useState([]);
-  // 장르 데이터 
+  // 장르 데이터
   const [genreList, setGenreList] = useState({
     one: false,
     two: false,
@@ -48,68 +47,163 @@ function SignupPage() {
     five: false,
   });
 
-  // 장르 클릭
+  // 장르 클릭했을때 클래스 변경
   const clickone = () => {
     if (genreList.one) {
-      setGenreList({ ...genreList, one: false })
+      setGenreList({ ...genreList, one: false });
     } else {
-      setGenreList({ ...genreList, one: true })
+      setGenreList({ ...genreList, one: true });
     }
   };
   const clicktwo = () => {
     if (genreList.two) {
-      setGenreList({ ...genreList, two: false })
+      setGenreList({ ...genreList, two: false });
     } else {
-      setGenreList({ ...genreList, two: true })
+      setGenreList({ ...genreList, two: true });
     }
   };
   const clickthree = () => {
     if (genreList.three) {
-      setGenreList({ ...genreList, three: false })
+      setGenreList({ ...genreList, three: false });
     } else {
-      setGenreList({ ...genreList, three: true })
+      setGenreList({ ...genreList, three: true });
     }
   };
   const clickfour = () => {
     if (genreList.four) {
-      setGenreList({ ...genreList, four: false })
+      setGenreList({ ...genreList, four: false });
     } else {
-      setGenreList({ ...genreList, four: true })
+      setGenreList({ ...genreList, four: true });
     }
   };
   const clickfive = () => {
     if (genreList.five) {
-      setGenreList({ ...genreList, five: false })
+      setGenreList({ ...genreList, five: false });
     } else {
-      setGenreList({ ...genreList, five: true })
+      setGenreList({ ...genreList, five: true });
     }
   };
 
-  useEffect(() => {
-    // setUserGenre([])
-    for (let i in genreList) {
-      if (genreList[i]=== true) {
-        console.log(i)
-        setUserGenre([...userGenre, i])
-        console.log(userGenre)
-      } 
+  // 유저 정보에 선호 장르 담기
+  const clickGenre = (choice) => {
+    if (userGenre.includes(choice)) {
+      console.log(2222222222);
+      setUserGenre(userGenre.filter((genre) => genre !== choice));
+    } else {
+      setUserGenre([...userGenre, choice]);
     }
-  },[genreList]);
+  };
+
+  // axios 보낼 데이터
+  const [userInfo, setUserInfo] = useState({
+    name: "",
+    email: "",
+    nickname: "",
+    password: "",
+    passwordConfirm: "",
+    gender: "",
+    onoff: "",
+    region: "",
+    frequency: "",
+    genre1: "",
+    genre2: "",
+    genre3: "",
+    age: 0,
+  });
+
+  const emailDuplication = () => {
+    if (form.email) {
+      axios({
+        methods: 'get',
+        url: `http://localhost:3000/api/v1/user/checkEmail/${form.email}`
+      })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
+  };
+
+  const nickDuplication = () => {
+    if (form.nickname) {
+      axios({
+        methods: 'get',
+        url: `http://localhost:3000/api/v1/user/checkEmail/${form.nickname}`
+      })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
+  };
 
   // 가입하기 함수
   const userSignup = () => {
-    setUserGenre([])
-    for (let i in genreList) {
-      if (genreList[i]=== true) {
-        console.log(i)
-        setUserGenre([...userGenre, i])
-        console.log(userGenre)
-      } 
-    }
+    setUserInfo({ ...userInfo, name:form.name})
+    setUserInfo({ ...userInfo, email:form.email})
+    setUserInfo({ ...userInfo, nickname:form.nickname})
+    setUserInfo({ ...userInfo, password:form.password})
+    setUserInfo({ ...userInfo, passwordConfirm:form.passwordConfirm})
+    setUserInfo({ ...userInfo, gender:form.gender})
+    setUserInfo({ ...userInfo, onoff:form.onoff})
+    setUserInfo({ ...userInfo, region:form.region})
+    setUserInfo({ ...userInfo, frequency:form.frequency})
+    setUserInfo({ ...userInfo, gender1:form.gender1})
+    setUserInfo({ ...userInfo, gender2:form.gender2})
+    setUserInfo({ ...userInfo, gender3:form.gender3})
+    setUserInfo({ ...userInfo, age:form.age})
+
+    axios({
+      methods: 'post',
+      url: 'http://localhost:3000/api/v1/user',
+      data: userInfo,
+    })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     console.log(form);
     console.log(dateFormat);
-    console.log(userGenre)
+    console.log(userGenre);
+
+
+    axios({
+      methods: "post",
+      url: "http://localhost:3000/api/v1/user",
+    });
   };
+
+  // 유효성 검사
+  const nickname_validation = () => {
+    let check = /[~!@#$%^&*()_+|<>?:{}.,/;='"]/;
+    return check.test(form.nickname);
+  };
+
+  const name_validation = () => {
+    let check = /[~!@#$%^&*()_+|<>?:{}.,/;='"]/;
+    return check.test(form.name);
+  };
+
+  // const password_confirm_validation = () => {
+  //   if (form.password === form.passwordConfirm) {
+  //     return false;
+  //   } else {
+  //     return true
+  //   }
+  // };
+
+  // email-validator 라이브러리
+  // const email_validation = () => {
+  //   let check = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+  //   return check.test(form.email);
+  // };
+
   return (
     <Grid
       container
@@ -130,11 +224,16 @@ function SignupPage() {
             value={form.name}
             variant="standard"
             onChange={(e) => setForm({ ...form, name: e.target.value })}
+            error={name_validation()}
+            helperText={name_validation() ? "특수기호는 하실 수 없습니다." : ""}
           />
         </Grid>
         <Grid container direction="row" columnGap={8}>
           <p className={styles["signup-blank"]}>이메일</p>
           <TextField
+            sx={{
+              width: { md: 250 },
+            }}
             required
             id="email"
             label="Required"
@@ -142,11 +241,14 @@ function SignupPage() {
             value={form.email}
             variant="standard"
             onChange={(e) => setForm({ ...form, email: e.target.value })}
+            // error={!email_validation()}
+            // helperText={email_validation() ? "":"이메일 형식에 맞춰 작성해주세요."}
           />
           <Button
             variant="outlined"
             color="success"
             className={styles["signup-dupli"]}
+            onClick={emailDuplication()}
           >
             중복확인
           </Button>
@@ -154,6 +256,9 @@ function SignupPage() {
         <Grid container direction="row" columnGap={8}>
           <p className={styles["signup-blank"]}>닉네임</p>
           <TextField
+            sx={{
+              width: { md: 250 },
+            }}
             required
             id="nickname"
             label="Required"
@@ -161,11 +266,16 @@ function SignupPage() {
             placeholder="2 ~ 12자 이내로 입력해주세요"
             variant="standard"
             onChange={(e) => setForm({ ...form, nickname: e.target.value })}
+            error={nickname_validation()}
+            helperText={
+              nickname_validation() ? "특수기호는 하실 수 없습니다." : ""
+            }
           />
           <Button
             variant="outlined"
             className={styles["signup-dupli"]}
             color="success"
+            onClick={nickDuplication()}
           >
             중복확인
           </Button>
@@ -173,6 +283,9 @@ function SignupPage() {
         <Grid container direction="row" columnGap={8}>
           <p className={styles["signup-blank"]}>비밀번호</p>
           <TextField
+            sx={{
+              width: { md: 250 },
+            }}
             required
             id="password"
             label="Required"
@@ -182,9 +295,12 @@ function SignupPage() {
             onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
         </Grid>
-        <Grid container direction="row" columnGap={3}>
+        <Grid container direction="row" columnGap={4}>
           <p className={styles["signup-blank"]}>비밀번호 확인</p>
           <TextField
+            sx={{
+              width: { md: 250 },
+            }}
             required
             id="passwordConfirm"
             label="Required"
@@ -194,6 +310,8 @@ function SignupPage() {
             onChange={(e) =>
               setForm({ ...form, passwordConfirm: e.target.value })
             }
+            // error={password_confirm_validation()}
+            // helperText={password_confirm_validation() ? "비밀번호가 일치하지 않습니다":""}
           />
         </Grid>
         <br /> <br />
@@ -230,24 +348,61 @@ function SignupPage() {
             />
           </LocalizationProvider>
         </div>
-        <br /><br />
+        <br />
+        <br />
         <div>
           <p>선호 장르</p>
           <br />
           <Grid container direction="row" columnGap={3}>
-            <div onClick={clickone} className={ genreList.one ? styles['active'] : styles['notActive'] }>
+            <div
+              onClick={() => {
+                clickone();
+                clickGenre("one");
+              }}
+              className={genreList.one ? styles["active"] : styles["notActive"]}
+            >
               #소설
             </div>
-            <div onClick={clicktwo} className={ genreList.two ? styles['active'] : styles['notActive'] }>
+            <div
+              onClick={() => {
+                clicktwo();
+                clickGenre("two");
+              }}
+              className={genreList.two ? styles["active"] : styles["notActive"]}
+            >
               #자서전
             </div>
-            <div onClick={clickthree} className={ genreList.three ? styles['active'] : styles['notActive'] }>
+            <div
+              onClick={() => {
+                clickthree();
+                clickGenre("three");
+              }}
+              className={
+                genreList.three ? styles["active"] : styles["notActive"]
+              }
+            >
               #스릴러
             </div>
-            <div onClick={clickfour} className={ genreList.four ? styles['active'] : styles['notActive'] }>
+            <div
+              onClick={() => {
+                clickfour();
+                clickGenre("four");
+              }}
+              className={
+                genreList.four ? styles["active"] : styles["notActive"]
+              }
+            >
               #추리
             </div>
-            <div onClick={clickfive} className={ genreList.five ? styles['active'] : styles['notActive'] }>
+            <div
+              onClick={() => {
+                clickfive();
+                clickGenre("five");
+              }}
+              className={
+                genreList.five ? styles["active"] : styles["notActive"]
+              }
+            >
               #로맨스
             </div>
           </Grid>
@@ -255,9 +410,7 @@ function SignupPage() {
         <br />
         <br />
         <FormControl>
-          <p id="demo-row-radio-buttons-group-label">
-            온/오프라인
-          </p>
+          <p id="demo-row-radio-buttons-group-label">온/오프라인</p>
           <RadioGroup
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
@@ -289,19 +442,18 @@ function SignupPage() {
           <p className={styles["signup-blank"]}>활동지역</p>
           <TextField
             required
-            id="area"
+            id="region"
             label="Required"
             placeholder="활동지역을 입력해주세요"
-            value={form.area}
+            value={form.region}
             variant="standard"
-            onChange={(e) => setForm({ ...form, area: e.target.value })}
+            onChange={(e) => setForm({ ...form, region: e.target.value })}
           />
         </Grid>
-        <br /><br />
+        <br />
+        <br />
         <FormControl>
-          <p id="demo-row-radio-buttons-group-label">
-            독서빈도
-          </p>
+          <p id="demo-row-radio-buttons-group-label">독서빈도</p>
           <br />
           <RadioGroup
             row
