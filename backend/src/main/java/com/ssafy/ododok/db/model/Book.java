@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+//@Builder
 @Entity
 @DynamicInsert
 public class Book {
@@ -24,7 +24,7 @@ public class Book {
     private String bookTitle;
 
     @Column(nullable = false)
-    private String bookPagecnt;
+    private int bookPagecnt;
 
     @Column(nullable = false)
     private String bookGenre;
@@ -40,4 +40,11 @@ public class Book {
 
     @Column(nullable = false)
     private String bookRating;
+
+    @Builder
+    public Book(String bookTitle,String bookAuthor,int bookPagecnt){
+        this.bookTitle=bookTitle;
+        this.bookAuthor=bookAuthor;
+        this.bookPagecnt=bookPagecnt;
+    }
 }
