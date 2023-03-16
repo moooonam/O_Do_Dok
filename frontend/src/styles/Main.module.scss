@@ -36,7 +36,7 @@
 //추천 도서쪽
 .wrap-recomendbook {
     background-color: #012405;
-    height: 500px;
+    height: 400px;
     .recomendbook-title{
         font-size: 20px;
         color: white;
@@ -45,12 +45,25 @@
         padding-top: 30px;
     }
 }
+.wrap-bookimg {
+    display: flex;
+    padding: 10vh 4vw;
+    img {
+        margin: 0 3vw;
+        width: 12vw;
+        aspect-ratio: 1.5 / 2;
+        // height: ;
+    }
+    img:hover {
+        transform: scale(1.2);
+    }
+}
 
 // 베스트 리뷰쪽
 
 .wrap-bestreview {
     background-color: #2C1500;
-    height: 500px;
+    height: 400px;
     margin-top: 50px;
     .bestreview-title{
         font-size: 20px;
@@ -58,5 +71,18 @@
         font-family: 'Noto Serif KR', serif;
         margin-left: 30px;
         padding-top: 30px;
+    }
+}
+.wrap-bookimg {
+    display: flex;
+    padding: 10vh 4vw;
+    img {
+        margin: 0 3vw;
+        width: 12vw;
+        aspect-ratio: 1.5 / 2;
+        // height: ;
+    }
+    img:hover {
+        transform: scale(1.2);
     }
 }
