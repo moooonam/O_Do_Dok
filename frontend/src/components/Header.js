@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
 import styles from "../styles/Header.module.scss";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -32,14 +32,14 @@ function Header() {
   }
   // 로그인 관련
   const isLogin = useSelector((state) => state.user.isLogin);
-  console.log(isLogin);
+  // console.log(isLogin);
 
   let profilOrLogin;
   if (isLogin) {
     profilOrLogin = (
       <div className={styles.container}>
         <input id="dropdown" type="checkbox" className={styles['drop-checkbox']} />
-        <label className={styles.dropdownLabel} for="dropdown">
+        <label className={styles.dropdownLabel} htmlFor="dropdown">
           <div>로그인됨</div>
         </label>
         <div className={styles.content}>

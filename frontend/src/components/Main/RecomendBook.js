@@ -25,7 +25,7 @@ function RecomendBook() {
   ]
   const renderRecomendBook = books.map(book => {
     return (
-      <div>
+      <div key={book.id}>
         <img src={book.imgurl} alt="책" />
       </div>
     )
