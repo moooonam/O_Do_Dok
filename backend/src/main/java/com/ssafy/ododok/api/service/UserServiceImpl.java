@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User getUserByUserEmail(String userEmail) {
-        User user = userRepository.findByUserEmail(userEmail).get();
+        User user = userRepository.findByUserEmail(userEmail);
         return user;
     }
 

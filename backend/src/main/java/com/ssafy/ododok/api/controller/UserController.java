@@ -2,10 +2,14 @@ package com.ssafy.ododok.api.controller;
 
 import com.ssafy.ododok.api.request.UserLoginPostReq;
 import com.ssafy.ododok.api.request.UserRegisterPostReq;
+import com.ssafy.ododok.api.response.UserRes;
 import com.ssafy.ododok.api.service.UserService;
+import com.ssafy.ododok.common.auth.PrincipalDetails;
 import com.ssafy.ododok.db.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,23 +58,17 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginPostReq loginInfo) {
-        String userEmail = loginInfo.getEmail();
-        String password = loginInfo.getPassword();
-
-        User user = userService.getUserByUserEmail(userEmail);
-
-        if(user == null){
-            return ResponseEntity.status(404).body("존재하지 않는 계정입니다.");
-        } else{
-            if(passwordEncoder.matches(password, user.getUserPassword())) {
-                return ResponseEntity.status(200).body("로그인에 성공하였습니다. 생성된 토큰은 header에 들어있습니다.");
-            }
-        }
-
-
-        return ResponseEntity.status(401).body("잘못된 비밀번호입니다.");
+    @GetMapping("/me")
+    public ResponseEntity<UserRes> getStudentInfo(Authentication authentication) {
+        System.out.println("Dd");
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        System.out.println("Dd");
+        String userId = principal.getUser().getUserEmail();
+//        String userId = principal.getUser().getUserEmail();
+//        System.out.println(user);
+//        System.out.println(userId);
+        User user = userService.getUserByUserEmail(userId);
+        return ResponseEntity.status(200).body(UserRes.of(user));
     }
 
 }
