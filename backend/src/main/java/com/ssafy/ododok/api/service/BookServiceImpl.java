@@ -20,8 +20,14 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public Book findBook(String title,String author) {
+    public Book findBook(String title,String author)
+    {
         return null;
     }
 
+    @Override
+    public void selectBook(Long id) {
+
+        Book book= bookRepository.findById(id).get();
+    }
 }

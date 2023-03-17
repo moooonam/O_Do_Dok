@@ -40,10 +40,10 @@ public class DodokController {
         return new ResponseEntity(bookList,HttpStatus.OK);
     }
 
-    //책 선택
+    //책 선택 ,
     @PostMapping("/selectbook")
-    public ResponseEntity<String> selectBook(String isbn){
-
+    public ResponseEntity<String> selectBook(Long bookId){
+        
         return null;
     }
 
@@ -69,6 +69,7 @@ public class DodokController {
 
         return null;
     }
+
     @GetMapping("/lastdodoks")
     public ResponseEntity<List<DodokInfoRes>>showLastAllDodokInfo(Authentication auth){
         //security Authentication에서 User 가져오기.
