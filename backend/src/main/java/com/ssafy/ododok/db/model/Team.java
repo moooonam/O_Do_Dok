@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,30 +21,37 @@ public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int teamId;
+    private Long teamId;
 
     @Column(nullable = false)
     private String teamName;
 
-    @Column(nullable = false)
-    private int teamMembercnt;
+    @ColumnDefault("1")
+    private Integer teamMemberCnt;
 
     @Column(nullable = false)
-    private int teamMembercntMax;
+    private int teamMemberCntMax;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Onoff teamOnoff;
 
-    @Column(nullable = false)
-    private boolean teamRecruit;
-
     @Column
-    private String teamRecruitText;
+    private boolean teamRecruit = true;
 
     @Column(columnDefinition = "LONGTEXT")
+    private String teamRecruitText;
+
+    @Column(nullable = false)
     private String teamRegion;
 
+    @Column(nullable = false)
+    private String teamGenre1;
 
+    @Column
+    private String teamGenre2;
+
+    @Column
+    private String teamGenre3;
 }
 
