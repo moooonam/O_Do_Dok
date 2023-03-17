@@ -44,9 +44,6 @@ public class UserSurvey {
     private String userRegion;
 
     @Column(nullable = false)
-    private String userInterests;
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Onoff userOnoff;
 
