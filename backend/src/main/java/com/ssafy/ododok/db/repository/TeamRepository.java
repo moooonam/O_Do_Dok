@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
-    Team save(Team team);
+//    Team save(Team team);
     List<Team> findByTeamNameContaining(String teamName);
 
 }

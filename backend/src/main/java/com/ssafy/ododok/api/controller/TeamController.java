@@ -3,11 +3,17 @@ package com.ssafy.ododok.api.controller;
 import com.ssafy.ododok.api.request.TeamCreatePostReq;
 import com.ssafy.ododok.api.request.TeamModifyPatchReq;
 import com.ssafy.ododok.api.service.TeamService;
+import com.ssafy.ododok.common.auth.PrincipalDetails;
+import com.ssafy.ododok.db.model.Role;
 import com.ssafy.ododok.db.model.Team;
+import com.ssafy.ododok.db.model.TeamUser;
+import com.ssafy.ododok.db.model.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/teams")
@@ -21,8 +27,13 @@ public class TeamController {
 
     // 모임 생성
     @PostMapping()
-    public ResponseEntity<?> createTeam(@RequestBody TeamCreatePostReq teamCreatePostReq){
-        teamService.createTeam(teamCreatePostReq);
+    public ResponseEntity<?> createTeam(@RequestBody TeamCreatePostReq teamCreatePostReq, Authentication authentication){
+        // 본인도 모임에 멤버로 추가되어야 함
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User user = principal.getUser();
+        System.out.println("user : " + user);
+
+        teamService.createTeam(teamCreatePostReq, user);
         return ResponseEntity.status(200).body("팀 생성 성공!");
     }
 
@@ -52,5 +63,21 @@ public class TeamController {
     public ResponseEntity<?> deleteTeam(@PathVariable Long teamId){
         teamService.deleteTeam(teamId);
         return ResponseEntity.status(200).body("팀 삭제 성공!");
+    }
+
+    // 모임에 멤버 추가
+    @PostMapping("/{teamId}")
+    public ResponseEntity<String> addMember(@PathVariable Long teamId, Authentication authentication){
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User user = principal.getUser();
+        teamService.addMember(teamId, user);
+        return ResponseEntity.status(200).body("멤버 추가 성공!");
+    }
+
+    // 모임 구성원 출력
+    @GetMapping("/member/{teamId}")
+    public ResponseEntity<?> showMember(@PathVariable Long teamId){
+        Optional<TeamUser> memberList = teamService.getMemberByTeamId(teamId);
+        return ResponseEntity.status(200).body(memberList);
     }
 }

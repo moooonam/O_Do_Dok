@@ -1,5 +1,6 @@
 package com.ssafy.ododok.db.model;
 
+import com.ssafy.ododok.api.request.TeamModifyPatchReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,8 +37,8 @@ public class Team {
     @Enumerated(EnumType.STRING)
     private Onoff teamOnoff;
 
-    @Column
-    private boolean teamRecruit = true;
+    @ColumnDefault("1")
+    private boolean teamRecruit;
 
     @Column(columnDefinition = "LONGTEXT")
     private String teamRecruitText;
@@ -53,5 +54,18 @@ public class Team {
 
     @Column
     private String teamGenre3;
+
+    public void updateTeam(TeamModifyPatchReq teamModifyPatchReq){
+
+        this.teamMemberCntMax = teamModifyPatchReq.getTeamMemberCntMax();
+        this.teamOnoff = teamModifyPatchReq.getTeamOnoff();
+        this.teamRegion = teamModifyPatchReq.getTeamRegion();
+        this.teamGenre1 = teamModifyPatchReq.getTeamGenre1();
+        this.teamGenre2 = teamModifyPatchReq.getTeamGenre2();
+        this.teamGenre3 = teamModifyPatchReq.getTeamGenre3();
+        this.teamRecruit = teamModifyPatchReq.isTeamRecruit();
+
+    }
+
 }
 
