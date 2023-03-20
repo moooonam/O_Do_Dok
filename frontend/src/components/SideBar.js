@@ -17,6 +17,15 @@ function SideBar() {
   function goMyTeamRecord() {
     movePage("/myteamrecord");
   }
+
+  function goMyTeamManage() {
+    movePage("/myteam/manage");
+  }
+  
+  function goMyTeamMemberManage() {
+    movePage("/myteam/membermanage");
+  }
+
   return (
     <div className={styles.sidebar}>
       <div className={styles["wrap-sidebar"]}>
@@ -27,6 +36,8 @@ function SideBar() {
           <li onClick={goMyTeamDodok}>도독</li>
           <li onClick={goMyTeamArticle}>게시판</li>
           <li onClick={goMyTeamRecord}>지난활동</li>
+          <li onClick={goMyTeamManage}>모임 관리</li>
+          <li onClick={goMyTeamMemberManage}>모임원 관리</li>
         </ul>
       </div>
     </div>
