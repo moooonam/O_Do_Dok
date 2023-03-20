@@ -47,15 +47,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             throws IOException, ServletException {
         String header = request.getHeader(JwtProperties.ACCESS_HEADER_STRING);
         String email = " ";
-        String servletPath = request.getServletPath();
 
-        if (servletPath.equals("/api/users/login") || servletPath.equals("/users/token/refresh")) {
+        if (header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
             chain.doFilter(request, response);
-        } else if (header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
-            chain.doFilter(request, response);
-//            return;
+
         }
-//        System.out.println("header : " + header);
+
         else {
             try {
                 String token = request.getHeader(JwtProperties.ACCESS_HEADER_STRING)
@@ -99,7 +96,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     response.setCharacterEncoding("utf-8");
                     new ObjectMapper().writeValue(response.getWriter(), new ResponseEntity<String>("Refresh Token이 만료되었습니다.", HttpStatus.UNAUTHORIZED));
 
-
                 }
 
                 Optional<RefreshToken> optMember = refreshTokenRepository.findById(email);
@@ -111,37 +107,19 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     response.setCharacterEncoding("utf-8");
                     new ObjectMapper().writeValue(response.getWriter(), new ResponseEntity<String>("유효하지 않은 Refresh Token입니다.", HttpStatus.UNAUTHORIZED));
                 } else {
-                    System.out.println("여기에는 들어오니?");
+
                     User user = userRepository.findByUserEmail(optMember.get().getEmail());
-                    System.out.println("여기에는 들어오니?2");
+
                     // RSA 방식 아니고 Hash 암호방식
                     String accessToken = JWT.create()
                             .withSubject(user.getUserEmail())
                             .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
                             .withClaim("email", user.getUserEmail())
-//                .withClaim("role", principalDetails.getMember().getRole().toString())
                             .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
-                    System.out.println("여기에는 들어오니?3");
                     response.setHeader(JwtProperties.ACCESS_HEADER_STRING, JwtProperties.TOKEN_PREFIX+accessToken);
-
-//                    PrincipalDetails principalDetails = new PrincipalDetails(user);
-//                    Authentication authentication =
-//                            new UsernamePasswordAuthenticationToken(
-//                                    principalDetails, //나중에 컨트롤러에서 DI해서 쓸 때 사용하기 편함.
-//                                    null, // 패스워드는 모르니까 null 처리
-//                                    principalDetails.getAuthorities());
-//
-//
-//                    // 강제로 시큐리티의 세션에 접근하여 Authentication 객체를 저장
-//                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                    System.out.println("여기에는 들어오니?4");
-//                    Map<String, String> responseMap = new HashMap<>();
-//                    responseMap.put(JwtProperties.ACCESS_HEADER_STRING, accessToken);
-//                    new ObjectMapper().writeValue(response.getWriter(), responseMap);
-                    System.out.println("여기에는 들어오니?5");
                     chain.doFilter(request, response);
-                    System.out.println("여기에는 들어오니?6");
+
                 }
 
             } catch (Exception e){

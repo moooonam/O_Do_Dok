@@ -114,22 +114,5 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     }
 
-//    @Override
-//    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-//
-//        setFailReason(response, failed.getMessage());
-//    }
-//
-//    private void setFailReason(HttpServletResponse response, String message) throws IOException {
-//        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//        response.setContentType("application/json;charset=UTF-8");
-//
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("success", false);
-//        jsonObject.put("code", 400);
-//        jsonObject.put("message", message);
-//
-//        response.getWriter().print(jsonObject);
-//    }
 
 }
