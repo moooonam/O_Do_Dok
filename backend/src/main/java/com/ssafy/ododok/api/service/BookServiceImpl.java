@@ -1,5 +1,6 @@
 package com.ssafy.ododok.api.service;
 
+import com.ssafy.ododok.api.request.BookAddPostReq;
 import com.ssafy.ododok.db.model.Book;
 import com.ssafy.ododok.db.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,8 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public List<Book> searchBooks(String keyword) {
-
-        return null;
+        List<Book> searchResult= bookRepository.findAllByBookTitleContainingIgnoreCase(keyword);
+        return searchResult;
     }
 
     @Override
@@ -38,7 +39,13 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public void addBook(Book book) {
+    public void addBook(BookAddPostReq bookAddPostReq) {
+        Book book = new Book();
+        book.setBookTitle(bookAddPostReq.getBookTitle());
+        book.setBookAuthor(bookAddPostReq.getBookAuthor());
+        book.setBookGenre(bookAddPostReq.getGenre());
+        book.setBookPagecnt(bookAddPostReq.getPage());
+//        book.setBookImg("tmpImg");
         bookRepository.save(book);
 
         return;

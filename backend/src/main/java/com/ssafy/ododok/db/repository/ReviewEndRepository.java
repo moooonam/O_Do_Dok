@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ReviewEndRepository extends JpaRepository<ReviewEnd,Long> {
     List<ReviewEnd> findAllByDodok(Dodok dodok);
-
+    void deleteAllByDodok(Dodok dodok);
 }

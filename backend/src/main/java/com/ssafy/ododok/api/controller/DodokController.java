@@ -1,6 +1,6 @@
 package com.ssafy.ododok.api.controller;
 
-import com.ssafy.ododok.api.request.DodokCreateReq;
+import com.ssafy.ododok.api.request.*;
 import com.ssafy.ododok.api.response.DodokInfoRes;
 import com.ssafy.ododok.api.service.BookService;
 import com.ssafy.ododok.api.service.DodokService;
@@ -34,9 +34,9 @@ public class DodokController {
      * 도독과 관련 API
      @author 김경삼
      */
-//    @PostMapping("/addbook")
-    public ResponseEntity<String> addBook(Book book){
-        bookService.addBook(book);
+    @PostMapping("/addbook")
+    public ResponseEntity<String> addBook(@RequestBody BookAddPostReq bookAddPostReq){
+        bookService.addBook(bookAddPostReq);
         return new ResponseEntity("책이 추가 됐습니다.",HttpStatus.OK);
     }
 
@@ -50,38 +50,45 @@ public class DodokController {
     //책 검색
     @GetMapping("/search/{keyword}")
     public ResponseEntity<?> searchBooks(@PathVariable String keyword){
-        return null;
+        System.out.println("keyword: "+ keyword);
+        List<Book> searchResult = bookService.searchBooks(keyword);
+        if(searchResult.size()==0){
+            return new ResponseEntity<>("검색 결과가 없습니다.",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(searchResult,HttpStatus.OK);
+        }
     }
     //책 선택 ,
-    @PostMapping("/selectbook")
-    public ResponseEntity<String> selectBook(Long bookId){
-
-        return null;
-    }
+//    @PostMapping("/selectbook")
+//    public ResponseEntity<String> selectBook(Long bookId){
+//        return null;
+//    }
 
     //도독 시작
-    @PostMapping
-    public ResponseEntity<String> startDodok(@RequestBody DodokCreateReq dodokCreateReq,Authentication auth) {
+    @PostMapping("/startdodok")
+    public ResponseEntity<String> startDodok(@RequestBody DodokCreateReq dodokCreateReq, Authentication auth) {
         //나중에 auth에서 가져오는 것으로 대체
         PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
         User user = principal.getUser();
-
+        System.out.println("user70 = " + user);
         dodokService.startDodok(user,dodokCreateReq);
         return new ResponseEntity("새로운 도독을 생성했습니다.",HttpStatus.OK);
     }
 
-    //도독 종료
-    @PutMapping("/end")
-    public ResponseEntity<String> endDodok(){
 
-        return null;
+    //도독 종료
+    @PutMapping("/end/{dodokId}")
+    public ResponseEntity<String> endDodok(@PathVariable Long dodokId){
+        ResponseEntity res = dodokService.endDodok(dodokId)==0 ? new ResponseEntity<>("이미 종료 상태입니다.",HttpStatus.OK)
+        : new ResponseEntity<>("진행중인 도독을 종료했습니다.",HttpStatus.OK);
+        return res;
     }
 
     //도독 삭제
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteDodok() {
-
-        return null;
+    @DeleteMapping("/{dodokId}")
+    public ResponseEntity<?> deleteDodok(Authentication authentication,@PathVariable Long dodokId) {
+        dodokService.deleteDodok(authentication,dodokId);
+        return new ResponseEntity<>("책이 삭제됐습니다.",HttpStatus.OK);
     }
 
     @GetMapping("/lastdodoks")
@@ -121,38 +128,84 @@ public class DodokController {
     }
     //책갈피 입력
     @PostMapping("/pagereview")
-    public ResponseEntity<String> writePageReviews(){
-        return null;
+    public ResponseEntity<String> writePageReview(@RequestBody PageReviewCreatePostReq pageReviewCreatePostReq,Authentication authentication) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User user = principal.getUser();
+        dodokService.writePageReview(pageReviewCreatePostReq,user);
+        return new ResponseEntity<>("책갈피를 작성했습니다.",HttpStatus.OK);
     }
+
     //책갈피 수정
     @PutMapping("/pagereview")
-    public ResponseEntity<String> modifyPageReviews(){
-        return null;
+    public ResponseEntity<String> modifyPageReviews(@RequestBody PageReviewPutReq pageReviewPutReq, Authentication authentication){
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User user = principal.getUser();
+        boolean result =dodokService.modifyPageReview(pageReviewPutReq,user);
+        if(result){
+            return new ResponseEntity<>("수정이 완료됐습니다.",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("권한이 없어 수정에 실패했습니다.",HttpStatus.OK);
+        }
     }
-    //책갈피 삭제
-    @DeleteMapping("/pagereview")
-    public ResponseEntity<String> deletePageReviews(){
-        return null;
-    }
-    //책 총평 조회
-    @GetMapping("/endreview")
-    public ResponseEntity<String> listPageEndReviews(){
 
-        return null;
+    //책갈피 삭제
+    @DeleteMapping("/pagereview/{pageReviewId}")
+    public ResponseEntity<String> deletePageReviews(@PathVariable Long pageReviewId
+    ,Authentication authentication) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User user = principal.getUser();
+
+        boolean result =dodokService.deletePageReview(pageReviewId,user);
+        if(result){
+            return new ResponseEntity<>("삭제가 완료됐습니다.",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("권한이 없어 삭제에 실패했습니다.",HttpStatus.OK);
+        }
     }
+
+    //책 총평 조회
+    @GetMapping("/endreview/{dodokId}")
+    public ResponseEntity<?> listPageEndReviews(@PathVariable Long dodokId){
+        List<ReviewEnd> reviewEndList= dodokService.getRivewEndList(dodokId);
+        if(reviewEndList.size()==0){
+            return new ResponseEntity<>("책 조회 결과가 없습니다.",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(reviewEndList,HttpStatus.OK);
+        }
+    }
+
     //책 총평 입력
     @PostMapping("/endreview")
-    public ResponseEntity<String> writePageEndReviews(){
-        return  null;
+    public ResponseEntity<String> writePageEndReviews(@RequestBody EndReviewCreatePostReq endReviewCreatePostReq, Authentication authentication){
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User user = principal.getUser();
+        dodokService.writeEndReview(endReviewCreatePostReq,user);
+
+        return new ResponseEntity<>("책 총평을 입력했습니다.",HttpStatus.OK);
     }
     //책 총평 수정
     @PutMapping("/endreview")
-    public ResponseEntity<String> modifyPageEndReviews(){
-        return  null;
+    public ResponseEntity<String> modifyPageEndReviews(@RequestBody EndReviewModifyPutReq endReviewModifyPutReq,Authentication authentication) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User user = principal.getUser();
+
+        boolean result = dodokService.modifyEndReview(endReviewModifyPutReq,user);
+        if(result){
+            return new ResponseEntity<>("책 총평 수정을 완료했습니다.",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("책 총평 수정 권한이 없습니다.",HttpStatus.OK);
+        }
     }
     //책 총평 삭제
-    @DeleteMapping("/endreview")
-    public ResponseEntity<String> deletePageEndReviews(){
-        return  null;
+    @DeleteMapping("/endreview/{endReviewId}")
+    public ResponseEntity<String> deletePageEndReviews(@PathVariable Long endReviewId,Authentication authentication){
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User user = principal.getUser();
+
+        boolean result = dodokService.deleteEndReview(endReviewId,user);
+        if(result){
+            return new ResponseEntity<>("책 총평을 삭제했습니다.",HttpStatus.OK);
+        }
+        return new ResponseEntity<>("총평 삭제 권한이 없습니다.",HttpStatus.OK);
     }
 }

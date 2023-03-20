@@ -37,6 +37,4 @@ public class ReviewPage {
 
     @Column(nullable = false)
     private LocalDate reviewPageDate;
-
-
 }
