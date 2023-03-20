@@ -1,7 +1,7 @@
 import React from "react";
 import SideBar from "../../components/SideBar";
 import sidestyles from "../../styles/Sidebar.module.scss";
-import dodokstyles from "../../styles/MyTeamDodok.module.scss";
+import dodokstyles from "../../styles/MyTeamBeforeDodok.module.scss";
 
 function BeforeDodok() {
   const books = [
