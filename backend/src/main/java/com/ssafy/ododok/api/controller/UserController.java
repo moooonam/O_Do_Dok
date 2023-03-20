@@ -9,6 +9,7 @@ import com.ssafy.ododok.db.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -59,16 +60,16 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserRes> getStudentInfo(Authentication authentication) {
-        System.out.println("Dd");
-        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-        System.out.println("Dd");
-        String userId = principal.getUser().getUserEmail();
-//        String userId = principal.getUser().getUserEmail();
-//        System.out.println(user);
-//        System.out.println(userId);
-        User user = userService.getUserByUserEmail(userId);
-        return ResponseEntity.status(200).body(UserRes.of(user));
+    public ResponseEntity<?> getStudentInfo(Authentication authentication) {
+        System.out.println("ㅋㅋ");
+        try{
+            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+            String userId = principal.getUser().getUserEmail();
+            User user = userService.getUserByUserEmail(userId);
+            return ResponseEntity.status(200).body(UserRes.of(user));
+        } catch (Exception e){
+            return ResponseEntity.status(200).body("토큰 만료돼서 다시 생성했으니 봐!");
+        }
     }
 
 }
