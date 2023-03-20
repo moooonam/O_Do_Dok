@@ -20,6 +20,12 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
+    public List<Book> searchBooks(String keyword) {
+
+        return null;
+    }
+
+    @Override
     public Book findBook(String title,String author)
     {
         return null;
@@ -29,5 +35,12 @@ public class BookServiceImpl implements BookService{
     public void selectBook(Long id) {
 
         Book book= bookRepository.findById(id).get();
+    }
+
+    @Override
+    public void addBook(Book book) {
+        bookRepository.save(book);
+
+        return;
     }
 }
