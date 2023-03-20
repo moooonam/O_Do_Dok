@@ -1,5 +1,6 @@
 package com.ssafy.ododok.db.model;
 
+import com.ssafy.ododok.api.request.BookAddPostReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

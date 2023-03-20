@@ -1,5 +1,6 @@
 package com.ssafy.ododok.db.model;
 
+import com.ssafy.ododok.api.request.EndReviewModifyPutReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,5 +43,10 @@ public class ReviewEnd {
     @Column(nullable = false)
     private LocalDate reviewEndDate;
 
+    public void updateReview(EndReviewModifyPutReq endReviewModifyPutReq){
+        this.reviewEndContent = endReviewModifyPutReq.getContent();
+        this.reviewEndGenrerating = endReviewModifyPutReq.getGenreRating();
+        this.reviewEndBookrating = endReviewModifyPutReq.getBookRating();
 
+    }
 }
