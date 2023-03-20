@@ -35,6 +35,7 @@ function SignupPage() {
   const [birth, setBirth] = React.useState(dayjs("2022-04-17"));
   // 날짜 형식 변경
   const dateFormat = dayjs(birth.$d).format("YYYY-MM-DD");
+  const userAge = 2023 - Number(dateFormat.slice(0,4)) + 1
 
   // 장르 리스트
   const [userGenre, setUserGenre] = useState([]);
@@ -152,31 +153,28 @@ function SignupPage() {
     setUserInfo({ ...userInfo, onoff:form.onoff})
     setUserInfo({ ...userInfo, region:form.region})
     setUserInfo({ ...userInfo, frequency:form.frequency})
-    setUserInfo({ ...userInfo, gender1:form.gender1})
-    setUserInfo({ ...userInfo, gender2:form.gender2})
-    setUserInfo({ ...userInfo, gender3:form.gender3})
-    setUserInfo({ ...userInfo, age:form.age})
+    setUserInfo({ ...userInfo, gender1:userGenre[1]})
+    setUserInfo({ ...userInfo, gender2:userGenre[2]})
+    setUserInfo({ ...userInfo, gender3:userGenre[3]})
+    setUserInfo({ ...userInfo, age:userAge})
 
-    axios({
-      methods: 'post',
-      url: 'http://localhost:3000/api/v1/user',
-      data: userInfo,
-    })
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    // axios({
+    //   methods: 'post',
+    //   url: 'http://localhost:3000/api/v1/user',
+    //   data: userInfo,
+    // })
+    //   .then((res) => {
+    //     console.log(res)
+    //   })
+    //   .catch((err) => {
+    //     console.log(err)
+    //   })
     console.log(form);
-    console.log(dateFormat);
-    console.log(userGenre);
-
-
-    axios({
-      methods: "post",
-      url: "http://localhost:3000/api/v1/user",
-    });
+    console.log(2023 - Number(dateFormat.slice(0,4)) + 1);
+    // console.log(userGenre[0]); 
+    // console.log(userGenre[1]); 
+    // console.log(userGenre[2]); 
+    console.log(userGenre); 
   };
 
   // 유효성 검사
