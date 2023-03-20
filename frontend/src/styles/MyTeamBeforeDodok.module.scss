@@ -48,3 +48,103 @@
     padding-top: 7px;
     padding-left: 25px;
 }
+
+.dodokInfo-content {
+    display: flex;
+}
+
+.content-left {
+    width: 50%;
+    line-height: 50px;;
+}
+
+.content-right {
+    width: 50%;
+    line-height: 50px;;
+}
+
+
+.left-bookname {
+    display: flex;
+
+    input {
+        margin-left: 30px; 
+        margin-top: 5px;
+        width: 350px; 
+        height: 40px;
+        border : 1px solid lightgray;
+        border-radius: 5px;;      
+    }
+}
+
+.left-genre {
+    display: flex;
+    p {
+        margin-right: 25px;
+        margin-top: 10px;
+    }
+}
+
+.left-startdate {
+    display: flex;
+
+    p {
+        margin-right: 30px;
+    }
+}
+
+.right-author {
+    display: flex;
+
+    input {
+        margin-left: 64px; 
+        margin-top: 5px;
+        width: 350px; 
+        height: 40px;
+        border : 1px solid lightgray;
+        border-radius: 5px;;      
+    }
+}
+
+.right-page {
+    display: flex;
+
+    input {
+        margin-left: 30px; 
+        margin-top: 5px;
+        width: 100px; 
+        height: 40px;
+        border : 1px solid lightgray;
+        border-radius: 5px;;      
+    }
+}
+
+.right-enddate {
+    display: flex;
+    margin-top: 10px;
+
+    p {
+        margin-right: 64px;
+    }
+}
+
+.thirdBox {
+    margin-left: 50px;
+    margin-top: 50px;
+    margin-right: 100px;
+}
+
+.search-header {
+    display: flex;
+    justify-content: space-between;
+
+    h2 {   
+        margin-bottom: 0px;
+        padding-top: 15px;
+    }
+}
+
+.search-bar {
+    display: flex;
+    margin-top: 30px;
+}
