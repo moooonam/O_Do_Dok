@@ -12,8 +12,9 @@ import java.util.Date;
 public class DodokCreateReq{
     String bookTitle;
     String Author;
+    String genre;
     int page;
-    Date startDate;
-    Date endDate;
+    LocalDate startDate;
+    LocalDate endDate;
 }
 

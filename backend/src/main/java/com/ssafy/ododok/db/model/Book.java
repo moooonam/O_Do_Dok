@@ -33,18 +33,19 @@ public class Book {
     private String bookAuthor;
 
     @Column(nullable = false)
-    private String bookImg;
+    private String bookImg="tmp";
 
     @Column(nullable = false)
-    private String bookMembercnt;
+    private int bookMembercnt=0;
 
     @Column(nullable = false)
-    private String bookRating;
+    private double bookRating=0;
 
     @Builder
-    public Book(String bookTitle,String bookAuthor,int bookPagecnt){
+    public Book(String bookTitle,String bookAuthor,String bookGenre,int bookPagecnt){
         this.bookTitle=bookTitle;
         this.bookAuthor=bookAuthor;
+        this.bookGenre=bookGenre;
         this.bookPagecnt=bookPagecnt;
     }
 }
