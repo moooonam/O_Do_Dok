@@ -17,18 +17,24 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class DodokServiceImpl implements DodokService {
-    @Autowired
-    DodokRepository dodokRepository;
-    @Autowired
-    ReviewPageRepository reviewPageRepository;
-    @Autowired
-    ReviewEndRepository reviewEndRepository;
-    @Autowired
-    TeamUserRepository teamUserRepository;
-    @Autowired
-    BookRepository bookRepository;
+    private final DodokRepository dodokRepository;
+    private final ReviewPageRepository reviewPageRepository;
+    private final ReviewEndRepository reviewEndRepository;
+    private final TeamUserRepository teamUserRepository;
+    private final BookRepository bookRepository;
+
+    public DodokServiceImpl(DodokRepository dodokRepository,
+                            ReviewPageRepository reviewPageRepository,
+                            ReviewEndRepository reviewEndRepository,
+                            TeamUserRepository teamUserRepository,
+                            BookRepository bookRepository){
+        this.dodokRepository=dodokRepository;
+        this.reviewEndRepository=reviewEndRepository;
+        this.reviewPageRepository =reviewPageRepository;
+        this.teamUserRepository=teamUserRepository;
+        this.bookRepository=bookRepository;
+    };
 
     @Override
     public List<Dodok> showLastAllDodoks(User user) {
@@ -119,6 +125,7 @@ public class DodokServiceImpl implements DodokService {
             }
         }
     }
+
     @Override
     public int endDodok(Long dodokId){
      Dodok dodok = dodokRepository.findById(dodokId).get();
@@ -133,17 +140,17 @@ public class DodokServiceImpl implements DodokService {
 
     @Override
     public void writePageReview(PageReviewCreatePostReq pageReviewCreatePostReq, User user) {
-        ReviewPage reviewPage= new ReviewPage();
-        reviewPage.setUser(user);
-        reviewPage.setReviewPagePage(pageReviewCreatePostReq.getPage());
-        reviewPage.setReviewPageContent(pageReviewCreatePostReq.getContent());
         Dodok dodok = dodokRepository.findById(pageReviewCreatePostReq.getDodokId()).get();
-        reviewPage.setReviewPageDate(LocalDate.now());
-        reviewPage.setDodok(dodok);
+        ReviewPage reviewPage = ReviewPage.builder()
+                .reviewPagePage(pageReviewCreatePostReq.getPage())
+                .reviewPageContent(pageReviewCreatePostReq.getContent())
+                .reviewPageDate(LocalDate.now())
+                .user(user)
+                .dodok(dodok)
+                .build();
 
         reviewPageRepository.save(reviewPage);
     }
-
     @Override
     public boolean modifyPageReview(PageReviewPutReq pageReviewPutReq, User user) {
         ReviewPage reviewPage= reviewPageRepository.findById(pageReviewPutReq.getPageReviewId()).get();
@@ -153,8 +160,8 @@ public class DodokServiceImpl implements DodokService {
         }else{
             return false;
         }
-
     }
+
     @Transactional
     @Override
     public boolean deletePageReview(Long pageReviewId, User user) {
@@ -170,14 +177,15 @@ public class DodokServiceImpl implements DodokService {
 
     @Override
     public void writeEndReview(EndReviewCreatePostReq endReviewCreatePostReq, User user) {
-        ReviewEnd reviewEnd = new ReviewEnd();
-        reviewEnd.setUser(user);
         Dodok dodok = dodokRepository.findById(endReviewCreatePostReq.getDodokId()).get();
-        reviewEnd.setDodok(dodok);
-        reviewEnd.setReviewEndDate(LocalDate.now());
-        reviewEnd.setReviewEndContent(endReviewCreatePostReq.getContent());
-        reviewEnd.setReviewEndBookrating(endReviewCreatePostReq.getBookRating());
-        reviewEnd.setReviewEndGenrerating(endReviewCreatePostReq.getGenreRating());
+        ReviewEnd reviewEnd = ReviewEnd.builder()
+                .user(user)
+                .dodok(dodok)
+                .reviewEndContent(endReviewCreatePostReq.getContent())
+                .reviewEndDate(LocalDate.now())
+                .reviewEndBookrating(endReviewCreatePostReq.getBookRating())
+                .reviewEndGenrerating(endReviewCreatePostReq.getGenreRating())
+        .build();
 
         reviewEndRepository.save(reviewEnd);
     }
@@ -186,10 +194,9 @@ public class DodokServiceImpl implements DodokService {
     public boolean modifyEndReview(EndReviewModifyPutReq endReviewModifyPutReq, User user) {
         ReviewEnd reviewEnd = reviewEndRepository.findById(endReviewModifyPutReq.getEndReviewId()).get();
         if(user == reviewEnd.getUser()){
-            reviewEnd.setReviewEndContent(endReviewModifyPutReq.getContent());
-            reviewEnd.setReviewEndGenrerating(endReviewModifyPutReq.getGenreRating());
-            reviewEnd.setReviewEndBookrating(endReviewModifyPutReq.getBookRating());
+            reviewEnd.updateReview(endReviewModifyPutReq);
 
+            //update 쿼리 나가는지 확인해야함.
             return true;
         }else{
             return false;

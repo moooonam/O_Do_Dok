@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
-@RequiredArgsConstructor
 public class BookServiceImpl implements BookService{
+    private final BookRepository bookRepository;
+
     @Autowired
-    BookRepository bookRepository;
+    BookServiceImpl(BookRepository bookRepository){
+        this.bookRepository=bookRepository;
+    }
 
     @Override
     public List<Book> listBooks() {
@@ -34,20 +37,18 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public void selectBook(Long id) {
-
         Book book= bookRepository.findById(id).get();
     }
 
     @Override
     public void addBook(BookAddPostReq bookAddPostReq) {
-        Book book = new Book();
-        book.setBookTitle(bookAddPostReq.getBookTitle());
-        book.setBookAuthor(bookAddPostReq.getBookAuthor());
-        book.setBookGenre(bookAddPostReq.getGenre());
-        book.setBookPagecnt(bookAddPostReq.getPage());
-//        book.setBookImg("tmpImg");
+//        Book.addBook(bookAddPostReq);
+        Book book = Book.builder()
+                .bookTitle(bookAddPostReq.getBookTitle())
+                .bookAuthor(bookAddPostReq.getBookAuthor())
+                .bookGenre(bookAddPostReq.getGenre())
+                .bookPagecnt(bookAddPostReq.getPage())
+                .build();
         bookRepository.save(book);
-
-        return;
     }
 }
