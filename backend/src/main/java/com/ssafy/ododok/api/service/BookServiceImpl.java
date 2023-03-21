@@ -1,5 +1,6 @@
 package com.ssafy.ododok.api.service;
 
+import com.ssafy.ododok.api.request.BookAddPostReq;
 import com.ssafy.ododok.db.model.Book;
 import com.ssafy.ododok.db.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,10 +9,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
-@RequiredArgsConstructor
 public class BookServiceImpl implements BookService{
+    private final BookRepository bookRepository;
+
     @Autowired
-    BookRepository bookRepository;
+    BookServiceImpl(BookRepository bookRepository){
+        this.bookRepository=bookRepository;
+    }
 
     @Override
     public List<Book> listBooks() {
@@ -21,8 +25,8 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public List<Book> searchBooks(String keyword) {
-
-        return null;
+        List<Book> searchResult= bookRepository.findAllByBookTitleContainingIgnoreCase(keyword);
+        return searchResult;
     }
 
     @Override
@@ -33,14 +37,18 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public void selectBook(Long id) {
-
         Book book= bookRepository.findById(id).get();
     }
 
     @Override
-    public void addBook(Book book) {
+    public void addBook(BookAddPostReq bookAddPostReq) {
+//        Book.addBook(bookAddPostReq);
+        Book book = Book.builder()
+                .bookTitle(bookAddPostReq.getBookTitle())
+                .bookAuthor(bookAddPostReq.getBookAuthor())
+                .bookGenre(bookAddPostReq.getGenre())
+                .bookPagecnt(bookAddPostReq.getPage())
+                .build();
         bookRepository.save(book);
-
-        return;
     }
 }
