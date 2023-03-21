@@ -2,11 +2,9 @@ package com.ssafy.ododok.api.controller;
 
 import com.ssafy.ododok.api.request.*;
 import com.ssafy.ododok.api.response.DodokInfoRes;
-import com.ssafy.ododok.api.service.BookService;
 import com.ssafy.ododok.api.service.DodokService;
 import com.ssafy.ododok.common.auth.PrincipalDetails;
 import com.ssafy.ododok.db.model.*;
-import com.ssafy.ododok.db.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,62 +17,22 @@ import java.util.List;
 @RestController
 @RequestMapping("/dodok")
 public class DodokController {
-    @Autowired
-    BookService bookService;
+
+    private final DodokService dodokService;
 
     @Autowired
-    DodokService dodokService;
-
-    @GetMapping({"/",""})
-    public String helloDodok(){
-        return "hello Dodok";
+    DodokController(DodokService dodokService){
+        this.dodokService = dodokService;
     }
 
-    /**
-     * 도독과 관련 API
-     @author 김경삼
-     */
-    @PostMapping("/addbook")
-    public ResponseEntity<String> addBook(@RequestBody BookAddPostReq bookAddPostReq){
-        bookService.addBook(bookAddPostReq);
-        return new ResponseEntity("책이 추가 됐습니다.",HttpStatus.OK);
-    }
-
-    //책 조회
-    @GetMapping("/listbook")
-    public ResponseEntity<List<Book>> listBooks(){
-        List<Book> bookList = bookService.listBooks();
-        return new ResponseEntity(bookList,HttpStatus.OK);
-    }
-
-    //책 검색
-    @GetMapping("/search/{keyword}")
-    public ResponseEntity<?> searchBooks(@PathVariable String keyword){
-        System.out.println("keyword: "+ keyword);
-        List<Book> searchResult = bookService.searchBooks(keyword);
-        if(searchResult.size()==0){
-            return new ResponseEntity<>("검색 결과가 없습니다.",HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(searchResult,HttpStatus.OK);
-        }
-    }
-    //책 선택 ,
-//    @PostMapping("/selectbook")
-//    public ResponseEntity<String> selectBook(Long bookId){
-//        return null;
-//    }
-
-    //도독 시작
-    @PostMapping("/startdodok")
+    //도독 생성 및 시작
+    @PostMapping("/start")
     public ResponseEntity<String> startDodok(@RequestBody DodokCreateReq dodokCreateReq, Authentication auth) {
-        //나중에 auth에서 가져오는 것으로 대체
         PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
         User user = principal.getUser();
-        System.out.println("user70 = " + user);
-        dodokService.startDodok(user,dodokCreateReq);
-        return new ResponseEntity("새로운 도독을 생성했습니다.",HttpStatus.OK);
+        String res = dodokService.startDodok(user, dodokCreateReq);
+        return new ResponseEntity(res, HttpStatus.OK);
     }
-
 
     //도독 종료
     @PutMapping("/end/{dodokId}")
@@ -91,6 +49,7 @@ public class DodokController {
         return new ResponseEntity<>("책이 삭제됐습니다.",HttpStatus.OK);
     }
 
+    // 지난 도독 리스트 가져오기
     @GetMapping("/lastdodoks")
     public ResponseEntity<List<DodokInfoRes>>showLastAllDodokInfo(Authentication auth){
         //security Authentication에서 User 가져오기.
@@ -107,12 +66,10 @@ public class DodokController {
         return new ResponseEntity(dodokInfoResList,HttpStatus.OK);
     }
 
-    /**
-     책 리뷰 관련 API
-     @author 김경삼
-    */
+    // 책갈피는 여러개고 총평은 하나라는 것  생각하며 다시 살피기 !!
+
     //책갈피 조회
-    @GetMapping("/pagereview")
+    @GetMapping("/pageReview/list")
     public ResponseEntity<?> listCurPageReviews(Authentication auth){
 //        User user = new User();
         PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
@@ -127,8 +84,9 @@ public class DodokController {
             return new ResponseEntity(reviewPageList,HttpStatus.OK);
         }
     }
+
     //책갈피 입력
-    @PostMapping("/pagereview")
+    @PostMapping("/pageReview/add")
     public ResponseEntity<String> writePageReview(@RequestBody PageReviewCreatePostReq pageReviewCreatePostReq,Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
@@ -137,7 +95,7 @@ public class DodokController {
     }
 
     //책갈피 수정
-    @PutMapping("/pagereview")
+    @PutMapping("/pageReview/update")
     public ResponseEntity<String> modifyPageReviews(@RequestBody PageReviewPutReq pageReviewPutReq, Authentication authentication){
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
@@ -150,7 +108,7 @@ public class DodokController {
     }
 
     //책갈피 삭제
-    @DeleteMapping("/pagereview/{pageReviewId}")
+    @DeleteMapping("/pageReview/{pageReviewId}")
     public ResponseEntity<String> deletePageReviews(@PathVariable Long pageReviewId
     ,Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
@@ -165,7 +123,7 @@ public class DodokController {
     }
 
     //책 총평 조회
-    @GetMapping("/endreview/{dodokId}")
+    @GetMapping("/endReview/{dodokId}")
     public ResponseEntity<?> listPageEndReviews(@PathVariable Long dodokId){
         List<ReviewEnd> reviewEndList= dodokService.getRivewEndList(dodokId);
         if(reviewEndList.size()==0){
@@ -176,7 +134,7 @@ public class DodokController {
     }
 
     //책 총평 입력
-    @PostMapping("/endreview")
+    @PostMapping("/endReview/add")
     public ResponseEntity<String> writePageEndReviews(@RequestBody EndReviewCreatePostReq endReviewCreatePostReq, Authentication authentication){
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
@@ -184,8 +142,9 @@ public class DodokController {
 
         return new ResponseEntity<>("책 총평을 입력했습니다.",HttpStatus.OK);
     }
+
     //책 총평 수정
-    @PutMapping("/endreview")
+    @PutMapping("/endReview/update")
     public ResponseEntity<String> modifyPageEndReviews(@RequestBody EndReviewModifyPutReq endReviewModifyPutReq,Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
@@ -198,7 +157,7 @@ public class DodokController {
         }
     }
     //책 총평 삭제
-    @DeleteMapping("/endreview/{endReviewId}")
+    @DeleteMapping("/endReview/{endReviewId}")
     public ResponseEntity<String> deletePageEndReviews(@PathVariable Long endReviewId,Authentication authentication){
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();

@@ -36,6 +36,7 @@ public class Dodok {
 
     @Column(nullable = false)
     private LocalDate dodokEnddate;
+
     @Convert(converter = BooleanToYNConverter.class)
     @Column(nullable = false)
     private boolean dodokComplete;

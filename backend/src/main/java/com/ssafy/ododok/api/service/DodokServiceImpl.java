@@ -3,18 +3,19 @@ package com.ssafy.ododok.api.service;
 import com.ssafy.ododok.api.request.*;
 import com.ssafy.ododok.db.model.*;
 import com.ssafy.ododok.db.repository.*;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
+import static com.ssafy.ododok.db.model.Role.ADMIN;
+import static com.ssafy.ododok.db.model.Role.MANAGER;
+import static java.time.LocalDate.now;
 
 @Service
 public class DodokServiceImpl implements DodokService {
@@ -35,6 +36,55 @@ public class DodokServiceImpl implements DodokService {
         this.teamUserRepository=teamUserRepository;
         this.bookRepository=bookRepository;
     };
+
+    // 도독 생성
+    @Override
+    public String startDodok(User user, DodokCreateReq dodokCreateReq) {
+
+        String bookTitle= dodokCreateReq.getBookTitle();
+        String bookAuthor = dodokCreateReq.getAuthor();
+        String bookGenre = dodokCreateReq.getGenre();
+        int bookPage = dodokCreateReq.getPage();
+
+        Book book;
+
+        try{
+            book = bookRepository.findByBookTitleAndBookAuthorAndBookPagecnt(bookTitle,bookAuthor,bookPage).get();
+        } catch(NoSuchElementException e) { // 책이 없다면 책 테이블에 책을 새로 넣어주어야 함
+            Book newBook = Book.builder()
+                    .bookTitle(bookTitle)
+                    .bookPagecnt(bookPage)
+                    .bookGenre(bookGenre)
+                    .bookAuthor(bookAuthor)
+                    .verification(false)
+                    .build();
+            bookRepository.save(newBook);
+            book = bookRepository.findByBookTitleAndBookAuthorAndBookPagecnt(bookTitle,bookAuthor,bookPage).get();
+        }
+        
+        // 사용자의 권한을 확인 후, 도독 생성
+        try{
+            TeamUser teamUser = teamUserRepository.findByUser(user);
+            if(teamUser.getRole().equals(ADMIN) || teamUser.getRole().equals(MANAGER)){
+                Team team =teamUser.getTeam();
+
+                Dodok dodok = Dodok.builder()
+                        .dodokStartdate(LocalDate.now())
+                        .dodokEnddate(dodokCreateReq.getEndDate())
+                        .team(team)
+                        .book(book)
+                        .build();
+
+                dodokRepository.save(dodok);
+                return "도독을 생성하였습니다.";
+            } else{
+                return "도독을 생성할 권한이 없습니다.";
+            }
+        } catch (Exception e){
+            return "도독을 생성하는데 문제가 생겼습니다.";
+        }
+
+    }
 
     @Override
     public List<Dodok> showLastAllDodoks(User user) {
@@ -70,26 +120,7 @@ public class DodokServiceImpl implements DodokService {
         List<ReviewEnd> reviewEndList = reviewEndRepository.findAllByDodok(dodok);
         return reviewEndList;
     }
-    @Override
-    public void startDodok(User user, DodokCreateReq dodokCreateReq) {
-        String bookTitle= dodokCreateReq.getBookTitle();
-        String bookAuthor = dodokCreateReq.getAuthor();
-        String bookGenre = dodokCreateReq.getGenre();
-        int bookpage = dodokCreateReq.getPage();
 
-        Book newBook = new Book(dodokCreateReq.getBookTitle(),
-                dodokCreateReq.getAuthor(),dodokCreateReq.getGenre(),dodokCreateReq.getPage());
-
-        Book saveBook= bookRepository.findByBookTitleAndBookAuthorAndBookPagecnt(bookTitle,bookAuthor,bookpage)
-                .orElse(bookRepository.save(newBook));
-
-        TeamUser teamUser=teamUserRepository.findByUser(user);
-        Team team =teamUser.getTeam();
-
-        Dodok dodok=new Dodok(team,saveBook,dodokCreateReq.getStartDate(),dodokCreateReq.getEndDate());
-        dodokRepository.save(dodok);
-        return;
-    }
 
     @Transactional
     @Override
@@ -118,7 +149,7 @@ public class DodokServiceImpl implements DodokService {
     public void timeEndDodok() {
         List<Dodok> dodokList = dodokRepository.findAll();
         for(Dodok dodok: dodokList){
-            LocalDate curr = LocalDate.now();
+            LocalDate curr = now();
             LocalDate expiredDate = dodok.getDodokEnddate();
             if(expiredDate.isEqual(curr)||expiredDate.isBefore(curr)){
                 dodok.setDodokComplete(true);
@@ -144,7 +175,7 @@ public class DodokServiceImpl implements DodokService {
         ReviewPage reviewPage = ReviewPage.builder()
                 .reviewPagePage(pageReviewCreatePostReq.getPage())
                 .reviewPageContent(pageReviewCreatePostReq.getContent())
-                .reviewPageDate(LocalDate.now())
+                .reviewPageDate(now())
                 .user(user)
                 .dodok(dodok)
                 .build();
@@ -182,7 +213,7 @@ public class DodokServiceImpl implements DodokService {
                 .user(user)
                 .dodok(dodok)
                 .reviewEndContent(endReviewCreatePostReq.getContent())
-                .reviewEndDate(LocalDate.now())
+                .reviewEndDate(now())
                 .reviewEndBookrating(endReviewCreatePostReq.getBookRating())
                 .reviewEndGenrerating(endReviewCreatePostReq.getGenreRating())
         .build();

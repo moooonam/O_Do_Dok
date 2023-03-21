@@ -13,7 +13,7 @@ public interface DodokService {
     List<ReviewEnd> getRivewEndList(Dodok dodok);
     List<ReviewEnd> getRivewEndList(Long dodokId);
 
-    void startDodok(User user, DodokCreateReq dodokCreateReq);
+    String startDodok(User user, DodokCreateReq dodokCreateReq);
     void deleteDodok(Authentication authentication,Long dodokId);
     void timeEndDodok();
     int endDodok(Long dodokId);

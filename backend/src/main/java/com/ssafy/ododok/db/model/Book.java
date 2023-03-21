@@ -42,11 +42,15 @@ public class Book {
     @Column(nullable = false)
     private double bookRating=0;
 
+    @Column(nullable = false)
+    private boolean verification = true;
+
     @Builder
-    public Book(String bookTitle,String bookAuthor,String bookGenre,int bookPagecnt){
+    public Book(String bookTitle,String bookAuthor,String bookGenre,int bookPagecnt,boolean verification){
         this.bookTitle=bookTitle;
         this.bookAuthor=bookAuthor;
         this.bookGenre=bookGenre;
         this.bookPagecnt=bookPagecnt;
+        this.verification = verification;
     }
 }

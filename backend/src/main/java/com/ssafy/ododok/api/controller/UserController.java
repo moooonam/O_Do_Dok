@@ -25,11 +25,12 @@ import java.util.NoSuchElementException;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    UserController(UserService userService){
+        this.userService = userService;
+    }
 
     @GetMapping("/checkEmail/{email}")
     public ResponseEntity<Boolean> checkEmail(@PathVariable String email) {

@@ -11,10 +11,9 @@ import java.util.Date;
 @Data
 public class DodokCreateReq{
     String bookTitle;
-    String Author;
+    String author;
     String genre;
     int page;
-    LocalDate startDate;
     LocalDate endDate;
 }
 
