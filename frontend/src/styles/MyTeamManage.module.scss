@@ -104,3 +104,35 @@
     height: 150px;
     padding: 7px;
 }
+
+.genre-box {
+    display: flex;
+    margin: 7px;
+    flex-wrap: wrap;
+}
+
+.active {
+    margin-right: 10px;
+    width: 100px;
+    height: 30px;
+    border: 1px green solid;
+    border-radius: 5px;;
+    padding-top: 10px;
+    padding-left: 17px;
+    color: white;
+    background-color: green;
+    margin-top: 10px;
+}
+
+.notActive {
+    margin-right: 10px;
+    width: 100px;
+    height: 30px;
+    border: 1px green solid;
+    border-radius: 5px;;
+    padding-top: 10px;
+    padding-left: 17px;
+    color: green;
+    margin-top:10px;
+}
+

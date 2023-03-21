@@ -32,7 +32,7 @@ function SignupPage() {
   });
 
   // 날짜 데이터
-  const [birth, setBirth] = React.useState(dayjs("2022-04-17"));
+  const [birth, setBirth] = React.useState(dayjs());
   // 날짜 형식 변경
   const dateFormat = dayjs(birth.$d).format("YYYY-MM-DD");
   const userAge = 2023 - Number(dateFormat.slice(0,4)) + 1
@@ -41,47 +41,79 @@ function SignupPage() {
   const [userGenre, setUserGenre] = useState([]);
   // 장르 데이터
   const [genreList, setGenreList] = useState({
-    one: false,
-    two: false,
-    three: false,
-    four: false,
-    five: false,
+    reason: false,
+    thril: false,
+    horror: false,
+    sf: false,
+    fantasy: false,
+    drama : false,
+    game: false,
+    romance : false,
+    animation: false,
   });
 
   // 장르 클릭했을때 클래스 변경
-  const clickone = () => {
-    if (genreList.one) {
-      setGenreList({ ...genreList, one: false });
+  const clickreason = () => {
+    if (genreList.reason) {
+      setGenreList({ ...genreList, reason: false });
     } else {
-      setGenreList({ ...genreList, one: true });
+      setGenreList({ ...genreList, reason: true });
     }
   };
-  const clicktwo = () => {
-    if (genreList.two) {
-      setGenreList({ ...genreList, two: false });
+  const clickthril = () => {
+    if (genreList.thril) {
+      setGenreList({ ...genreList, thril: false });
     } else {
-      setGenreList({ ...genreList, two: true });
+      setGenreList({ ...genreList, thril: true });
     }
   };
-  const clickthree = () => {
-    if (genreList.three) {
-      setGenreList({ ...genreList, three: false });
+  const clickhorror = () => {
+    if (genreList.horror) {
+      setGenreList({ ...genreList, horror: false });
     } else {
-      setGenreList({ ...genreList, three: true });
+      setGenreList({ ...genreList, horror: true });
     }
   };
-  const clickfour = () => {
-    if (genreList.four) {
-      setGenreList({ ...genreList, four: false });
+  const clicksf = () => {
+    if (genreList.sf) {
+      setGenreList({ ...genreList, sf: false });
     } else {
-      setGenreList({ ...genreList, four: true });
+      setGenreList({ ...genreList, sf: true });
     }
   };
-  const clickfive = () => {
-    if (genreList.five) {
-      setGenreList({ ...genreList, five: false });
+  const clickfantasy = () => {
+    if (genreList.fantasy) {
+      setGenreList({ ...genreList, fantasy: false });
     } else {
-      setGenreList({ ...genreList, five: true });
+      setGenreList({ ...genreList, fantasy: true });
+    }
+  };
+  const clickdrama = () => {
+    if (genreList.drama) {
+      setGenreList({ ...genreList, drama: false });
+    } else {
+      setGenreList({ ...genreList, drama: true });
+    }
+  };
+  const clickgame = () => {
+    if (genreList.game) {
+      setGenreList({ ...genreList, game: false });
+    } else {
+      setGenreList({ ...genreList, game: true });
+    }
+  };
+  const clickromance = () => {
+    if (genreList.romance) {
+      setGenreList({ ...genreList, romance: false });
+    } else {
+      setGenreList({ ...genreList, romance: true });
+    }
+  };
+  const clickanimation = () => {
+    if (genreList.animation) {
+      setGenreList({ ...genreList, animation: false });
+    } else {
+      setGenreList({ ...genreList, animation: true });
     }
   };
 
@@ -96,7 +128,7 @@ function SignupPage() {
   };
 
   // axios 보낼 데이터
-  const [userInfo, setUserInfo] = useState({
+  const userInfo = {
     name: "",
     email: "",
     nickname: "",
@@ -110,53 +142,53 @@ function SignupPage() {
     genre2: "",
     genre3: "",
     age: 0,
-  });
+  };
 
   const emailDuplication = () => {
-    if (form.email) {
-      axios({
-        methods: 'get',
-        url: `http://localhost:3000/api/v1/user/checkEmail/${form.email}`
-      })
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-    }
+    // if (form.email) {
+    //   axios({
+    //     methods: 'get',
+    //     url: `http://localhost:3000/api/v1/user/checkEmail/${form.email}`
+    //   })
+    //   .then((res) => {
+    //     console.log(res)
+    //   })
+    //   .catch((err) => {
+    //     console.log(err)
+    //   })
+    // }
   };
 
   const nickDuplication = () => {
-    if (form.nickname) {
-      axios({
-        methods: 'get',
-        url: `http://localhost:3000/api/v1/user/checkEmail/${form.nickname}`
-      })
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-    }
+    // if (form.nickname) {
+    //   axios({
+    //     methods: 'get',
+    //     url: `http://localhost:3000/api/v1/user/checkEmail/${form.nickname}`
+    //   })
+    //   .then((res) => {
+    //     console.log(res)
+    //   })
+    //   .catch((err) => {
+    //     console.log(err)
+    //   })
+    // }
   };
 
   // 가입하기 함수
   const userSignup = () => {
-    setUserInfo({ ...userInfo, name:form.name})
-    setUserInfo({ ...userInfo, email:form.email})
-    setUserInfo({ ...userInfo, nickname:form.nickname})
-    setUserInfo({ ...userInfo, password:form.password})
-    setUserInfo({ ...userInfo, passwordConfirm:form.passwordConfirm})
-    setUserInfo({ ...userInfo, gender:form.gender})
-    setUserInfo({ ...userInfo, onoff:form.onoff})
-    setUserInfo({ ...userInfo, region:form.region})
-    setUserInfo({ ...userInfo, frequency:form.frequency})
-    setUserInfo({ ...userInfo, gender1:userGenre[1]})
-    setUserInfo({ ...userInfo, gender2:userGenre[2]})
-    setUserInfo({ ...userInfo, gender3:userGenre[3]})
-    setUserInfo({ ...userInfo, age:userAge})
+    userInfo.name = form.name
+    userInfo.email = form.email
+    userInfo.nickname = form.nickname
+    userInfo.password = form.password
+    userInfo.passwordConfirm = form.passwordConfirm
+    userInfo.gender = form.gender
+    userInfo.onoff = form.onoff
+    userInfo.region = form.region
+    userInfo.frequency = form.frequency
+    userInfo.genre1 = userGenre[0]
+    userInfo.genre2 = userGenre[1]
+    userInfo.genre3 = userGenre[2]
+    userInfo.age = userAge
 
     // axios({
     //   methods: 'post',
@@ -169,12 +201,13 @@ function SignupPage() {
     //   .catch((err) => {
     //     console.log(err)
     //   })
-    console.log(form);
-    console.log(2023 - Number(dateFormat.slice(0,4)) + 1);
+    // console.log(form);
+    // console.log(2023 - Number(dateFormat.slice(0,4)) + 1);
     // console.log(userGenre[0]); 
     // console.log(userGenre[1]); 
     // console.log(userGenre[2]); 
-    console.log(userGenre); 
+    // console.log(userGenre); 
+    console.log(userInfo)
   };
 
   // 유효성 검사
@@ -354,54 +387,98 @@ function SignupPage() {
           <Grid container direction="row" columnGap={3}>
             <div
               onClick={() => {
-                clickone();
-                clickGenre("one");
+                clickreason();
+                clickGenre("reason");
               }}
-              className={genreList.one ? styles["active"] : styles["notActive"]}
-            >
-              #소설
-            </div>
-            <div
-              onClick={() => {
-                clicktwo();
-                clickGenre("two");
-              }}
-              className={genreList.two ? styles["active"] : styles["notActive"]}
-            >
-              #자서전
-            </div>
-            <div
-              onClick={() => {
-                clickthree();
-                clickGenre("three");
-              }}
-              className={
-                genreList.three ? styles["active"] : styles["notActive"]
-              }
-            >
-              #스릴러
-            </div>
-            <div
-              onClick={() => {
-                clickfour();
-                clickGenre("four");
-              }}
-              className={
-                genreList.four ? styles["active"] : styles["notActive"]
-              }
+              className={genreList.reason ? styles["active"] : styles["notActive"]}
             >
               #추리
             </div>
             <div
               onClick={() => {
-                clickfive();
-                clickGenre("five");
+                clickthril();
+                clickGenre("thril");
+              }}
+              className={genreList.thril ? styles["active"] : styles["notActive"]}
+            >
+              #스릴러
+            </div>
+            <div
+              onClick={() => {
+                clickhorror();
+                clickGenre("horror");
               }}
               className={
-                genreList.five ? styles["active"] : styles["notActive"]
+                genreList.horror ? styles["active"] : styles["notActive"]
+              }
+            >
+              #공포
+            </div>
+            <div
+              onClick={() => {
+                clicksf();
+                clickGenre("sf");
+              }}
+              className={
+                genreList.sf ? styles["active"] : styles["notActive"]
+              }
+            >
+              #과학
+            </div>
+            <div
+              onClick={() => {
+                clickfantasy();
+                clickGenre("fantasy");
+              }}
+              className={
+                genreList.fantasy ? styles["active"] : styles["notActive"]
+              }
+            >
+              #판타지
+            </div>
+            <div
+              onClick={() => {
+                clickdrama();
+                clickGenre("drama");
+              }}
+              className={
+                genreList.drama ? styles["active"] : styles["notActive"]
+              }
+            >
+              #드라마
+            </div>
+            <div
+              onClick={() => {
+                clickgame();
+                clickGenre("game");
+              }}
+              className={
+                genreList.game ? styles["active"] : styles["notActive"]
+              }
+            >
+              #게임
+            </div>
+            <div
+              onClick={() => {
+                clickromance();
+                clickGenre("romance");
+              }}
+              className={
+                genreList.romance ? styles["active"] : styles["notActive"]
               }
             >
               #로맨스
+            </div>
+            <div
+              onClick={() => {
+                clickanimation();
+                clickGenre("animation");
+              }}
+              className={
+                genreList.animation ? styles["active"] : styles["notActive"]
+              }
+            >
+              #만화
             </div>
           </Grid>
         </div>
@@ -459,13 +536,13 @@ function SignupPage() {
             name="row-radio-buttons-group"
           >
             <FormControlLabel
-              value="undertwo"
+              value="underthril"
               control={<Radio />}
               label="2권 이하"
               onChange={(e) => setForm({ ...form, frequency: 2 })}
             />
             <FormControlLabel
-              value="threefive"
+              value="horrorfantasy"
               control={<Radio />}
               label="3권 ~ 5권"
               onChange={(e) => setForm({ ...form, frequency: 5 })}
