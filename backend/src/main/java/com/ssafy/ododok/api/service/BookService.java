@@ -1,5 +1,6 @@
 package com.ssafy.ododok.api.service;
 
+import com.ssafy.ododok.api.request.BookAddPostReq;
 import com.ssafy.ododok.db.model.Book;
 
 import java.util.List;
@@ -11,6 +12,6 @@ public interface BookService {
     Book findBook(String title,String author);
     void selectBook(Long id);
 
-    void addBook(Book book);
+    void addBook(BookAddPostReq bookAddPostReq);
 }
 

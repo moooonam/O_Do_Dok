@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -31,20 +32,24 @@ public class Dodok {
     private Book book;
 
     @Column(nullable = false)
-    private Date dodokStartdate;
+    private LocalDate dodokStartdate;
 
     @Column(nullable = false)
-    private Date dodokEnddate;
+    private LocalDate dodokEnddate;
     @Convert(converter = BooleanToYNConverter.class)
     @Column(nullable = false)
     private boolean dodokComplete;
 
     @Builder
-    public Dodok(Team team,Book book,Date dodokStartdate,Date dodokEndDate){
+    public Dodok(Team team,Book book,LocalDate dodokStartdate,LocalDate dodokEndDate){
      this.team=team;
      this.book=book;
      this.dodokStartdate=dodokStartdate;
      this.dodokEnddate=dodokEndDate;
      this.setDodokComplete(false);
+    }
+
+    public Boolean getDodokCompledte() {
+        return this.getDodokCompledte();
     }
 }
