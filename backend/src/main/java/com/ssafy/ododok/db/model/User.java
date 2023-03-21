@@ -19,7 +19,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private Long userId;
 
     @Column(nullable = false)
     private String userName;
@@ -39,8 +39,23 @@ public class User {
     @Column
     private String userImage;
 
-    @Column(nullable = false)
     @ColumnDefault("0")
-    private int userReviewcnt;
+    private Integer userReviewcnt;
+
+    public void changeName(String name){
+        this.userName = name;
+    }
+    public void changeNickName(String nickname){
+        this.userNickname = nickname;
+    }
+    public void changePassword(String password){
+        this.userPassword =password;
+    }
+    public void changePhone(String phone){
+        this.userPhone=phone;
+    }
+    public void changeImg(String img){
+        this.userImage=img;
+    }
 
 }

@@ -18,7 +18,7 @@ public class TeamUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int teamUserId;
+    private Long teamUserId;
 
     @OneToOne
     @JoinColumn(name="user_id")
@@ -28,8 +28,7 @@ public class TeamUser {
     @JoinColumn(name="team_id")
     private Team team;
 
-    @ManyToOne
-    @JoinColumn(name="role_name")
+    @Enumerated(EnumType.STRING)
     private Role role;
 
 }
