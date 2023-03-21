@@ -1,0 +1,47 @@
+.articles-container {
+    margin-top: 50px;
+    margin-left: 50px;
+    margin-right: 100px;
+}
+
+.menuBox {
+    display: flex;
+    justify-content: space-between;
+}
+
+.menuLeft {
+    margin-top: 15px;
+    display: flex;
+    width: 50%;
+}
+
+.menuOne {
+    margin-right: 50px;
+}
+
+.menuRight {
+    border: 1px solid black;
+    margin-right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 25px;
+    padding-top: 8px;
+    padding-left: 18px;
+}
+
+.articleOne {
+    display: flex;
+    margin-top: 20px;
+}
+
+.articleType {
+    width: 10%;
+}
+
+.articleTitle {
+    width: 90%;
+}
+
+.articleUser {
+    width: 10%;
+}

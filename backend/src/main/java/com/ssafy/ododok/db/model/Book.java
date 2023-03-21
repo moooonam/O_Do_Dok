@@ -1,5 +1,6 @@
 package com.ssafy.ododok.db.model;
 
+import com.ssafy.ododok.api.request.BookAddPostReq;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+//@Builder
 @Entity
 @DynamicInsert
 public class Book {
@@ -24,7 +25,7 @@ public class Book {
     private String bookTitle;
 
     @Column(nullable = false)
-    private String bookPagecnt;
+    private int bookPagecnt;
 
     @Column(nullable = false)
     private String bookGenre;
@@ -33,11 +34,19 @@ public class Book {
     private String bookAuthor;
 
     @Column(nullable = false)
-    private String bookImg;
+    private String bookImg="tmp";
 
     @Column(nullable = false)
-    private String bookMembercnt;
+    private int bookMembercnt=0;
 
     @Column(nullable = false)
-    private String bookRating;
+    private double bookRating=0;
+
+    @Builder
+    public Book(String bookTitle,String bookAuthor,String bookGenre,int bookPagecnt){
+        this.bookTitle=bookTitle;
+        this.bookAuthor=bookAuthor;
+        this.bookGenre=bookGenre;
+        this.bookPagecnt=bookPagecnt;
+    }
 }

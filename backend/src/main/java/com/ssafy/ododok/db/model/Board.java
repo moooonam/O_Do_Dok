@@ -19,7 +19,7 @@ public class Board {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int boardId;
+    private Long boardId;
 
     @Column(nullable = false)
     private String boardTitle;
