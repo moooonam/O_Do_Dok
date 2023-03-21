@@ -18,10 +18,10 @@ public class UserSurvey {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userSurveyId;
+    private Long userSurveyId;
 
     @OneToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="userId")
     private User user;
 
     @Column(nullable = false)
@@ -49,5 +49,24 @@ public class UserSurvey {
 
     @Column(nullable = false)
     private int userFrequency;
+
+    public void changeUserGenre1(String userGenre1){
+        this.userGenre1 = userGenre1;
+    }
+    public void changeUserGenre2(String userGenre2){
+        this.userGenre2 = userGenre2;
+    }
+    public void changeUserGenre3(String userGenre3){
+        this.userGenre3 = userGenre3;
+    }
+    public void changeUserRegion(String userRegion){
+        this.userRegion = userRegion;
+    }
+    public void changeUserOnoff(Onoff userOnoff){
+        this.userOnoff = userOnoff;
+    }
+    public void changeUserFrequency(int userFrequency){
+        this.userFrequency = userFrequency;
+    }
 
 }
