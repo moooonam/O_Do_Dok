@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ssafy.ododok.db.model.Role.MANAGER;
+import static com.ssafy.ododok.db.model.Role.USER;
+
 @Service
 public class TeamServiceImpl implements TeamService{
 
@@ -27,6 +30,13 @@ public class TeamServiceImpl implements TeamService{
     // 팀 생성
     @Override
     public void createTeam(TeamCreatePostReq teamCreatePostReq, User user) {
+
+        // 팀에 속해있다면 팀 생성 불가
+        if(teamUserRepository.findByUser(user) != null) {
+            System.out.println("팀 생성 불가");
+            return;
+        }
+
         Team team = Team.builder()
                 .teamName(teamCreatePostReq.getTeamName())
                 .teamMemberCntMax(teamCreatePostReq.getTeamMemberCntMax())
@@ -41,6 +51,7 @@ public class TeamServiceImpl implements TeamService{
 
         // 자기 자신 팀에 추가
         addAdmin(team.getTeamId(), user);
+        System.out.println("팀 생성 성공");
     }
 
     // 모든 팀 조회
@@ -94,9 +105,15 @@ public class TeamServiceImpl implements TeamService{
         teamUserRepository.save(teamUser);
     }
 
-    // 멤버 초대할 시 - USER로 지정
+    // 팀 신청 / 멤버 초대할 시 - USER로 지정
     @Override
-    public void addMember(Long teamId, User user) {
+    public void addMember(Long teamId, User user, String msg) {
+
+        // 팀에 속해있다면 팀 신청 불가
+        if(teamUserRepository.findByUser(user) != null) {
+            System.out.println("팀 가입 불가");
+            return;
+        }
 
         Optional<Team> oTeam = teamRepository.findById(teamId);
         Team team = oTeam.get();
@@ -104,17 +121,47 @@ public class TeamServiceImpl implements TeamService{
         TeamUser teamUser = TeamUser.builder()
                 .team(team)
                 .user(user)
-                .role(Role.USER)
+                .role(USER)
                 .build();
 
         System.out.println("teamUser = " + teamUser);
         teamUserRepository.save(teamUser);
+        System.out.println("팀 가입 성공");
     }
 
     // 팀ID로 팀 멤버 조회
     @Override
-    public Optional<TeamUser> getMemberByTeamId(Long teamId) {
-        return teamUserRepository.findById(teamId);
+    public List<TeamUser> getMemberByTeamId(Long teamId) {
+        List<TeamUser> teamUserList = teamUserRepository.findTeamUsersByTeam_TeamId(teamId);
+        return teamUserList;
+    }
+
+    // 모임의 구성원 삭제
+    @Override
+    public void deleteMember(Long userId) {
+        teamUserRepository.deleteById(userId);
+    }
+
+    // 모임 구성원 직책 변경
+    @Override
+    public int modifyGrade(Long userId) {
+        Optional<TeamUser> oTeamUser = teamUserRepository.findById(userId);
+        TeamUser teamUser = oTeamUser.get();
+
+        // 관리자로 변경하면 1 일반 유저로 변경하면 0
+        if(teamUser.getRole().equals(USER)) {
+            teamUser.setRole(MANAGER);
+            teamUserRepository.save(teamUser);
+            return 1;
+        }
+
+        if (teamUser.getRole().equals(MANAGER)){
+            teamUser.setRole(USER);
+            teamUserRepository.save(teamUser);
+            return 2;
+        }
+
+        return 0;
     }
 
 }
