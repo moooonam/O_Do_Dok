@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class UserRes {
 
-    long userId;
+    Long userId;
     String userName;
     String userNickname;
     String userEmail;
