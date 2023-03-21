@@ -109,7 +109,7 @@ public class DodokServiceImpl implements DodokService {
 
         reviewPageRepository.deleteAllByDodok(dodok);
         reviewEndRepository.deleteAllByDodok(dodok);
-
+         //도독 삭제 추가해야함.
         return;
     }
     //하루마다 실행되는 메서드 , 매일 오후 18시에 실행

@@ -121,6 +121,7 @@ public class DodokController {
         List<ReviewPage> reviewPageList=dodokService.getCurReviewPageList(user);
 
         if(reviewPageList==null){
+            //진행중인 도독 없는게 아니라, 리뷰페이지만 없는거일수 있음.
             return new ResponseEntity("현재 진행중인 도독이 없습니다.",HttpStatus.OK);
         }else{
             return new ResponseEntity(reviewPageList,HttpStatus.OK);
