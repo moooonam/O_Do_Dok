@@ -2,6 +2,7 @@ package com.ssafy.ododok.config;
 
 import com.ssafy.ododok.common.auth.JwtAuthenticationFilter;
 import com.ssafy.ododok.common.auth.JwtAuthorizationFilter;
+import com.ssafy.ododok.db.repository.RefreshTokenRepository;
 import com.ssafy.ododok.db.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,9 @@ public class SecurityConfig {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
     private CorsConfig corsConfig;
@@ -51,8 +55,8 @@ public class SecurityConfig {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
                     .addFilter(corsConfig.corsFilter())
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager))
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository));
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager, refreshTokenRepository))
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository, refreshTokenRepository));
         }
     }
 

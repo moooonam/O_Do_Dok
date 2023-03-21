@@ -6,7 +6,10 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ododok.api.dto.LoginRequestDto;
+import com.ssafy.ododok.api.dto.RefreshTokenDto;
+import com.ssafy.ododok.db.model.RefreshToken;
 import com.ssafy.ododok.db.model.User;
+import com.ssafy.ododok.db.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,11 +23,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
     private final AuthenticationManager authenticationManager;
+    private final RefreshTokenRepository refreshTokenRepository;
+
 
     // Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
     // 인증 요청시에 실행되는 함수 => /login
@@ -84,7 +91,28 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withClaim("nickname", principalDetailis.getUser().getUserNickname())
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
+        response.setHeader(JwtProperties.ACCESS_HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
+
+        String email = principalDetailis.getUser().getUserEmail();
+
+        String refreshToken = JWT.create()
+                .withSubject(principalDetailis.getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.REFRESH_TIME))
+                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+
+        RefreshToken refreshToken1 = new RefreshToken();
+        refreshToken1.setEmail(email);
+        refreshToken1.setRefreshToken(refreshToken);
+        refreshTokenRepository.save(refreshToken1);
+
+        response.setHeader(JwtProperties.REFRESH_HEADER_STRING, JwtProperties.TOKEN_PREFIX+refreshToken);
+
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put(JwtProperties.ACCESS_HEADER_STRING, jwtToken);
+        responseMap.put(JwtProperties.REFRESH_HEADER_STRING, refreshToken);
+        new ObjectMapper().writeValue(response.getWriter(), responseMap);
+
     }
+
 
 }
