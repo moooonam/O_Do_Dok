@@ -36,9 +36,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserSurvey getUserByUser(User user) {
-        int userId = user.getUserId();
         UserSurvey userSurvey = userSurveyRepository.findByUser(user);
-//        UserSurvey userSurvey = userSurveyRepository.findByUser_userId(user);
         return userSurvey;
     }
 
@@ -111,10 +109,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public int updateUser(User user, UserDto.Basic userDto) {
-        user.changeName(userDto.getUserName());
         user.changeNickName(userDto.getUserNickname());
-        user.changePassword(userDto.getUserPassword());
-        user.changePhone(userDto.getUserPhone());
+        user.changePassword(passwordEncoder.encode(userDto.getUserPassword()));
         user.changeImg(userDto.getUserImage());
 
         userRepository.save(user);
@@ -138,8 +134,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public boolean deleteUser(User user) {
-        try{
-            userRepository.delete(user);
+        UserSurvey userSurvey = userSurveyRepository.findByUser(user);
+        // 관련된 정보들 모두 삭제 (리뷰, 모임 등등)
+         try{
+             userSurveyRepository.delete(userSurvey);
+             userRepository.delete(user);
             return true;
         } catch (Exception e){
             return false;

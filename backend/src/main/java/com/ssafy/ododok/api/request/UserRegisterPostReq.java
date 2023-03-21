@@ -23,7 +23,7 @@ public class UserRegisterPostReq {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @AllArgsConstructor
     public static class Basic {
-        int id;
+        Long id;
         String name;
         String email;
         String nickname;

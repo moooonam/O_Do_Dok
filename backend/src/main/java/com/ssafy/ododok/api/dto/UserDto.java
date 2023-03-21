@@ -20,7 +20,7 @@ public class UserDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @AllArgsConstructor
     public static class Basic {
-        int id;
+        Long id;
         String userName;
         String userNickname;
         String userEmail;
