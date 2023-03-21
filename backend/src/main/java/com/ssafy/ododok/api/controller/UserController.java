@@ -1,6 +1,8 @@
 package com.ssafy.ododok.api.controller;
 
 import com.ssafy.ododok.api.dto.UserDto;
+import com.ssafy.ododok.api.request.FindIdPostReq;
+import com.ssafy.ododok.api.request.FindPasswordPostReq;
 import com.ssafy.ododok.api.request.UserLoginPostReq;
 import com.ssafy.ododok.api.request.UserRegisterPostReq;
 import com.ssafy.ododok.api.response.UserRes;
@@ -108,5 +110,42 @@ public class UserController {
         }
 
     }
+
+    // 이메일 찾기 전, 오도독의 회원 중 있는지 체크
+    @PostMapping("/check/findId")
+    public ResponseEntity<Boolean> id_find(@RequestBody FindIdPostReq findIdPostReq){
+        boolean idFindCheck = userService.idCheck(findIdPostReq.getNickname(),findIdPostReq.getName());
+        return ResponseEntity.status(200).body(idFindCheck);
+    }
+
+    // /check/findId에서 true가 나왔다면, 해당 회원의 이메일을 return
+    @PostMapping("/check/findId/showId")
+    public ResponseEntity<String> showId(@RequestBody FindIdPostReq findIdPostReq) throws Exception {
+        User user = userService.getUserByUserNickname(findIdPostReq.getNickname());
+        if(user == null){
+            return ResponseEntity.status(404).body("존재하지 않는 계정입니다.");
+        } else{
+            return ResponseEntity.status(200).body(user.getUserEmail());
+        }
+    }
+
+    // 비밀번호 찾기 전, 오도독의 회원 중 있는지 체크
+    @PostMapping("/check/findPassword")
+    public ResponseEntity<Boolean> password_find(@RequestBody FindPasswordPostReq findPasswordPostReq){
+        boolean pwFindCheck = userService.passwordCheck(findPasswordPostReq.getEmail(),findPasswordPostReq.getName());
+        return ResponseEntity.status(200).body(pwFindCheck);
+    }
+
+    // /check/findPassword에서 true가 나왔다면, 해당 회원의 임시비밀번호를 이메일로 발급
+    // 임시 비밀번호로 구현해야함 -> 이는 고도화로
+//    @PostMapping("/check/findPassword/showPassword")
+//    public ResponseEntity<String> showPassword(@RequestBody FindPasswordPostReq findPasswordPostReq) throws Exception {
+//        User user = userService.getUserByUserEmail(findPasswordPostReq.getEmail());
+//        if(user == null){
+//            return ResponseEntity.status(404).body("존재하지 않는 계정입니다.");
+//        } else{
+//            return ResponseEntity.status(200).body();
+//        }
+//    }
 
 }

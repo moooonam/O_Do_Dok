@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User getUserByUserEmail(String userEmail) {
-        User user = userRepository.findByUserEmail(userEmail);
+        User user = userRepository.findByUserEmail(userEmail).get();
         return user;
     }
 
@@ -145,7 +145,31 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    @Override
+    public boolean idCheck(String nickname, String name) {
+        try{
+            User user = userRepository.findByUserNickname(nickname).get();
+            if(user!=null && user.getUserName().equals(name)) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e){
+            return false;
+        }
+    }
 
-
-
+    @Override
+    public boolean passwordCheck(String email, String name) {
+        try{
+            User user = userRepository.findByUserEmail(email).get();
+            if(user!=null && user.getUserName().equals(name)) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e){
+            return false;
+        }
+    }
 }

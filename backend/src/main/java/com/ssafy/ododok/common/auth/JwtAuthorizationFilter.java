@@ -65,7 +65,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                         .getClaim("email").asString();
 
                 if (email != null) {
-                    User user = userRepository.findByUserEmail(email);
+                    User user = userRepository.findByUserEmail(email).get();
 
                     // 인증은 토큰 검증시 끝. 인증을 하기 위해서가 아닌 스프링 시큐리티가 수행해주는 권한 처리를 위해
                     // 아래와 같이 토큰을 만들어서 Authentication 객체를 강제로 만들고 그걸 세션에 저장!
@@ -108,7 +108,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     new ObjectMapper().writeValue(response.getWriter(), new ResponseEntity<String>("유효하지 않은 Refresh Token입니다.", HttpStatus.UNAUTHORIZED));
                 } else {
 
-                    User user = userRepository.findByUserEmail(optMember.get().getEmail());
+                    User user = userRepository.findByUserEmail(optMember.get().getEmail()).get();
 
                     // RSA 방식 아니고 Hash 암호방식
                     String accessToken = JWT.create()

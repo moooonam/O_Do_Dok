@@ -16,4 +16,7 @@ public interface UserService {
     int updateUserSurvey(UserSurvey userSurvey, UserDto.Basic userDto);
     boolean deleteUser(User user);
 
+    boolean idCheck(String email, String name);
+
+    boolean passwordCheck(String email, String name);
 }
