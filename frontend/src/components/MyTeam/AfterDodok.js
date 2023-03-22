@@ -7,6 +7,8 @@ import DodokBar from "./DodokBar";
 import WritePageReviewModal from "./Modal/WritePageReviewModal";
 import WriteReviewModal from "./Modal/WriteReviewModal";
 import Rating from "@mui/material/Rating";
+import AllPageReviewModal from "./Modal/AllPageReviewModal";
+
 
 function AfterDodok() {
   const testDodokBook = {
@@ -84,9 +86,7 @@ function AfterDodok() {
             <div className={dodokstyles.dday}>D-7</div>
           </div>
           <WritePageReviewModal />
-          <div className={dodokstyles["default-btn2"]}>
-            전체 페이지리뷰 보기
-          </div>
+          <AllPageReviewModal/>
           <DodokBar />
           <div className={dodokstyles["wrap-reviews-title"]}>
             <h3>총평</h3>
