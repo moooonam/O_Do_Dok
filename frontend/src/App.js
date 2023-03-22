@@ -24,7 +24,7 @@ import AboutUsPage from "./pages/AboutUsPage";
 // 모임신청 관련
 
 import TeamsMainPage from "./pages/Teams/TeamsMainPage";
-
+import TeamDetailPage from "./pages/Teams/TeamDetailPage";
 //오도독 책장
 
 import OpenReviewsPage from "./pages/OpenReviewsPage"; 
@@ -53,6 +53,7 @@ function App() {
         <Route exact path="/myteam/manage" element={<MyTeamManagePage/>}/>
         <Route exact path="/about-us" element={<AboutUsPage/>}/>
         <Route exact path="/teams" element={<TeamsMainPage/>}/>
+        <Route exact path="/teams/detail" element={<TeamDetailPage/>}/>
         <Route exact path="/openreviews" element={<OpenReviewsPage/>}/>
 
       </Routes>
