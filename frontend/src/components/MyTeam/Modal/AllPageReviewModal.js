@@ -46,7 +46,7 @@ export default function AllPageReviewModal() {
   ];
   const renderPageReviews = pageReviews.map((pageReview) => {
     return (
-      <div className={styles["wrap-allpage-review"]}>
+      <div key={pageReview.id} className={styles["wrap-allpage-review"]}>
         <div className={styles["wrap-profile"]}>
           <div className={styles["user-img-div"]}>
             <img src={pageReview.userProfilImg} alt="프로필이미지" />
