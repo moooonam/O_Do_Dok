@@ -122,6 +122,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
                 }
 
+                
+
             } catch (Exception e){
                 System.out.println("CustomAuthorizationFilter : JWT 토큰이 잘못되었습니다. message : " + e.getMessage());
             }

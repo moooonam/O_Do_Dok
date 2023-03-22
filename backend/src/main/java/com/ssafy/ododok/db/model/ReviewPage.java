@@ -19,7 +19,7 @@ public class ReviewPage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int reviewPageId;
+    private long reviewPageId;
 
     @ManyToOne
     @JoinColumn(name="dodok_id")
@@ -37,4 +37,8 @@ public class ReviewPage {
 
     @Column(nullable = false)
     private LocalDate reviewPageDate;
+
+    public void changeReviewPageContent(String reviewPageContent){
+        this.reviewPageContent = reviewPageContent;
+    }
 }

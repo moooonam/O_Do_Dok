@@ -68,12 +68,16 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<?> getUserInfoSurvey(Authentication authentication) {
         try{
+            System.out.println("1");
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+            System.out.println("2");
             String userId = principal.getUser().getUserEmail();
+            System.out.println("3");
             User user = userService.getUserByUserEmail(userId);
+            System.out.println("4");
             UserDto.Basic ud = userService.getUserInfo(user);
             return ResponseEntity.status(200).body(ud);
-        } catch (Exception e){
+        } catch (NullPointerException e){
             return ResponseEntity.status(200).body("토큰 만료돼서 다시 생성했으니 봐!");
         }
     }

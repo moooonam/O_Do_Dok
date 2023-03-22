@@ -36,7 +36,7 @@ public class DodokController {
 
     //도독 종료
     @PutMapping("/end/{dodokId}")
-    public ResponseEntity<String> endDodok(@PathVariable Long dodokId){
+    public ResponseEntity<String> endDodok(@PathVariable Long dodokId) throws Exception {
         ResponseEntity res = dodokService.endDodok(dodokId)==0 ? new ResponseEntity<>("이미 종료 상태입니다.",HttpStatus.OK)
         : new ResponseEntity<>("진행중인 도독을 종료했습니다.",HttpStatus.OK);
         return res;
@@ -44,62 +44,51 @@ public class DodokController {
 
     //도독 삭제
     @DeleteMapping("/{dodokId}")
-    public ResponseEntity<?> deleteDodok(Authentication authentication,@PathVariable Long dodokId) {
+    public ResponseEntity<?> deleteDodok(Authentication authentication,@PathVariable Long dodokId) throws Exception {
         dodokService.deleteDodok(authentication,dodokId);
-        return new ResponseEntity<>("책이 삭제됐습니다.",HttpStatus.OK);
+        return new ResponseEntity<>("도독이 삭제됐습니다.",HttpStatus.OK);
     }
 
     // 지난 도독 리스트 가져오기
     @GetMapping("/lastdodoks")
     public ResponseEntity<List<DodokInfoRes>>showLastAllDodokInfo(Authentication auth){
-        //security Authentication에서 User 가져오기.
         PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
         User user = principal.getUser();
+
         List<Dodok> dodokList= dodokService.showLastAllDodoks(user);
+
         List<DodokInfoRes> dodokInfoResList = new ArrayList<>();
+
         for(Dodok dodok : dodokList){
             List<ReviewPage> reviewPageList = dodokService.getReviewPageList(dodok);
             List<ReviewEnd> reviewEndList = dodokService.getRivewEndList(dodok);
             DodokInfoRes dodokInfoRes =new DodokInfoRes(dodok,reviewPageList,reviewEndList);
             dodokInfoResList.add(dodokInfoRes);
         }
+
         return new ResponseEntity(dodokInfoResList,HttpStatus.OK);
     }
 
     // 책갈피는 여러개고 총평은 하나라는 것  생각하며 다시 살피기 !!
+    // 책갈피 입력, 수정, 삭제, 조회(유저 기준, 도독 기준), 상세보기
+    // 총평 입력, 수정, 삭제, 조회(유저 기준, 도독 기준), 상세보기
 
-    //책갈피 조회
-    @GetMapping("/pageReview/list")
-    public ResponseEntity<?> listCurPageReviews(Authentication auth){
-//        User user = new User();
-        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
-        User user = principal.getUser();
-        System.out.println("user = " + user);
-        List<ReviewPage> reviewPageList=dodokService.getCurReviewPageList(user);
 
-        if(reviewPageList==null){
-            //진행중인 도독 없는게 아니라, 리뷰페이지만 없는거일수 있음.
-            return new ResponseEntity("현재 진행중인 도독이 없습니다.",HttpStatus.OK);
-        }else{
-            return new ResponseEntity(reviewPageList,HttpStatus.OK);
-        }
-    }
-
-    //책갈피 입력
+    //책갈피 입력 _ 현재 진행 중인 도독
     @PostMapping("/pageReview/add")
     public ResponseEntity<String> writePageReview(@RequestBody PageReviewCreatePostReq pageReviewCreatePostReq,Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
-        dodokService.writePageReview(pageReviewCreatePostReq,user);
-        return new ResponseEntity<>("책갈피를 작성했습니다.",HttpStatus.OK);
+        String res = dodokService.writePageReview(pageReviewCreatePostReq,user);
+        return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
-    //책갈피 수정
+    //책갈피 수정 _ 현재 진행 중인 도독
     @PutMapping("/pageReview/update")
     public ResponseEntity<String> modifyPageReviews(@RequestBody PageReviewPutReq pageReviewPutReq, Authentication authentication){
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
-        boolean result =dodokService.modifyPageReview(pageReviewPutReq,user);
+        boolean result =dodokService.modifyPageReview(pageReviewPutReq, user);
         if(result){
             return new ResponseEntity<>("수정이 완료됐습니다.",HttpStatus.OK);
         }else{
@@ -110,7 +99,7 @@ public class DodokController {
     //책갈피 삭제
     @DeleteMapping("/pageReview/{pageReviewId}")
     public ResponseEntity<String> deletePageReviews(@PathVariable Long pageReviewId
-    ,Authentication authentication) {
+            ,Authentication authentication) throws Exception {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
 
@@ -122,50 +111,106 @@ public class DodokController {
         }
     }
 
-    //책 총평 조회
-    @GetMapping("/endReview/{dodokId}")
-    public ResponseEntity<?> listPageEndReviews(@PathVariable Long dodokId){
-        List<ReviewEnd> reviewEndList= dodokService.getRivewEndList(dodokId);
-        if(reviewEndList.size()==0){
-            return new ResponseEntity<>("책 조회 결과가 없습니다.",HttpStatus.OK);
+    //책갈피 조회 _ 상세보기
+    @GetMapping("/pageReview/detail/{pageReviewId}")
+    public ResponseEntity<?> showPageReviews(@PathVariable Long pageReviewId, Authentication authentication){
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User user = principal.getUser();
+        ReviewPage reviewPage = dodokService.getReviewPage(pageReviewId, user);
+
+        if(reviewPage==null){
+            //진행중인 도독 없는게 아니라, 리뷰페이지만 없는거일수 있음.
+            return new ResponseEntity("볼 수 있는 권한이 없습니다.",HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(reviewEndList,HttpStatus.OK);
+            return new ResponseEntity(reviewPage, HttpStatus.OK);
         }
     }
 
-    //책 총평 입력
+    //책갈피 조회 _ 사용자 기준 현재 진행 중인 도독 기준 책갈피 총 목록
+    @GetMapping("/pageReview/list")
+    public ResponseEntity<?> listCurPageReviews(Authentication auth){
+        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
+        User user = principal.getUser();
+
+        List<ReviewPage> reviewPageList=dodokService.getCurReviewPageList(user);
+
+        if(reviewPageList==null){
+            //진행중인 도독 없는게 아니라, 리뷰페이지만 없는거일수 있음.
+            return new ResponseEntity("진행 중인 도독이 없거나, 현재 작성된 리뷰가 없습니다.",HttpStatus.OK);
+        }else{
+            return new ResponseEntity(reviewPageList,HttpStatus.OK);
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////
+
+    // 총리뷰 입력 _ 현재 진행 중인 도독
     @PostMapping("/endReview/add")
-    public ResponseEntity<String> writePageEndReviews(@RequestBody EndReviewCreatePostReq endReviewCreatePostReq, Authentication authentication){
+    public ResponseEntity<String> writeEndReview(@RequestBody EndReviewCreatePostReq endReviewCreatePostReq,Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
-        dodokService.writeEndReview(endReviewCreatePostReq,user);
-
-        return new ResponseEntity<>("책 총평을 입력했습니다.",HttpStatus.OK);
+        String res = dodokService.writeEndReview(endReviewCreatePostReq, user);
+        return new ResponseEntity<>(res,HttpStatus.OK);
     }
 
-    //책 총평 수정
+    // 총리뷰 수정 _ 현재 진행 중인 도독
     @PutMapping("/endReview/update")
-    public ResponseEntity<String> modifyPageEndReviews(@RequestBody EndReviewModifyPutReq endReviewModifyPutReq,Authentication authentication) {
+    public ResponseEntity<String> modifyEndReviews(@RequestBody EndReviewModifyPutReq endReviewModifyPutReq, Authentication authentication){
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
-
-        boolean result = dodokService.modifyEndReview(endReviewModifyPutReq,user);
+        boolean result =dodokService.modifyEndReview(endReviewModifyPutReq, user);
         if(result){
-            return new ResponseEntity<>("책 총평 수정을 완료했습니다.",HttpStatus.OK);
+            return new ResponseEntity<>("수정이 완료됐습니다.",HttpStatus.OK);
         }else{
-            return new ResponseEntity<>("책 총평 수정 권한이 없습니다.",HttpStatus.OK);
+            return new ResponseEntity<>("권한이 없어 수정에 실패했습니다.",HttpStatus.OK);
         }
     }
-    //책 총평 삭제
+
+    // 총 리뷰 삭제
     @DeleteMapping("/endReview/{endReviewId}")
-    public ResponseEntity<String> deletePageEndReviews(@PathVariable Long endReviewId,Authentication authentication){
+    public ResponseEntity<String> deleteEndReviews(@PathVariable Long endReviewId
+            ,Authentication authentication) throws Exception {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
 
-        boolean result = dodokService.deleteEndReview(endReviewId,user);
+        boolean result =dodokService.deleteEndReview(endReviewId, user);
         if(result){
-            return new ResponseEntity<>("책 총평을 삭제했습니다.",HttpStatus.OK);
+            return new ResponseEntity<>("삭제가 완료됐습니다.",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("권한이 없어 삭제에 실패했습니다.",HttpStatus.OK);
         }
-        return new ResponseEntity<>("총평 삭제 권한이 없습니다.",HttpStatus.OK);
     }
+
+    // 총 리뷰 조회 _ 상세보기
+    @GetMapping("/endReview/detail/{endReviewId}")
+    public ResponseEntity<?> showEndReviews(@PathVariable Long endReviewId, Authentication authentication){
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User user = principal.getUser();
+        ReviewEnd reviewEnd = dodokService.getEndReview(endReviewId, user);
+
+        if(reviewEnd==null){
+            //진행중인 도독 없는게 아니라, 리뷰페이지만 없는거일수 있음.
+            return new ResponseEntity("볼 수 있는 권한이 없습니다.",HttpStatus.OK);
+        }else{
+            return new ResponseEntity(reviewEnd, HttpStatus.OK);
+        }
+    }
+
+    //총평 조회 _ 사용자 기준 현재 진행 중인 도독 기준 총평 총 목록
+    @GetMapping("/endReview/list")
+    public ResponseEntity<?> listCurEndReviews(Authentication auth){
+        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
+        User user = principal.getUser();
+
+        List<ReviewEnd> reviewEndList=dodokService.getCurRivewEndList(user);
+
+        if(reviewEndList==null){
+            //진행중인 도독 없는게 아니라, 리뷰페이지만 없는거일수 있음.
+            return new ResponseEntity("진행 중인 도독이 없거나, 현재 작성된 리뷰가 없습니다.",HttpStatus.OK);
+        }else{
+            return new ResponseEntity(reviewEndList,HttpStatus.OK);
+        }
+    }
+
 }
