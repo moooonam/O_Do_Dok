@@ -1,0 +1,27 @@
+.write-container {
+    margin: 50px 50px 0px 100px;
+}
+
+.inner-container {
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 25px;
+}
+
+.article-header {
+    display: flex;
+    // border-bottom : 1px solid black;
+
+    h4{
+        width: 5%;
+        margin-top: 15px;
+    }
+
+    .dropdown {
+        padding-top: 0px;
+    }
+}
+
+.article-writer {
+    text-align: end;
+}
