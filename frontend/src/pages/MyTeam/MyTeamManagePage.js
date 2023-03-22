@@ -272,6 +272,18 @@ function MyTeamManagePage() {
                 </FormControl>
                 <br />
                 <br />
+                <p>활동 지역</p>
+                <TextField
+                  required
+                  id="team_region"
+                  value={form.team_region}
+                  variant="standard"
+                  onChange={(e) =>
+                    setForm({ ...form, team_region: e.target.value })
+                  }
+                />
+                <br />
+                <br />
                 <p>선호 장르</p>
                 <div className={teamstyles["genre-box"]}>
                 <div
@@ -370,18 +382,6 @@ function MyTeamManagePage() {
               #만화
             </div>
                 </div>
-                <br />
-                <p>활동 지역</p>
-                <TextField
-                  required
-                  id="team_region"
-                  value={form.team_region}
-                  variant="standard"
-                  onChange={(e) =>
-                    setForm({ ...form, team_region: e.target.value })
-                  }
-                />
-                <br />
                 <br />
                 <br />
                 <p>최대 인원수</p>
