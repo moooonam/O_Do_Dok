@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +29,12 @@ public class SecurityConfig {
 
     @Autowired
     private CorsConfig corsConfig;
+
+//    private final JwtExceptionFilter jwtExceptionFilter;
+//
+//    public SecurityConfig(JwtExceptionFilter jwtExceptionFilter) {
+//        this.jwtExceptionFilter = jwtExceptionFilter;
+//    }
 
 
     @Bean
@@ -57,6 +64,8 @@ public class SecurityConfig {
                     .addFilter(corsConfig.corsFilter())
                     .addFilter(new JwtAuthenticationFilter(authenticationManager, refreshTokenRepository))
                     .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository, refreshTokenRepository));
+//                    .addFilterBefore(new JwtAuthorizationFilter(authenticationManager, userRepository, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class)
+//                    .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
         }
     }
 

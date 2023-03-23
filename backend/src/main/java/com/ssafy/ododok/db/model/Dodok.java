@@ -41,13 +41,21 @@ public class Dodok {
     @Column(nullable = false)
     private boolean dodokComplete;
 
-    @Builder
-    public Dodok(Team team, Book book, LocalDate dodokStartdate, LocalDate dodokEndDate) {
-        this.team = team;
-        this.book = book;
-        this.dodokStartdate = dodokStartdate;
-        this.dodokEnddate = dodokEndDate;
+    @Convert(converter = BooleanToYNConverter.class)
+    @Column(nullable = false)
+    private boolean dodokOpen;
+
+    public void changeDodokOpen(boolean dodokOpen){
+        this.dodokOpen = dodokOpen;
     }
+
+//    @Builder
+//    public Dodok(Team team, Book book, LocalDate dodokStartdate, LocalDate dodokEndDate) {
+//        this.team = team;
+//        this.book = book;
+//        this.dodokStartdate = dodokStartdate;
+//        this.dodokEnddate = dodokEndDate;
+//    }
 
 
 }

@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.ododok.common.response.BaseResponseBody;
 import com.ssafy.ododok.db.model.RefreshToken;
 import com.ssafy.ododok.db.model.User;
 import com.ssafy.ododok.db.repository.RefreshTokenRepository;
@@ -40,7 +41,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -107,7 +108,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     response.setCharacterEncoding("utf-8");
                     new ObjectMapper().writeValue(response.getWriter(), new ResponseEntity<String>("유효하지 않은 Refresh Token입니다.", HttpStatus.UNAUTHORIZED));
                 } else {
-
+//                    throw new JwtException("토큰 기한이 만료");
                     User user = userRepository.findByUserEmail(optMember.get().getEmail()).get();
 
                     // RSA 방식 아니고 Hash 암호방식
@@ -118,17 +119,30 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                             .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
                     response.setHeader(JwtProperties.ACCESS_HEADER_STRING, JwtProperties.TOKEN_PREFIX+accessToken);
-                    chain.doFilter(request, response);
+
+                    try {
+                        chain.doFilter(request, response); // go to 'JwtAuthenticationFilter'
+                    } catch (Exception ex) {
+                        setErrorResponse(HttpStatus.UNAUTHORIZED, response, ex);
+                    }
 
                 }
-
-                
 
             } catch (Exception e){
                 System.out.println("CustomAuthorizationFilter : JWT 토큰이 잘못되었습니다. message : " + e.getMessage());
             }
+
         }
 
 
+    }
+
+    public void setErrorResponse(HttpStatus status, HttpServletResponse res, Throwable ex) throws IOException {
+        res.setStatus(status.value());
+        res.setContentType("application/json; charset=UTF-8");
+        HttpStatus.UNAUTHORIZED.value();
+
+        BaseResponseBody jwtExceptionResponse = new BaseResponseBody(401 ,ex.getMessage());
+        res.getWriter().write(objectMapper.writeValueAsString(jwtExceptionResponse));
     }
 }

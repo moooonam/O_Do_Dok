@@ -12,20 +12,15 @@ public interface DodokService {
     void timeEndDodok() throws Exception;
     int endDodok(Long dodokId) throws Exception;
     void deleteDodok(Authentication authentication, Long dodokId) throws Exception;
-    List<Dodok> showLastAllDodoks(User user);
+    List<Dodok> showLastAllDodoks(User user, Long teamId);
 
-    String writePageReview(PageReviewCreatePostReq pageReviewCreatePostReq, User user);
-    boolean modifyPageReview(PageReviewPutReq pageReviewPutReq, User user);
-    boolean deletePageReview(Long pageReviewId, User user) throws Exception;
-    ReviewPage getReviewPage(Long pageReviewId, User user);
-    List<ReviewPage> getCurReviewPageList(User user);
 
-    String writeEndReview(EndReviewCreatePostReq endReviewCreatePostReq, User user);
-    boolean modifyEndReview(EndReviewModifyPutReq endReviewModifyPutReq, User user);
-    boolean deleteEndReview(Long endReviewId, User user);
-    ReviewEnd getEndReview(Long endReviewId, User user);
-    List<ReviewEnd> getCurRivewEndList(User user);
+
+
 
     List<ReviewPage> getReviewPageList(Dodok dodok);
     List<ReviewEnd> getRivewEndList(Dodok dodok);
+
+    String updateDodokOpen(User user, Long dodokId);
+    String updateDodokClose(User user, Long dodokId);
 }
