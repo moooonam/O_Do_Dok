@@ -7,11 +7,9 @@ import java.util.List;
 
 public interface BookService {
 
+    void addBook(BookAddPostReq bookAddPostReq);
     List<Book> listBooks();
     List<Book> searchBooks(String keyword);
-    Book findBook(String title,String author);
-    void selectBook(Long id);
 
-    void addBook(BookAddPostReq bookAddPostReq);
 }
 

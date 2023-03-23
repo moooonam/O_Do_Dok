@@ -21,7 +21,7 @@ public class ReviewEnd {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int reviewEndId;
+    private long reviewEndId;
 
     @ManyToOne
     @JoinColumn(name="dodok_id")
@@ -43,10 +43,8 @@ public class ReviewEnd {
     @Column(nullable = false)
     private LocalDate reviewEndDate;
 
-    public void updateReview(EndReviewModifyPutReq endReviewModifyPutReq){
-        this.reviewEndContent = endReviewModifyPutReq.getContent();
-        this.reviewEndGenrerating = endReviewModifyPutReq.getGenreRating();
-        this.reviewEndBookrating = endReviewModifyPutReq.getBookRating();
-
+    public void changeContent(String reviewEndContent){
+        this.reviewEndContent=reviewEndContent;
     }
+
 }

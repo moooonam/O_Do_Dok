@@ -1,6 +1,7 @@
 package com.ssafy.ododok.db.model;
 
 import com.ssafy.ododok.api.request.TeamModifyPatchReq;
+import com.ssafy.ododok.common.util.BooleanToYNConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,6 +40,10 @@ public class Team {
 
     @ColumnDefault("1")
     private boolean teamRecruit;
+
+    @Convert(converter = BooleanToYNConverter.class)
+    @ColumnDefault("false")
+    private boolean isOngoingDodok;
 
     @Column(columnDefinition = "LONGTEXT")
     private String teamRecruitText;

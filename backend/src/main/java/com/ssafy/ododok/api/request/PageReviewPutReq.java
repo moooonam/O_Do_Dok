@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class PageReviewPutReq {
-    Long PageReviewId;
-    String Content;
+    long reviewPageId;
+    String content;
 }
