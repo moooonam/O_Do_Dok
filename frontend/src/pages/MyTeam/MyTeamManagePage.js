@@ -3,7 +3,7 @@ import SideBar from "../../components/SideBar";
 import sidestyles from "../../styles/Sidebar.module.scss";
 import teamstyles from "../../styles/MyTeamManage.module.scss";
 import TextField from "@mui/material/TextField";
-import axios from "axios";
+// import axios from "axios";
 
 // 모달
 import Button from "@mui/material/Button";

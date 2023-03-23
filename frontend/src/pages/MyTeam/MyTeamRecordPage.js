@@ -26,7 +26,7 @@ function MyTeamRecordPage() {
         "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
     },
     {
-      id: 6,
+      id: 5,
       imgurl:
         "https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg",
     },
