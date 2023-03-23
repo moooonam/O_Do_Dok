@@ -18,6 +18,10 @@ function ArticleDetailPage() {
     movePage("/myteamarticle");
   }
 
+  function goArticleUpdate() {
+    movePage("/myteamarticle/update")
+  }
+
   const comments = [
     {
       id: 1,
@@ -66,7 +70,7 @@ function ArticleDetailPage() {
                 <h4>게시글의 제목이 들어갈 자리입니다</h4>
               </div>
               <div>
-                <p>수정</p>
+                <p onClick={goArticleUpdate}>수정</p>
                 <p>삭제</p>
               </div>
             </div>

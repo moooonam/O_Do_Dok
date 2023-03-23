@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SideBar from "../../components/SideBar";
 import sidestyles from "../../styles/Sidebar.module.scss";
-import writestyles from "../../styles/ArticleCreate.module.scss";
+import updatestyles from "../../styles/ArticleUpdate.module.scss";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
@@ -12,8 +12,9 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
-function ArticleCreatePage() {
-  const movePage = useNavigate();
+
+function ArticleUpdatePage() {
+    const movePage = useNavigate();
   function goMyTeamArticle() {
     movePage("/myteamarticle");
   }
@@ -45,15 +46,14 @@ function ArticleCreatePage() {
     console.log(option)
     setMenu({ ...menu, choice: option})
   }
-
   return (
     <div className={sidestyles["myteam-container"]}>
       <SideBar />
       <div className={sidestyles.others}>
-        <div className={writestyles["write-container"]}>
+        <div className={updatestyles["write-container"]}>
           <ArrowBackIcon onClick={goMyTeamArticle} />
-          <div className={writestyles["inner-container"]}>
-            <div className={writestyles["article-header"]}>
+          <div className={updatestyles["inner-container"]}>
+            <div className={updatestyles["article-header"]}>
               <h4>{menu.choice}</h4>
               <IconButton
                 aria-label="more"
@@ -62,7 +62,7 @@ function ArticleCreatePage() {
                 aria-expanded={open ? "true" : undefined}
                 aria-haspopup="true"
                 onClick={handleClick}
-                className={writestyles["dropdown"]}
+                className={updatestyles["dropdown"]}
               >
                 <ArrowDropDownCircleIcon />
               </IconButton>
@@ -102,22 +102,22 @@ function ArticleCreatePage() {
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
               />
             </div>
-            <p className={writestyles["article-writer"]}>작성자 : 독린이</p>
+            <p className={updatestyles["article-writer"]}>작성자 : 독린이</p>
             <textarea
-              className={writestyles["article-context"]}
+              className={updatestyles["article-context"]}
               type="text"
               value={form.context}
               onChange={(e) => setForm({ ...form, context: e.target.value })}
             />
-            <div className={writestyles["save-btn-box"]}>
+            <div className={updatestyles["save-btn-box"]}>
               <div></div>
               <Button
-                className={writestyles["article-save"]}
+                className={updatestyles["article-save"]}
                 variant="contained"
                 color="success"
                 // onClick={}
               >
-                저장
+                수정
               </Button>
               <div></div>
             </div>
@@ -125,7 +125,7 @@ function ArticleCreatePage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default ArticleCreatePage;
+export default ArticleUpdatePage
