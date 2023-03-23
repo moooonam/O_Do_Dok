@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
@@ -21,7 +22,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String bookTitle;
 
     @Column(nullable = false)
@@ -33,20 +34,32 @@ public class Book {
     @Column(nullable = false)
     private String bookAuthor;
 
-    @Column(nullable = false)
-    private String bookImg="tmp";
+    @ColumnDefault("'tmp'")
+    private String bookImg;
 
-    @Column(nullable = false)
-    private int bookMembercnt=0;
+    @ColumnDefault("0")
+    private Integer bookMembercnt;
 
-    @Column(nullable = false)
-    private double bookRating=0;
+    @ColumnDefault("0")
+    private double bookRating;
+
+    @ColumnDefault("false")
+    private boolean needCheck;
 
     @Builder
-    public Book(String bookTitle,String bookAuthor,String bookGenre,int bookPagecnt){
+    public Book(String bookTitle,String bookAuthor,String bookGenre,int bookPagecnt, boolean needCheck){
         this.bookTitle=bookTitle;
         this.bookAuthor=bookAuthor;
         this.bookGenre=bookGenre;
         this.bookPagecnt=bookPagecnt;
+        this.needCheck = needCheck;
+    }
+
+    public void changeBookMembercnt(Integer bookMembercnt){
+        this.bookMembercnt = bookMembercnt;
+    }
+
+    public void changeBookRating(double bookRating){
+        this.bookRating = bookRating;
     }
 }

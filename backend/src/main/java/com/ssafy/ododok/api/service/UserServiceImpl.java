@@ -13,14 +13,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService{
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserSurveyRepository userSurveyRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    UserSurveyRepository userSurveyRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    UserServiceImpl(UserRepository userRepository,
+                    UserSurveyRepository userSurveyRepository,
+                    PasswordEncoder passwordEncoder){
+        this.userRepository = userRepository;
+        this.userSurveyRepository = userSurveyRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public User getUserByUserEmail(String userEmail) {

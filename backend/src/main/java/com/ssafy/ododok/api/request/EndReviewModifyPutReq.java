@@ -6,6 +6,4 @@ import lombok.Data;
 public class EndReviewModifyPutReq {
     Long endReviewId;
     String content;
-    double bookRating;
-    double genreRating;
 }

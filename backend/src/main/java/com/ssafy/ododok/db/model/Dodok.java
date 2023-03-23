@@ -21,14 +21,14 @@ public class Dodok {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int dodokId;
+    private Long dodokId;
 
     @ManyToOne
-    @JoinColumn(name="team_id")
+    @JoinColumn(name = "team_id")
     private Team team;
 
     @ManyToOne
-    @JoinColumn(name="book_id")
+    @JoinColumn(name = "book_id")
     private Book book;
 
     @Column(nullable = false)
@@ -36,20 +36,26 @@ public class Dodok {
 
     @Column(nullable = false)
     private LocalDate dodokEnddate;
+
     @Convert(converter = BooleanToYNConverter.class)
     @Column(nullable = false)
     private boolean dodokComplete;
 
-    @Builder
-    public Dodok(Team team,Book book,LocalDate dodokStartdate,LocalDate dodokEndDate){
-     this.team=team;
-     this.book=book;
-     this.dodokStartdate=dodokStartdate;
-     this.dodokEnddate=dodokEndDate;
-     this.setDodokComplete(false);
+    @Convert(converter = BooleanToYNConverter.class)
+    @Column(nullable = false)
+    private boolean dodokOpen;
+
+    public void changeDodokOpen(boolean dodokOpen){
+        this.dodokOpen = dodokOpen;
     }
 
-    public Boolean getDodokCompledte() {
-        return this.getDodokCompledte();
-    }
+//    @Builder
+//    public Dodok(Team team, Book book, LocalDate dodokStartdate, LocalDate dodokEndDate) {
+//        this.team = team;
+//        this.book = book;
+//        this.dodokStartdate = dodokStartdate;
+//        this.dodokEnddate = dodokEndDate;
+//    }
+
+
 }

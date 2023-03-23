@@ -25,12 +25,14 @@ import java.util.NoSuchElementException;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    UserController(UserService userService){
+        this.userService = userService;
+    }
 
+    // 이메일 중복확인
     @GetMapping("/checkEmail/{email}")
     public ResponseEntity<Boolean> checkEmail(@PathVariable String email) {
         try{
@@ -41,6 +43,7 @@ public class UserController {
         return ResponseEntity.status(200).body(false);
     }
 
+    // 닉네임 중복확인
     @GetMapping("/checkNickname/{nickname}")
     public ResponseEntity<Boolean> checkNickname(@PathVariable String nickname) {
         try{
@@ -51,6 +54,7 @@ public class UserController {
         return ResponseEntity.status(200).body(false);
     }
 
+    // 회원가입
     @PostMapping()
     public ResponseEntity<String> register(@RequestBody UserRegisterPostReq.Basic registerDto){
         int res = userService.createUserInfo(registerDto);
@@ -64,19 +68,21 @@ public class UserController {
         }
     }
 
+    // 회원정보 불러오기
     @GetMapping("/me")
     public ResponseEntity<?> getUserInfoSurvey(Authentication authentication) {
-        try{
+//        try{
             PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
             String userId = principal.getUser().getUserEmail();
             User user = userService.getUserByUserEmail(userId);
             UserDto.Basic ud = userService.getUserInfo(user);
             return ResponseEntity.status(200).body(ud);
-        } catch (Exception e){
-            return ResponseEntity.status(200).body("토큰 만료돼서 다시 생성했으니 봐!");
-        }
+//        } catch (NullPointerException e){
+//            return ResponseEntity.status(200).body("토큰 만료돼서 다시 생성했으니 봐!");
+//        }
     }
 
+    // 회원 정보 수정하기
     @PutMapping
     public ResponseEntity<?> update(@RequestBody UserDto.Basic userDto, Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
@@ -96,6 +102,7 @@ public class UserController {
 
     }
 
+    // 회원 삭제하기
     @DeleteMapping
     public ResponseEntity<?> remove(Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
