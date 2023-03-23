@@ -61,7 +61,7 @@ function MyTeamRecordPage() {
   });
   return (
     <div className={sidestyles['myteam-container']}> 
-        <SideBar/>
+        <SideBar location={"record"}/>
         <div className={sidestyles.others}>
             <div className={recordstyles['records-container']}>
               <h2>오도독의 지난활동</h2>

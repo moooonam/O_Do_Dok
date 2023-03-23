@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/Sidebar.module.scss";
 import { useNavigate } from "react-router-dom";
 
-function SideBar() {
+const SideBar = ({location}) => {
+  console.log(location)
   const [status, setStatus] = useState({
     main: false,
     dodok: false,
@@ -11,80 +12,33 @@ function SideBar() {
     teamManage: false,
     memberManage: false,
   });
-  const movePage = useNavigate();
-  function goMyTeamMain() {
+  
+  useEffect(() => {
     setStatus({
       ...status,
-      main: true,
-      dodok: false,
-      article: false,
-      record: false,
-      teamManage: false,
-      memberManage: false,
-    });
+      [location] : true,
+       });
+  }, [])
+  const movePage = useNavigate();
+  function goMyTeamMain() {
     movePage("/myteammain");
   }
   function goMyTeamDodok() {
-    setStatus({
-      ...status,
-      main: false,
-      dodok: true,
-      article: false,
-      record: false,
-      teamManage: false,
-      memberManage: false,
-    });
     movePage("/myteamdodok");
   }
   function goMyTeamArticle() {
-    setStatus({
-      ...status,
-      main: false,
-      dodok: false,
-      article: true,
-      record: false,
-      teamManage: false,
-      memberManage: false,
-    });
     movePage("/myteamarticle");
   }
 
   function goMyTeamRecord() {
-    setStatus({
-      ...status,
-      main: false,
-      dodok: false,
-      article: false,
-      record: true,
-      teamManage: false,
-      memberManage: false,
-    });
     movePage("/myteamrecord");
   }
 
   function goMyTeamManage() {
-    setStatus({
-      ...status,
-      main: false,
-      dodok: false,
-      article: false,
-      record: false,
-      teamManage: true,
-      memberManage: false,
-    });
     movePage("/myteam/manage");
   }
 
   function goMyTeamMemberManage() {
-    setStatus({
-      ...status,
-      main: false,
-      dodok: false,
-      article: false,
-      record: false,
-      teamManage: false,
-      memberManage: true,
-    });
     movePage("/myteam/membermanage");
   }
 

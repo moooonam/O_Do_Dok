@@ -2,10 +2,12 @@
 // @import url('./reset.css');
 .myteam-container {
     display: flex;
+    height: 100%;
 }
 .sidebar {
     width: 15%;
     background-color: #F5F5F5;
+    
 }
 .others {
     width: 85%;
@@ -30,6 +32,7 @@
 
 .active {
     opacity: 1;
+    font-weight: bold;
 }
 
 .notActive {

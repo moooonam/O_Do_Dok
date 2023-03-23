@@ -5,7 +5,7 @@ import mainstyles from "../../styles/MyTeamMain.module.scss";
 function MyTeamMainPage() {
   return (
     <div className={sidestyles["myteam-container"]}>
-      <SideBar />
+      <SideBar location={"main"}/>
       <div className={sidestyles.others}>
         <div className={mainstyles["myteam-content-box"]}>
           <h4>

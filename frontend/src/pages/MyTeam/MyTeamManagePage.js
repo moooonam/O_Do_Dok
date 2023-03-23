@@ -177,7 +177,7 @@ function MyTeamManagePage() {
 
   return (
     <div className={sidestyles["myteam-container"]}>
-      <SideBar />
+      <SideBar location={"teamManage"}/>
       <div className={sidestyles.others}>
         <div className={teamstyles["teammanage-container"]}>
           <div className={teamstyles["teammanage-header"]}>

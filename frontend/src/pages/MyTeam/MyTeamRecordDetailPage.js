@@ -85,7 +85,7 @@ function MyTeamRecordDetail() {
 
   return (
     <div className={sidestyles["myteam-container"]}>
-      <SideBar />
+      <SideBar location={"record"}/>
       <div className={sidestyles.others}>
         <div className={dodokstyles["wrap-content"]}>
           <div className={dodokstyles["default-btn"]}>삭제</div>
