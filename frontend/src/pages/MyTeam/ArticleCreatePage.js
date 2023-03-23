@@ -48,7 +48,7 @@ function ArticleCreatePage() {
 
   return (
     <div className={sidestyles["myteam-container"]}>
-      <SideBar />
+      <SideBar location={"article"}/>
       <div className={sidestyles.others}>
         <div className={writestyles["write-container"]}>
           <ArrowBackIcon onClick={goMyTeamArticle} />

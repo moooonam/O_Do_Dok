@@ -221,7 +221,7 @@ function MyTeamMemberManagePage() {
 
   return (
     <div className={sidestyles["myteam-container"]}>
-      <SideBar />
+      <SideBar location={"memberManage"}/>
       <div className={sidestyles.others}>
         <div className={memberstyles["members-container"]}>
           <h2>개미들 모임원</h2>

@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/Sidebar.module.scss";
 import { useNavigate } from "react-router-dom";
 
-function SideBar() {
+const SideBar = ({location}) => {
+  console.log(location)
+  const [status, setStatus] = useState({
+    main: false,
+    dodok: false,
+    article: false,
+    record: false,
+    teamManage: false,
+    memberManage: false,
+  });
+  
+  useEffect(() => {
+    setStatus({
+      ...status,
+      [location] : true,
+       });
+  }, [])
   const movePage = useNavigate();
   function goMyTeamMain() {
     movePage("/myteammain");
@@ -21,7 +37,7 @@ function SideBar() {
   function goMyTeamManage() {
     movePage("/myteam/manage");
   }
-  
+
   function goMyTeamMemberManage() {
     movePage("/myteam/membermanage");
   }
@@ -30,14 +46,42 @@ function SideBar() {
     <div className={styles.sidebar}>
       <div className={styles["wrap-sidebar"]}>
         <ul className={styles["sidebar-list"]}>
-          <li onClick={goMyTeamMain}>
+          <li
+            onClick={goMyTeamMain}
+            className={status.main ? styles["active"] : styles["notActive"]}
+          >
             소식
           </li>
-          <li onClick={goMyTeamDodok}>도독</li>
-          <li onClick={goMyTeamArticle}>게시판</li>
-          <li onClick={goMyTeamRecord}>지난활동</li>
-          <li onClick={goMyTeamManage}>모임 관리</li>
-          <li onClick={goMyTeamMemberManage}>모임원 관리</li>
+          <li
+            onClick={goMyTeamDodok}
+            className={status.dodok ? styles["active"] : styles["notActive"]}
+          >
+            도독
+          </li>
+          <li
+            onClick={goMyTeamArticle}
+            className={status.article ? styles["active"] : styles["notActive"]}
+          >
+            게시판
+          </li>
+          <li
+            onClick={goMyTeamRecord}
+            className={status.record ? styles["active"] : styles["notActive"]}
+          >
+            지난활동
+          </li>
+          <li
+            onClick={goMyTeamManage}
+            className={status.teamManage ? styles["active"] : styles["notActive"]}
+          >
+            모임 관리
+          </li>
+          <li
+            onClick={goMyTeamMemberManage}
+            className={status.memberManage ? styles["active"] : styles["notActive"]}
+          >
+            모임원 관리
+          </li>
         </ul>
       </div>
     </div>

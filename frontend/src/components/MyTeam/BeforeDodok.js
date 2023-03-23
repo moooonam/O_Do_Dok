@@ -66,7 +66,7 @@ function BeforeDodok() {
 
   return (
     <div className={sidestyles["myteam-container"]}>
-      <SideBar />
+      <SideBar location={"dodok"}/>
       <div className={sidestyles.others}>
         <div className={dodokstyles["firstBox"]}>
           <h2>개미들을 위한 추천 도서</h2>

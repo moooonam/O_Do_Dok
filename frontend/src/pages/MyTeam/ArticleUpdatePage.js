@@ -48,7 +48,7 @@ function ArticleUpdatePage() {
   }
   return (
     <div className={sidestyles["myteam-container"]}>
-      <SideBar />
+      <SideBar location={"article"}/>
       <div className={sidestyles.others}>
         <div className={updatestyles["write-container"]}>
           <ArrowBackIcon onClick={goMyTeamArticle} />

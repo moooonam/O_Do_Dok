@@ -2,17 +2,12 @@
 // @import url('./reset.css');
 .myteam-container {
     display: flex;
+    height: 100%;
 }
 .sidebar {
     width: 15%;
-    background-color: #F5F5F5;;
-    height: 100vh;
-    // top: 0;
-    // left: 0;
-    // position: fixed;
-    // flex-grow: 1;
-    // max-height: 100vh;
-    // position: sticky;
+    background-color: #F5F5F5;
+    
 }
 .others {
     width: 85%;
@@ -27,12 +22,19 @@
     padding-top: 10px;
     font-family: 'Noto Serif KR', serif;
     font-size: 20px;
-    .selected-menu {
-        opacity: 1;
-    }
+
     li {
         margin-top: 50px;
-        opacity: 0.5;
+        // opacity: 0.5;
         cursor: pointer;
     }
+}
+
+.active {
+    opacity: 1;
+    font-weight: bold;
+}
+
+.notActive {
+    opacity: 0.5;
 }

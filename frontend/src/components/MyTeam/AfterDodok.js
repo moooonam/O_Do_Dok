@@ -90,7 +90,7 @@ function AfterDodok() {
 
   return (
     <div className={sidestyles["myteam-container"]}>
-      <SideBar />
+      <SideBar location={"dodok"}/>
       <div className={sidestyles.others}>
         <div className={dodokstyles["wrap-content"]}>
           <div className={dodokstyles["wrap-title"]}>

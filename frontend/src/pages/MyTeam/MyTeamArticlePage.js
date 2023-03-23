@@ -12,7 +12,7 @@ function MyTeamArticlePage() {
 
   return (
     <div className={sidestyles['myteam-container']}> 
-        <SideBar/>
+        <SideBar location={"article"}/>
         <div className={sidestyles.others}>
           <div className={articlestyles["articles-container"]}>
             <h2>게시판</h2>

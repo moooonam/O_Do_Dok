@@ -59,7 +59,7 @@ function ArticleDetailPage() {
 
   return (
     <div className={sidestyles["myteam-container"]}>
-      <SideBar />
+      <SideBar location={"article"}/>
       <div className={sidestyles.others}>
         <div className={detailstyles["detail-container"]}>
           <ArrowBackIcon onClick={goMyTeamArticle} />

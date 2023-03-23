@@ -99,7 +99,7 @@ nav,
 section {
   display: block;
 }
-body {
+html, body {
   line-height: 1;
   height: 100%;
 }
