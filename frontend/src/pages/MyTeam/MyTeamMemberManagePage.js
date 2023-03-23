@@ -109,7 +109,7 @@ function MyTeamMemberManagePage() {
   // 모임원 반복 출력
   const renderUserImg = userImgs.map((member) => {
     return (
-      <div
+      <div key={member.id}
         onClick={() => {
           memberModalOpen();
           clickMember(member);
@@ -151,7 +151,7 @@ function MyTeamMemberManagePage() {
   // 가입 신청자 반복 출력
   const renderNewApply = newapply.map((member) => {
     return (
-      <div
+      <div key={member.id}
         onClick={() => {
           applicantModalOpen();
           clickApplicant(member);
@@ -221,7 +221,7 @@ function MyTeamMemberManagePage() {
 
   return (
     <div className={sidestyles["myteam-container"]}>
-      <SideBar />
+      <SideBar location={"memberManage"}/>
       <div className={sidestyles.others}>
         <div className={memberstyles["members-container"]}>
           <h2>개미들 모임원</h2>

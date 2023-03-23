@@ -2,11 +2,17 @@ import React from 'react'
 import SideBar from '../../components/SideBar'
 import sidestyles from '../../styles/Sidebar.module.scss'
 import articlestyles from '../../styles/MyTeamArticle.module.scss'
+import { useNavigate } from "react-router-dom";
 
 function MyTeamArticlePage() {
+  const movePage = useNavigate();
+  function goArticleCreate() {
+    movePage("/myteam/:teamId/article/create");
+  }
+
   return (
     <div className={sidestyles['myteam-container']}> 
-        <SideBar/>
+        <SideBar location={"article"}/>
         <div className={sidestyles.others}>
           <div className={articlestyles["articles-container"]}>
             <h2>게시판</h2>
@@ -16,7 +22,7 @@ function MyTeamArticlePage() {
                 <p className={articlestyles["menuOne"]}>공지사항(12)</p>
                 <p>자유게시판(15)</p>
               </div>
-              <div className={articlestyles["menuRight"]}>+</div>
+              <div className={articlestyles["menuRight"]} onClick={goArticleCreate}>+</div>
             </div>
             <hr />
             <div className={articlestyles["articleOne"]}>

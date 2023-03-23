@@ -1,0 +1,44 @@
+.write-container {
+    margin: 50px 50px 0px 100px;
+}
+
+.inner-container {
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 25px;
+}
+
+.article-header {
+    display: flex;
+    // border-bottom : 1px solid black;
+
+    h4{
+        width: 5%;
+        margin-top: 15px;
+    }
+
+    .dropdown {
+        padding-top: 0px;
+    }
+}
+
+.article-writer {
+    text-align: end;
+}
+
+.article-context {
+    margin-top: 25px;
+    width: 98%;
+    height: 400px;
+    border : 1px solid lightgray;
+    border-radius : 10px;
+    line-height: 10px;
+    padding: 15px;
+    font-size: large;
+}
+
+.save-btn-box {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+}
