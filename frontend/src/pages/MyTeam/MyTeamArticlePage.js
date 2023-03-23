@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 function MyTeamArticlePage() {
   const movePage = useNavigate();
   function goArticleCreate() {
-    movePage("/myteamarticle/create");
+    movePage("/myteam/:teamId/article/create");
   }
 
   return (

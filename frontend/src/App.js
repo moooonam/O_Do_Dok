@@ -47,21 +47,20 @@ function App() {
         <Route exact path="/mypage" element={<MyPage/>}/>
         <Route exact path="/mypage/update" element={<UserInfoUpdatePage/>}/>
         <Route exact path="/mypage/update/password" element={<UserPasswordUpdatePage/>}/>
-        <Route exact path="/myteammain" element={<MyTeamMainPage/>}/>
-        <Route exact path="/myteamdodok" element={<MyTeamDodokPage/>}/>
-        <Route exact path="/myteamarticle" element={<MyTeamArticlePage/>}/>
-        <Route exact path="/myteamarticle/detail" element={<ArticleDetailPage/>}/>
-        <Route exact path="/myteamarticle/create" element={<ArticleCreatePage/>}/>
-        <Route exact path="/myteamarticle/update" element={<ArticleUpdatePage/>}/>
-        <Route exact path="/myteamrecord" element={<MyTeamRecordPage/>}/>
-        <Route exact path="/myteamrecorddetail" element={<MyTeamRecordDetail/>}/>
-        <Route exact path="/myteam/membermanage" element={<MyTeamMemberManagePage/>}/>
-        <Route exact path="/myteam/manage" element={<MyTeamManagePage/>}/>
+        <Route exact path="/myteam/:teamId/main" element={<MyTeamMainPage/>}/>
+        <Route exact path="/myteam/:teamId/dodok" element={<MyTeamDodokPage/>}/>
+        <Route exact path="/myteam/:teamId/article" element={<MyTeamArticlePage/>}/>
+        <Route exact path="/myteam/:teamId/article/:articleId" element={<ArticleDetailPage/>}/>
+        <Route exact path="/myteam/:teamId/article/create" element={<ArticleCreatePage/>}/>
+        <Route exact path="/myteam/:teamId/article/:articleId/update" element={<ArticleUpdatePage/>}/>
+        <Route exact path="/myteam/:teamId/record" element={<MyTeamRecordPage/>}/>
+        <Route exact path="/myteam/:teamId/record/:recordId" element={<MyTeamRecordDetail/>}/>
+        <Route exact path="/myteam/:teamId/membermanage" element={<MyTeamMemberManagePage/>}/>
+        <Route exact path="/myteam/:teamId/manage" element={<MyTeamManagePage/>}/>
         <Route exact path="/about-us" element={<AboutUsPage/>}/>
         <Route exact path="/teams" element={<TeamsMainPage/>}/>
-        <Route exact path="/teams/detail" element={<TeamDetailPage/>}/>
+        <Route exact path="/teams/:teamId" element={<TeamDetailPage/>}/>
         <Route exact path="/openreviews" element={<OpenReviewsPage/>}/>
-
       </Routes>
     </BrowserRouter>
     </div>

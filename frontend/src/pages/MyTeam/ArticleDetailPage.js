@@ -15,11 +15,11 @@ function ArticleDetailPage() {
   
   const movePage = useNavigate();
   function goMyTeamArticle() {
-    movePage("/myteamarticle");
+    movePage("/myteam/:teamId/article");
   }
 
   function goArticleUpdate() {
-    movePage("/myteamarticle/update")
+    movePage("/myteam/:teamId/article/:articleId/update")
   }
 
   const comments = [

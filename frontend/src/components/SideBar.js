@@ -21,25 +21,25 @@ const SideBar = ({location}) => {
   }, [])
   const movePage = useNavigate();
   function goMyTeamMain() {
-    movePage("/myteammain");
+    movePage("/myteam/:teamId/main");
   }
   function goMyTeamDodok() {
-    movePage("/myteamdodok");
+    movePage("/myteam/:teamId/dodok");
   }
   function goMyTeamArticle() {
-    movePage("/myteamarticle");
+    movePage("/myteam/:teamId/article");
   }
 
   function goMyTeamRecord() {
-    movePage("/myteamrecord");
+    movePage("/myteam/:teamId/record");
   }
 
   function goMyTeamManage() {
-    movePage("/myteam/manage");
+    movePage("/myteam/:teamId/manage");
   }
 
   function goMyTeamMemberManage() {
-    movePage("/myteam/membermanage");
+    movePage("/myteam/:teamId/membermanage");
   }
 
   return (

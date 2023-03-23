@@ -16,7 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 function ArticleUpdatePage() {
     const movePage = useNavigate();
   function goMyTeamArticle() {
-    movePage("/myteamarticle");
+    movePage("/myteam/:teamId/article");
   }
 
   const [menu, setMenu] = useState({

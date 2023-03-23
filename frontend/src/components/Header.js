@@ -24,7 +24,7 @@ function Header() {
     movePage("/teams");
   }
   function goMyTeam() {
-    movePage("/myteammain");
+    movePage("/myteam/:teamId/main");
     const checkbox = document.getElementById('dropdown')
     checkbox.checked = false
   }
