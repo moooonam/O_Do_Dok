@@ -17,6 +17,9 @@ import MyTeamRecordPage from "./pages/MyTeam/MyTeamRecordPage";
 import MyTeamMemberManagePage from "./pages/MyTeam/MyTeamMemberManagePage";
 import MyTeamManagePage from "./pages/MyTeam/MyTeamManagePage";
 import MyTeamRecordDetail from "./pages/MyTeam/MyTeamRecordDetailPage";
+import ArticleDetailPage from "./pages/MyTeam/ArticleDetailPage";
+import ArticleCreatePage from "./pages/MyTeam/ArticleCreatePage";
+import ArticleUpdatePage from "./pages/MyTeam/ArticleUpdatePage";
 
 // 소개 페이지
 import AboutUsPage from "./pages/AboutUsPage";
@@ -47,6 +50,9 @@ function App() {
         <Route exact path="/myteammain" element={<MyTeamMainPage/>}/>
         <Route exact path="/myteamdodok" element={<MyTeamDodokPage/>}/>
         <Route exact path="/myteamarticle" element={<MyTeamArticlePage/>}/>
+        <Route exact path="/myteamarticle/detail" element={<ArticleDetailPage/>}/>
+        <Route exact path="/myteamarticle/create" element={<ArticleCreatePage/>}/>
+        <Route exact path="/myteamarticle/update" element={<ArticleUpdatePage/>}/>
         <Route exact path="/myteamrecord" element={<MyTeamRecordPage/>}/>
         <Route exact path="/myteamrecorddetail" element={<MyTeamRecordDetail/>}/>
         <Route exact path="/myteam/membermanage" element={<MyTeamMemberManagePage/>}/>
