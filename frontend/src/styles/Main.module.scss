@@ -36,7 +36,7 @@
 //추천 도서쪽
 .wrap-recomendbook {
     background-color: #012405;
-    height: 400px;
+    height: 65vh;
     .recomendbook-title{
         font-size: 20px;
         color: white;
@@ -47,7 +47,7 @@
 }
 .wrap-bookimg {
     display: flex;
-    padding: 10vh 4vw;
+    padding: 8vh 4vw;
     img {
         margin: 0 3vw;
         width: 12vw;
@@ -63,7 +63,7 @@
 
 .wrap-bestreview {
     background-color: #2C1500;
-    height: 400px;
+    height: 65vh;
     margin-top: 50px;
     .bestreview-title{
         font-size: 20px;

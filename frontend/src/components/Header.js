@@ -5,13 +5,13 @@ import { useSelector } from "react-redux";
 
 function Header() {
   // 이동 관련
-  const checkbox = document.getElementById('dropdown')
   const movePage = useNavigate();
   function goMain() {
     movePage("/");
   }
   function goMyPage() {
     movePage("/mypage");
+    const checkbox = document.getElementById('dropdown')
     checkbox.checked = false
   }
   function goLogin() {
@@ -25,6 +25,7 @@ function Header() {
   }
   function goMyTeam() {
     movePage("/myteammain");
+    const checkbox = document.getElementById('dropdown')
     checkbox.checked = false
   }
   function goOpenReviews() {

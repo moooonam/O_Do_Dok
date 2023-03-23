@@ -3,7 +3,6 @@ import styles from "../styles/Sidebar.module.scss";
 import { useNavigate } from "react-router-dom";
 
 const SideBar = ({location}) => {
-  console.log(location)
   const [status, setStatus] = useState({
     main: false,
     dodok: false,
@@ -18,6 +17,7 @@ const SideBar = ({location}) => {
       ...status,
       [location] : true,
        });
+       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const movePage = useNavigate();
   function goMyTeamMain() {
