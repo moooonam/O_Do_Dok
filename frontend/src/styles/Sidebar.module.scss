@@ -4,17 +4,19 @@
     display: flex;
 }
 .sidebar {
-    flex: 1;
+    width: 15%;
     background-color: #F5F5F5;;
     height: 100vh;
+    // top: 0;
+    // left: 0;
+    // position: fixed;
+    // flex-grow: 1;
+    // max-height: 100vh;
+    // position: sticky;
 }
 .others {
-    flex: 6;
-    margin-left: 50px;
-    margin-top: 10px;
-    margin-right: 25px;
+    width: 85%;
 }
-
 .wrap-sidebar {
     padding-top: 80px;
     padding-left: 20px;

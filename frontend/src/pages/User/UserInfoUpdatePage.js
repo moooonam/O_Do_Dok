@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
-import styles from "../../styles/Signup.module.scss";
+import styles from "../../styles/UserInfoUpdate.module.scss";
 import Grid from "@mui/material/Grid"; // Grid version 1
 import Button from "@mui/material/Button";
-import axios from "axios";
+// import axios from "axios";
+import { useNavigate } from "react-router-dom";
+// import IconButton from "@mui/material/IconButton";
+// import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
 // radio
 import Radio from "@mui/material/Radio";
@@ -18,14 +21,14 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-function SignupPage() {
+function UserInfoUpdatePage() {
+  const movePage = useNavigate();
+  function goMyPage() {
+    movePage("/mypage");
+  }
+
   const [form, setForm] = useState({
-    name: "",
-    email: "",
     nickname: "",
-    password: "",
-    passwordConfirm: "",
-    gender: "",
     onoff: "",
     region: "",
     frequency: "",
@@ -35,7 +38,7 @@ function SignupPage() {
   const [birth, setBirth] = React.useState(dayjs());
   // 날짜 형식 변경
   const dateFormat = dayjs(birth.$d).format("YYYY-MM-DD");
-  const userAge = 2023 - Number(dateFormat.slice(0,4)) + 1
+  const userAge = 2023 - Number(dateFormat.slice(0, 4)) + 1;
 
   // 장르 리스트
   const [userGenre, setUserGenre] = useState([]);
@@ -46,9 +49,9 @@ function SignupPage() {
     horror: false,
     sf: false,
     fantasy: false,
-    drama : false,
+    drama: false,
     game: false,
-    romance : false,
+    romance: false,
     animation: false,
   });
 
@@ -128,7 +131,7 @@ function SignupPage() {
   };
 
   // axios 보낼 데이터
-  const userInfo = {
+  const userUpdateInfo = {
     name: "",
     email: "",
     nickname: "",
@@ -142,21 +145,6 @@ function SignupPage() {
     genre2: "",
     genre3: "",
     age: 0,
-  };
-
-  const emailDuplication = () => {
-    // if (form.email) {
-    //   axios({
-    //     methods: 'get',
-    //     url: `http://localhost:3000/api/v1/user/checkEmail/${form.email}`
-    //   })
-    //   .then((res) => {
-    //     console.log(res)
-    //   })
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
-    // }
   };
 
   const nickDuplication = () => {
@@ -174,26 +162,25 @@ function SignupPage() {
     // }
   };
 
-  // 가입하기 함수
-  const userSignup = () => {
-    userInfo.name = form.name
-    userInfo.email = form.email
-    userInfo.nickname = form.nickname
-    userInfo.password = form.password
-    userInfo.passwordConfirm = form.passwordConfirm
-    userInfo.gender = form.gender
-    userInfo.onoff = form.onoff
-    userInfo.region = form.region
-    userInfo.frequency = form.frequency
-    userInfo.genre1 = userGenre[0]
-    userInfo.genre2 = userGenre[1]
-    userInfo.genre3 = userGenre[2]
-    userInfo.age = userAge
-
+  // 정보 업데이트 함수
+  const userupdate = () => {
+    userUpdateInfo.name = form.name;
+    userUpdateInfo.email = form.email;
+    userUpdateInfo.nickname = form.nickname;
+    userUpdateInfo.password = form.password;
+    userUpdateInfo.passwordConfirm = form.passwordConfirm;
+    userUpdateInfo.gender = form.gender;
+    userUpdateInfo.onoff = form.onoff;
+    userUpdateInfo.region = form.region;
+    userUpdateInfo.frequency = form.frequency;
+    userUpdateInfo.genre1 = userGenre[0];
+    userUpdateInfo.genre2 = userGenre[1];
+    userUpdateInfo.genre3 = userGenre[2];
+    userUpdateInfo.age = userAge;
     // axios({
     //   methods: 'post',
     //   url: 'http://localhost:3000/api/v1/user',
-    //   data: userInfo,
+    //   data: userUpdateInfo,
     // })
     //   .then((res) => {
     //     console.log(res)
@@ -203,11 +190,11 @@ function SignupPage() {
     //   })
     // console.log(form);
     // console.log(2023 - Number(dateFormat.slice(0,4)) + 1);
-    // console.log(userGenre[0]); 
-    // console.log(userGenre[1]); 
-    // console.log(userGenre[2]); 
-    // console.log(userGenre); 
-    console.log(userInfo)
+    // console.log(userGenre[0]);
+    // console.log(userGenre[1]);
+    // console.log(userGenre[2]);
+    // console.log(userGenre);
+    // console.log(userUpdateInfo);
   };
 
   // 유효성 검사
@@ -215,25 +202,6 @@ function SignupPage() {
     let check = /[~!@#$%^&*()_+|<>?:{}.,/;='"]/;
     return check.test(form.nickname);
   };
-
-  const name_validation = () => {
-    let check = /[~!@#$%^&*()_+|<>?:{}.,/;='"]/;
-    return check.test(form.name);
-  };
-
-  // const password_confirm_validation = () => {
-  //   if (form.password === form.passwordConfirm) {
-  //     return false;
-  //   } else {
-  //     return true
-  //   }
-  // };
-
-  // email-validator 라이브러리
-  // const email_validation = () => {
-  //   let check = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
-  //   return check.test(form.email);
-  // };
 
   return (
     <Grid
@@ -243,49 +211,62 @@ function SignupPage() {
       alignItems="center"
     >
       <h2>Oh Do Dok!</h2>
-      <div className={styles["signupBox"]}>
-        <h3 className={styles["title"]}>회원가입</h3>
+      <div className={styles["updateBox"]}>
+        <h3 className={styles["title"]}>회원 정보 수정</h3>
+        <br />
+        <br />
+        <div className={styles["userImg-box"]}>
+          <p>프로필 사진</p>
+          <Button variant="outlined" component="label" color="success">
+            Upload
+            <input hidden accept="image/*" multiple type="file" />
+          </Button>
+          {/* <IconButton
+            color="primary"
+            aria-label="upload picture"
+            component="label"
+          >
+            <input hidden accept="image/*" type="file" />
+            <PhotoCamera />
+          </IconButton> */}
+        </div>
+        <div className={styles["userImg-div"]}>
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQifB4Vg3_ARc3CQag2UroPpXuJnujae0a-dA&usqp=CAU"
+            alt=""
+          />
+        </div>
+        <br />
+        <br />
         <Grid container direction="row" columnGap={10}>
-          <p className={styles["signup-blank"]}>이름</p>
+          <p className={styles["update-blank-little"]}>이름</p>
           <TextField
             required
             id="name"
-            label="Required"
-            placeholder="이름을 입력해주세요"
-            value={form.name}
+            disabled
+            value="유저 이름"
             variant="standard"
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            error={name_validation()}
-            helperText={name_validation() ? "특수기호는 하실 수 없습니다." : ""}
           />
+          <br />
+          <br />
+          <br />
         </Grid>
         <Grid container direction="row" columnGap={8}>
-          <p className={styles["signup-blank"]}>이메일</p>
+          <p className={styles["update-blank-little"]}>이메일</p>
           <TextField
             sx={{
               width: { md: 250 },
             }}
             required
+            disabled
             id="email"
-            label="Required"
-            placeholder="이메일을 입력해주세요"
-            value={form.email}
+            value="test@test.com"
             variant="standard"
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            // error={!email_validation()}
-            // helperText={email_validation() ? "":"이메일 형식에 맞춰 작성해주세요."}
           />
-          <Button
-            variant="outlined"
-            color="success"
-            className={styles["signup-dupli"]}
-            onClick={emailDuplication()}
-          >
-            중복확인
-          </Button>
         </Grid>
+        <br />
         <Grid container direction="row" columnGap={8}>
-          <p className={styles["signup-blank"]}>닉네임</p>
+          <p className={styles["update-blank"]}>닉네임</p>
           <TextField
             sx={{
               width: { md: 250 },
@@ -304,46 +285,12 @@ function SignupPage() {
           />
           <Button
             variant="outlined"
-            className={styles["signup-dupli"]}
+            className={styles["update-dupli"]}
             color="success"
             onClick={nickDuplication()}
           >
             중복확인
           </Button>
-        </Grid>
-        <Grid container direction="row" columnGap={8}>
-          <p className={styles["signup-blank"]}>비밀번호</p>
-          <TextField
-            sx={{
-              width: { md: 250 },
-            }}
-            required
-            id="password"
-            label="Required"
-            placeholder="비밀번호를 입력해주세요"
-            value={form.password}
-            variant="standard"
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-          />
-        </Grid>
-        <Grid container direction="row" columnGap={4}>
-          <p className={styles["signup-blank"]}>비밀번호 확인</p>
-          <TextField
-            sx={{
-              width: { md: 250 },
-            }}
-            required
-            id="passwordConfirm"
-            label="Required"
-            placeholder="비밀번호를 다시 입력해주세요"
-            value={form.passwordConfirm}
-            variant="standard"
-            onChange={(e) =>
-              setForm({ ...form, passwordConfirm: e.target.value })
-            }
-            // error={password_confirm_validation()}
-            // helperText={password_confirm_validation() ? "비밀번호가 일치하지 않습니다":""}
-          />
         </Grid>
         <br /> <br />
         <FormControl>
@@ -354,12 +301,14 @@ function SignupPage() {
             name="row-radio-buttons-group"
           >
             <FormControlLabel
+              disabled
               value="male"
               control={<Radio />}
               label="남성"
               onChange={(e) => setForm({ ...form, gender: e.target.value })}
             />
             <FormControlLabel
+              disabled
               value="female"
               control={<Radio />}
               label="여성"
@@ -374,6 +323,7 @@ function SignupPage() {
           <br />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
+              disabled
               value={birth}
               onChange={(newValue) => setBirth(newValue)}
             />
@@ -384,13 +334,15 @@ function SignupPage() {
         <div>
           <p>선호 장르</p>
           <br />
-          <Grid container direction="row" columnGap={3}>
+          <div className={styles["genre-box"]}>
             <div
               onClick={() => {
                 clickreason();
                 clickGenre("reason");
               }}
-              className={genreList.reason ? styles["active"] : styles["notActive"]}
+              className={
+                genreList.reason ? styles["active"] : styles["notActive"]
+              }
             >
               #추리
             </div>
@@ -399,7 +351,9 @@ function SignupPage() {
                 clickthril();
                 clickGenre("thril");
               }}
-              className={genreList.thril ? styles["active"] : styles["notActive"]}
+              className={
+                genreList.thril ? styles["active"] : styles["notActive"]
+              }
             >
               #스릴러
             </div>
@@ -419,9 +373,7 @@ function SignupPage() {
                 clicksf();
                 clickGenre("sf");
               }}
-              className={
-                genreList.sf ? styles["active"] : styles["notActive"]
-              }
+              className={genreList.sf ? styles["active"] : styles["notActive"]}
             >
               #과학
             </div>
@@ -480,7 +432,7 @@ function SignupPage() {
             >
               #만화
             </div>
-          </Grid>
+          </div>
         </div>
         <br />
         <br />
@@ -514,7 +466,7 @@ function SignupPage() {
         <br />
         <br />
         <Grid container direction="row" columnGap={8}>
-          <p className={styles["signup-blank"]}>활동지역</p>
+          <p className={styles["update-blank"]}>활동지역</p>
           <TextField
             required
             id="region"
@@ -557,14 +509,22 @@ function SignupPage() {
         </FormControl>
         <br />
         <br />
-        <Button
-          variant="contained"
-          color="success"
-          fullWidth
-          onClick={userSignup}
-        >
-          가입하기
-        </Button>
+        <div className={styles["btns"]}>
+          <Button variant="contained" color="error" onClick={goMyPage}>
+            취소
+          </Button>
+          <div className={styles["btn-blank"]}></div>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              goMyPage();
+                userupdate();
+            }}
+          >
+            수정 완료
+          </Button>
+        </div>
         <br />
         <br />
       </div>
@@ -572,4 +532,4 @@ function SignupPage() {
   );
 }
 
-export default SignupPage;
+export default UserInfoUpdatePage;
