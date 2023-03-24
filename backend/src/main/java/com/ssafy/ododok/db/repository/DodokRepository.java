@@ -16,6 +16,7 @@ public interface DodokRepository extends JpaRepository<Dodok,Long> {
     Optional<List<Dodok>> findAllByTeamAndDodokComplete(Team team, Boolean dodokComplete);
     Optional<Dodok> findByTeamAndDodokComplete(Team team, Boolean dodokComplete);
     Optional<List<Dodok>> findAllByTeamAndDodokCompleteAndDodokOpen(Team team, Boolean dodokComplete, Boolean dodokOpen);
+    Optional<List<Dodok>> findAllByBookId(long BookId);
 
     @Transactional
     @Modifying // select 문이 아님을 나타낸다

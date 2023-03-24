@@ -51,22 +51,13 @@ public class DodokController {
 
     // 지난 도독 리스트 가져오기 _ 해당 모임의 회원이 아니면 공개만 보일 수 있도록 처리해야함 !!!!
     @GetMapping("/lastdodoks/{teamId}")
-    public ResponseEntity<List<DodokInfoRes>>showLastAllDodokInfo(@PathVariable Long teamId, Authentication auth){
+    public ResponseEntity<?>showLastAllDodokInfo(@PathVariable Long teamId, Authentication auth){
         PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
         User user = principal.getUser();
 
         List<Dodok> dodokList= dodokService.showLastAllDodoks(user, teamId);
 
-        List<DodokInfoRes> dodokInfoResList = new ArrayList<>();
-
-        for(Dodok dodok : dodokList){
-            List<ReviewPage> reviewPageList = dodokService.getReviewPageList(dodok);
-            List<ReviewEnd> reviewEndList = dodokService.getRivewEndList(dodok);
-            DodokInfoRes dodokInfoRes =new DodokInfoRes(dodok,reviewPageList,reviewEndList);
-            dodokInfoResList.add(dodokInfoRes);
-        }
-
-        return new ResponseEntity(dodokInfoResList,HttpStatus.OK);
+        return dodokInfoResList(dodokList);
     }
 
     // 도독 공개 설정
@@ -85,6 +76,40 @@ public class DodokController {
         User user = principal.getUser();
         String res =  dodokService.updateDodokClose(user, dodokId);
         return new ResponseEntity(res, HttpStatus.OK);
+    }
+
+    // 책을 검색하면 관련된 도독이 나올 수 있도록
+
+    // 도독 검색
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<?> searchDodoks(@PathVariable String keyword){
+
+        List<Dodok> dodokList= dodokService.searchDodoks(keyword);
+
+        return dodokInfoResList(dodokList);
+    }
+
+    public User getUser(Authentication auth){
+        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
+        User user = principal.getUser();
+        return user;
+    }
+
+    public ResponseEntity<?> dodokInfoResList(List<Dodok> dodokList){
+        List<DodokInfoRes> dodokInfoResList = new ArrayList<>();
+
+        for(Dodok dodok : dodokList){
+            List<ReviewPage> reviewPageList = dodokService.getReviewPageList(dodok);
+            List<ReviewEnd> reviewEndList = dodokService.getRivewEndList(dodok);
+            DodokInfoRes dodokInfoRes =new DodokInfoRes(dodok,reviewPageList,reviewEndList);
+            dodokInfoResList.add(dodokInfoRes);
+        }
+
+        if(dodokInfoResList.size()==0){
+            return new ResponseEntity<>("검색 결과가 없습니다.",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(dodokInfoResList,HttpStatus.OK);
+        }
     }
 
 }

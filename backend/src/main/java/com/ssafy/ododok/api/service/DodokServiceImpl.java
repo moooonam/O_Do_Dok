@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -226,5 +227,20 @@ public class DodokServiceImpl implements DodokService {
         } else{
             return "권한이 없습니다.";
         }
+    }
+
+    @Override
+    public List<Dodok> searchDodoks(String keyword) {
+        List<Book> searchResult= bookRepository.findAllByBookTitleContainingIgnoreCase(keyword);
+
+        List<Dodok> dodokResult = new ArrayList<>();
+
+        for(Book list : searchResult){
+            List<Dodok> dodoklist = dodokRepository.findAllByBookId(list.getBookId()).get();
+            for(Dodok dodok : dodoklist){
+                dodokResult.add(dodok);
+            }
+        }
+        return dodokResult;
     }
 }
