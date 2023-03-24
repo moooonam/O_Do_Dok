@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
 
+@CrossOrigin(value = "*")
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -156,6 +157,5 @@ public class UserController {
 //    }
 
     // 나의 리뷰 출력 (개인 리뷰)
-
 
 }

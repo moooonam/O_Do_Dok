@@ -229,6 +229,7 @@ public class DodokServiceImpl implements DodokService {
         }
     }
 
+    // 도독 찾기
     @Override
     public List<Dodok> searchDodoks(String keyword) {
         List<Book> searchResult= bookRepository.findAllByBookTitleContainingIgnoreCase(keyword);
@@ -236,11 +237,12 @@ public class DodokServiceImpl implements DodokService {
         List<Dodok> dodokResult = new ArrayList<>();
 
         for(Book list : searchResult){
-            List<Dodok> dodoklist = dodokRepository.findAllByBookId(list.getBookId()).get();
+            List<Dodok> dodoklist = dodokRepository.findAllByBook(list).get();
             for(Dodok dodok : dodoklist){
                 dodokResult.add(dodok);
             }
         }
         return dodokResult;
     }
+
 }

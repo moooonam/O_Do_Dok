@@ -16,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -27,16 +30,6 @@ public class SecurityConfig {
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
-    @Autowired
-    private CorsConfig corsConfig;
-
-//    private final JwtExceptionFilter jwtExceptionFilter;
-//
-//    public SecurityConfig(JwtExceptionFilter jwtExceptionFilter) {
-//        this.jwtExceptionFilter = jwtExceptionFilter;
-//    }
-
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -44,7 +37,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.csrf().disable();
+        http.cors()
+                .and()
+                .csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)	//세션을 사용하지 않겠다는 뜻
                 .and()
                 .formLogin().disable()	// form 로그인을 사용하지 않겠다.
@@ -61,11 +56,9 @@ public class SecurityConfig {
         public void configure(HttpSecurity http) throws Exception {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
-                    .addFilter(corsConfig.corsFilter())
+//                    .addFilter(corsConfig.corsFilter())
                     .addFilter(new JwtAuthenticationFilter(authenticationManager, refreshTokenRepository))
                     .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository, refreshTokenRepository));
-//                    .addFilterBefore(new JwtAuthorizationFilter(authenticationManager, userRepository, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class)
-//                    .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
         }
     }
 

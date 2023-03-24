@@ -105,7 +105,7 @@ public class TeamServiceImpl implements TeamService{
         teamUserRepository.save(teamUser);
     }
 
-    // 팀 신청 / 멤버 초대할 시 - USER로 지정   // 1. 신청 2. 결정하는 즉 수락하는(팀원 추가), 거절을 만드는데
+    // 팀 신청 / 멤버 초대할 시 - USER로 지정
     @Override
     public void addMember(Long teamId, User user, String msg) {
 

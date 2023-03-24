@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin(value = "*")
 @RestController
 @RequestMapping("/dodok")
 public class DodokController {
@@ -28,8 +29,7 @@ public class DodokController {
     //도독 생성 및 시작
     @PostMapping("/start")
     public ResponseEntity<String> startDodok(@RequestBody DodokCreateReq dodokCreateReq, Authentication auth) {
-        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
-        User user = principal.getUser();
+        User user = getUser(auth);
         String res = dodokService.startDodok(user, dodokCreateReq);
         return new ResponseEntity(res, HttpStatus.OK);
     }
@@ -52,19 +52,15 @@ public class DodokController {
     // 지난 도독 리스트 가져오기 _ 해당 모임의 회원이 아니면 공개만 보일 수 있도록 처리해야함 !!!!
     @GetMapping("/lastdodoks/{teamId}")
     public ResponseEntity<?>showLastAllDodokInfo(@PathVariable Long teamId, Authentication auth){
-        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
-        User user = principal.getUser();
-
+        User user = getUser(auth);
         List<Dodok> dodokList= dodokService.showLastAllDodoks(user, teamId);
-
         return dodokInfoResList(dodokList);
     }
 
     // 도독 공개 설정
     @PutMapping("/dodokOpen/updateTrue/{dodokId}")
     public ResponseEntity<String> updateDodokOpen(@PathVariable Long dodokId, Authentication auth){
-        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
-        User user = principal.getUser();
+        User user = getUser(auth);
         String res = dodokService.updateDodokOpen(user, dodokId);
         return new ResponseEntity(res, HttpStatus.OK);
     }
@@ -72,29 +68,27 @@ public class DodokController {
     // 도독 비공개 설정
     @PutMapping("/dodokOpen/updateFalse/{dodokId}")
     public ResponseEntity<String> updateDodokClose(@PathVariable Long dodokId, Authentication auth){
-        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
-        User user = principal.getUser();
+        User user = getUser(auth);
         String res =  dodokService.updateDodokClose(user, dodokId);
         return new ResponseEntity(res, HttpStatus.OK);
     }
 
-    // 책을 검색하면 관련된 도독이 나올 수 있도록
-
     // 도독 검색
     @GetMapping("/search/{keyword}")
     public ResponseEntity<?> searchDodoks(@PathVariable String keyword){
-
         List<Dodok> dodokList= dodokService.searchDodoks(keyword);
-
         return dodokInfoResList(dodokList);
     }
 
+
+    // 토큰으로 사용자 정보 가져오는 함수
     public User getUser(Authentication auth){
         PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
         User user = principal.getUser();
         return user;
     }
 
+    // 지난 도독 (페이지별 리뷰 + 총리뷰 포함) 가져오는 함수
     public ResponseEntity<?> dodokInfoResList(List<Dodok> dodokList){
         List<DodokInfoRes> dodokInfoResList = new ArrayList<>();
 
@@ -111,5 +105,6 @@ public class DodokController {
             return new ResponseEntity<>(dodokInfoResList,HttpStatus.OK);
         }
     }
+
 
 }
