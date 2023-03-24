@@ -108,5 +108,10 @@ public class ReviewPageServiceImpl implements ReviewPageService{
 
     }
 
-
+    // 회원에 따른 페이지 리뷰 리스트
+    @Override
+    public List<ReviewPage> getReviewPageList(User user){
+        List<ReviewPage> reviewPageList= reviewPageRepository.findAllByUser(user);
+        return reviewPageList;
+    }
 }
