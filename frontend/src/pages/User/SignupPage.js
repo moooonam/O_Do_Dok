@@ -4,6 +4,7 @@ import styles from "../../styles/Signup.module.scss";
 import Grid from "@mui/material/Grid"; // Grid version 1
 import Button from "@mui/material/Button";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // radio
 import Radio from "@mui/material/Radio";
@@ -18,24 +19,30 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
+import { Api } from "../../Api";
 function SignupPage() {
+  const movePage = useNavigate();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
     nickname: "",
     password: "",
     passwordConfirm: "",
+    phone: "",
     gender: "",
     onoff: "",
     region: "",
     frequency: "",
+    nickCheck: false,
+    emailCheck: false,
   });
 
   // 날짜 데이터
   const [birth, setBirth] = React.useState(dayjs());
   // 날짜 형식 변경
   const dateFormat = dayjs(birth.$d).format("YYYY-MM-DD");
-  const userAge = 2023 - Number(dateFormat.slice(0,4)) + 1
+  const userAge = 2023 - Number(dateFormat.slice(0, 4)) + 1;
 
   // 장르 리스트
   const [userGenre, setUserGenre] = useState([]);
@@ -46,9 +53,9 @@ function SignupPage() {
     horror: false,
     sf: false,
     fantasy: false,
-    drama : false,
+    drama: false,
     game: false,
-    romance : false,
+    romance: false,
     animation: false,
   });
 
@@ -133,7 +140,7 @@ function SignupPage() {
     email: "",
     nickname: "",
     password: "",
-    passwordConfirm: "",
+    phone: "",
     gender: "",
     onoff: "",
     region: "",
@@ -145,74 +152,109 @@ function SignupPage() {
   };
 
   const emailDuplication = () => {
-    // if (form.email) {
-    //   axios({
-    //     methods: 'get',
-    //     url: `http://localhost:3000/api/v1/user/checkEmail/${form.email}`
-    //   })
-    //   .then((res) => {
-    //     console.log(res)
-    //   })
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
+    if (form.email) {
+      axios({
+        methods: "get",
+        url: `http://localhost:8080/api/v1/user/checkEmail/${form.email}`,
+        // headers: { "withCredentials": true},
+      })
+        .then((res) => {
+          console.log(res);
+          form.emailCheck = true;
+          alert("사용 가능한 이메일입니다.");
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("이미 존재하는 이메일입니다.");
+        });
+    }
+    // else {
+    //   alert("이메일을 입력해주세요")
     // }
   };
 
   const nickDuplication = () => {
-    // if (form.nickname) {
-    //   axios({
-    //     methods: 'get',
-    //     url: `http://localhost:3000/api/v1/user/checkEmail/${form.nickname}`
-    //   })
-    //   .then((res) => {
-    //     console.log(res)
-    //   })
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
+    if (form.nickname) {
+      axios({
+        methods: "get",
+        url: `http://localhost:8080/api/v1/user/checkNickname/${form.nickname}`,
+      })
+        .then((res) => {
+          console.log(res);
+          alert("사용 가능한 닉네임입니다.");
+          form.nickCheck = true;
+        })
+        .catch((err) => {
+          alert("이미 존재하는 닉네임입니다.");
+          console.log(err);
+        });
+    }
+    // else {
+    //   alert("닉네임을 입력해주세요.")
     // }
   };
 
   // 가입하기 함수
   const userSignup = () => {
-    userInfo.name = form.name
-    userInfo.email = form.email
-    userInfo.nickname = form.nickname
-    userInfo.password = form.password
-    userInfo.passwordConfirm = form.passwordConfirm
-    userInfo.gender = form.gender
-    userInfo.onoff = form.onoff
-    userInfo.region = form.region
-    userInfo.frequency = form.frequency
-    userInfo.genre1 = userGenre[0]
-    userInfo.genre2 = userGenre[1]
-    userInfo.genre3 = userGenre[2]
-    userInfo.age = userAge
-
-    // axios({
-    //   methods: 'post',
-    //   url: 'http://localhost:3000/api/v1/user',
-    //   data: userInfo,
-    // })
-    //   .then((res) => {
-    //     console.log(res)
-    //   })
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
-    // console.log(form);
-    // console.log(2023 - Number(dateFormat.slice(0,4)) + 1);
-    // console.log(userGenre[0]); 
-    // console.log(userGenre[1]); 
-    // console.log(userGenre[2]); 
-    // console.log(userGenre); 
     console.log(userInfo)
+    if (form.emailCheck && form.nickCheck) {
+      userInfo.name = form.name;
+      userInfo.email = form.email;
+      userInfo.nickname = form.nickname;
+      userInfo.password = form.password;
+      userInfo.phone = form.phone;
+      userInfo.gender = form.gender;
+      userInfo.age = userAge;
+      userInfo.genre1 = userGenre[0];
+      userInfo.genre2 = userGenre[1];
+      userInfo.genre3 = userGenre[2];
+      userInfo.region = form.region;
+      userInfo.onoff = form.onoff;
+      userInfo.frequency = form.frequency;
+
+      if (
+        userInfo.name &&
+        userInfo.email &&
+        userInfo.nickname &&
+        userInfo.password &&
+        userInfo.phone &&
+        userInfo.gender &&
+        userInfo.onoff &&
+        userInfo.region &&
+        userInfo.frequency &&
+        userInfo.genre1 &&
+        userInfo.genre2 &&
+        userInfo.genre3 &&
+        userInfo.age
+      ) {
+        Api.post("/user", userInfo)
+          .then((res) => {
+            console.log(res);
+            movePage("/login");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        // console.log(form);
+        // console.log(2023 - Number(dateFormat.slice(0,4)) + 1);
+        // console.log(userGenre[0]);
+        // console.log(userGenre[1]);
+        // console.log(userGenre[2]);
+        // console.log(userGenre);
+      } else {
+        alert("모든 항목에 대해 답변해주세요");
+      }
+    } else {
+      alert("중복검사를 진행해주세요");
+    }
+
+    console.log(userInfo);
   };
 
   // 유효성 검사
   const nickname_validation = () => {
-    let check = /[~!@#$%^&*()_+|<>?:{}.,/;='"]/;
+    let check = /^[가-힣a-zA-Z].{1,11}$/;
+    // let check = /[~!@#$%^&*()_+|<>?:{}.,/;='"]/;
     return check.test(form.nickname);
   };
 
@@ -221,19 +263,18 @@ function SignupPage() {
     return check.test(form.name);
   };
 
-  // const password_confirm_validation = () => {
-  //   if (form.password === form.passwordConfirm) {
-  //     return false;
-  //   } else {
-  //     return true
-  //   }
-  // };
+  const password_validation = () => {
+    let check = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
+    return check.test(form.password);
+  };
 
-  // email-validator 라이브러리
-  // const email_validation = () => {
-  //   let check = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
-  //   return check.test(form.email);
-  // };
+  const email_validation = () => {
+    if (form.email) {
+      let check =
+        /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+      return check.test(form.email);
+    }
+  };
 
   return (
     <Grid
@@ -256,7 +297,9 @@ function SignupPage() {
             variant="standard"
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             error={name_validation()}
-            helperText={name_validation() ? "특수기호는 하실 수 없습니다." : ""}
+            helperText={
+              name_validation() ? "특수문자는 입력할 수 없습니다." : ""
+            }
           />
         </Grid>
         <Grid container direction="row" columnGap={8}>
@@ -272,14 +315,18 @@ function SignupPage() {
             value={form.email}
             variant="standard"
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            // error={!email_validation()}
-            // helperText={email_validation() ? "":"이메일 형식에 맞춰 작성해주세요."}
+            error={!email_validation() && form.email.length > 0}
+            helperText={
+              !email_validation() && form.email.length > 0
+                ? "이메일 형식에 맞춰 작성해주세요."
+                : ""
+            }
           />
           <Button
             variant="outlined"
             color="success"
             className={styles["signup-dupli"]}
-            onClick={emailDuplication()}
+            onClick={() => emailDuplication()}
           >
             중복확인
           </Button>
@@ -297,16 +344,18 @@ function SignupPage() {
             placeholder="2 ~ 12자 이내로 입력해주세요"
             variant="standard"
             onChange={(e) => setForm({ ...form, nickname: e.target.value })}
-            error={nickname_validation()}
+            error={!nickname_validation() && form.nickname.length > 0}
             helperText={
-              nickname_validation() ? "특수기호는 하실 수 없습니다." : ""
+              !nickname_validation() && form.nickname.length > 0
+                ? "한글 혹은 영문 2글자 이상 12글자 이내로 작성해주세요."
+                : ""
             }
           />
           <Button
             variant="outlined"
             className={styles["signup-dupli"]}
             color="success"
-            onClick={nickDuplication()}
+            onClick={() => nickDuplication()}
           >
             중복확인
           </Button>
@@ -318,12 +367,19 @@ function SignupPage() {
               width: { md: 250 },
             }}
             required
+            type="password"
             id="password"
             label="Required"
             placeholder="비밀번호를 입력해주세요"
             value={form.password}
             variant="standard"
             onChange={(e) => setForm({ ...form, password: e.target.value })}
+            error={!password_validation() && form.password.length > 0}
+            helperText={
+              !password_validation() && form.password.length > 0
+                ? "영문, 숫자, 특수문자를 조합하여 8자 이상 16자 이내로 작성해주세요"
+                : ""
+            }
           />
         </Grid>
         <Grid container direction="row" columnGap={4}>
@@ -333,6 +389,7 @@ function SignupPage() {
               width: { md: 250 },
             }}
             required
+            type="password"
             id="passwordConfirm"
             label="Required"
             placeholder="비밀번호를 다시 입력해주세요"
@@ -341,8 +398,32 @@ function SignupPage() {
             onChange={(e) =>
               setForm({ ...form, passwordConfirm: e.target.value })
             }
-            // error={password_confirm_validation()}
-            // helperText={password_confirm_validation() ? "비밀번호가 일치하지 않습니다":""}
+            error={
+              form.password !== form.passwordConfirm &&
+              form.passwordConfirm.length > 0
+            }
+            helperText={
+              form.password !== form.passwordConfirm &&
+              form.passwordConfirm.length > 0
+                ? "비밀번호가 일치하지 않습니다."
+                : ""
+            }
+          />
+        </Grid>
+        <Grid container direction="row" columnGap={5.5}>
+          <p className={styles["signup-blank"]}>휴대폰 번호</p>
+          <TextField
+            sx={{
+              width: { md: 250 },
+            }}
+            required
+            type="tel"
+            id="phone"
+            label="Required"
+            placeholder="휴대폰 번호를 입력해주세요"
+            value={form.phone}
+            variant="standard"
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
           />
         </Grid>
         <br /> <br />
@@ -354,13 +435,13 @@ function SignupPage() {
             name="row-radio-buttons-group"
           >
             <FormControlLabel
-              value="male"
+              value="M"
               control={<Radio />}
               label="남성"
               onChange={(e) => setForm({ ...form, gender: e.target.value })}
             />
             <FormControlLabel
-              value="female"
+              value="W"
               control={<Radio />}
               label="여성"
               onChange={(e) => setForm({ ...form, gender: e.target.value })}
@@ -390,7 +471,9 @@ function SignupPage() {
                 clickreason();
                 clickGenre("reason");
               }}
-              className={genreList.reason ? styles["active"] : styles["notActive"]}
+              className={
+                genreList.reason ? styles["active"] : styles["notActive"]
+              }
             >
               #추리
             </div>
@@ -399,7 +482,9 @@ function SignupPage() {
                 clickthril();
                 clickGenre("thril");
               }}
-              className={genreList.thril ? styles["active"] : styles["notActive"]}
+              className={
+                genreList.thril ? styles["active"] : styles["notActive"]
+              }
             >
               #스릴러
             </div>
@@ -419,9 +504,7 @@ function SignupPage() {
                 clicksf();
                 clickGenre("sf");
               }}
-              className={
-                genreList.sf ? styles["active"] : styles["notActive"]
-              }
+              className={genreList.sf ? styles["active"] : styles["notActive"]}
             >
               #과학
             </div>
@@ -492,19 +575,19 @@ function SignupPage() {
             name="row-radio-buttons-group"
           >
             <FormControlLabel
-              value="online"
+              value="ON"
               control={<Radio />}
               label="온라인"
               onChange={(e) => setForm({ ...form, onoff: e.target.value })}
             />
             <FormControlLabel
-              value="offline"
+              value="OFF"
               control={<Radio />}
               label="오프라인"
               onChange={(e) => setForm({ ...form, onoff: e.target.value })}
             />
             <FormControlLabel
-              value="onoff"
+              value="BOTH"
               control={<Radio />}
               label="병행"
               onChange={(e) => setForm({ ...form, onoff: e.target.value })}
@@ -561,7 +644,7 @@ function SignupPage() {
           variant="contained"
           color="success"
           fullWidth
-          onClick={userSignup}
+          onClick={() => userSignup()}
         >
           가입하기
         </Button>
