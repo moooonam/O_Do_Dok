@@ -32,4 +32,6 @@ public interface TeamService {
     void deleteMember(Long userId);
 
     int modifyGrade(Long userId);
+
+    Team getTeamByTeamName(String teamName);
 }

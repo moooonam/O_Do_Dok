@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @CrossOrigin(value = "*")
@@ -36,6 +37,17 @@ public class TeamController {
 
         teamService.createTeam(teamCreatePostReq, user);
         return ResponseEntity.status(200).body("완료");
+    }
+
+    // 모임이름 중복확인
+    @GetMapping("/check/{teamName}")
+    public ResponseEntity<Boolean> checkTeamName(@PathVariable String teamName) {
+        try{
+            teamService.getTeamByTeamName(teamName);
+        } catch(NoSuchElementException e){
+            return ResponseEntity.status(200).body(true);
+        }
+        return ResponseEntity.status(200).body(false);
     }
 
     // 모임 리스트 출력
