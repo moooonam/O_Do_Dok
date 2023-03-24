@@ -157,15 +157,19 @@ function SignupPage() {
         methods: "get",
         url: `http://localhost:8080/api/v1/user/checkEmail/${form.email}`,
         // headers: { "withCredentials": true},
+        //false가 이미 있는 이메일
       })
         .then((res) => {
-          console.log(res);
-          form.emailCheck = true;
-          alert("사용 가능한 이메일입니다.");
+          console.log(res.data);
+          if (res.data) {
+            form.emailCheck = true;
+            alert("사용 가능한 이메일입니다.");
+          } else {
+            alert("이미 존재하는 이메일입니다.");
+          }
         })
         .catch((err) => {
           console.log(err);
-          alert("이미 존재하는 이메일입니다.");
         });
     }
     // else {
@@ -181,11 +185,14 @@ function SignupPage() {
       })
         .then((res) => {
           console.log(res);
-          alert("사용 가능한 닉네임입니다.");
-          form.nickCheck = true;
+          if (res.data) {
+            alert("사용 가능한 닉네임입니다.");
+            form.nickCheck = true;
+          } else {
+            alert("이미 존재하는 닉네임입니다.");
+          }
         })
         .catch((err) => {
-          alert("이미 존재하는 닉네임입니다.");
           console.log(err);
         });
     }
@@ -196,7 +203,7 @@ function SignupPage() {
 
   // 가입하기 함수
   const userSignup = () => {
-    console.log(userInfo)
+    console.log(userInfo);
     if (form.emailCheck && form.nickCheck) {
       userInfo.name = form.name;
       userInfo.email = form.email;
