@@ -3,11 +3,11 @@ import TextField from "@mui/material/TextField";
 import styles from "../../styles/Login.module.scss";
 import Grid from "@mui/material/Grid"; // Grid version 1
 import Button from "@mui/material/Button";
-import axios from 'axios';
+
 import { useNavigate } from "react-router-dom";
 import { Api } from "../../Api";
 import { useDispatch } from "react-redux";
-import { login } from "../../redux/slice/userSlice";
+import { login, getUserInfo } from "../../redux/slice/userSlice";
 function LoginPage() {
   const dispatch = useDispatch()
   const movePage = useNavigate();
@@ -30,6 +30,20 @@ function LoginPage() {
         localStorage.setItem("refresh-token", res.data['refresh-token'])
         localStorage.setItem("access-token", res.data['access-token'])
         dispatch(login())
+        Api.get('/user/me',{
+          headers: {
+            "refresh-token": `Bearer ${localStorage.getItem('refresh-token')}` ,
+            "access-token": `Bearer ${localStorage.getItem('access-token')}` ,
+          }
+        })
+        .then((res)=>{
+          dispatch(getUserInfo({profileImg: res.data.userImage
+          }))
+          // console.log(res.data)
+        }) 
+        .catch((err) =>{
+          console.log(err)
+        })
         goMain()
       })
       .catch((err) => {

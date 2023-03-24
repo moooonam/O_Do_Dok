@@ -15,5 +15,6 @@ public interface ReviewPageService {
     boolean deletePageReview(Long pageReviewId, User user) throws Exception;
     ReviewPage getReviewPage(Long pageReviewId, User user);
     List<ReviewPage> getCurReviewPageList(User user);
+    List<ReviewPage> getReviewPageList(User user);
 
 }

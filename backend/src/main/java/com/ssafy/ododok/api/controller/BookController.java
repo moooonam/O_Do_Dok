@@ -22,6 +22,10 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    // 임시 책 조회
+    @Autowired
+    KNN knn;
+
     // 책 테이블에 책 추가
     @PostMapping("/add")
     public ResponseEntity<String> addBook(@RequestBody BookAddPostReq bookAddPostReq){
@@ -46,6 +50,14 @@ public class BookController {
         }else{
             return new ResponseEntity<>(searchResult,HttpStatus.OK);
         }
+    }
+
+    // 임시 책 조회
+    @GetMapping("/zzz")
+    public ResponseEntity<?> zzz(){
+
+        knn.knn();
+        return null;
     }
 
 }
