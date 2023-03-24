@@ -9,22 +9,29 @@ import { useNavigate } from "react-router-dom";
 function LoginPage() {
   const movePage = useNavigate();
   const [form, setForm] = useState({
-    email: "",
+    userEmail: "",
     password: "",
   });
 
   const goSignup = () => {
     movePage("/signup");
   }
-
+  const goMain = () => {
+    movePage("/main")
+  }
   const userLogin = () => {
+    console.log(form)
     axios({
       methods: 'post',
-      url: '#',
+      url: '/login',
       data: form,
+      headers: {
+        withCredentials: true,
+      }
     })
       .then((res) => {
         console.log(res)
+        goMain()
       })
       .catch((err) => {
         console.log(err)
@@ -44,18 +51,19 @@ function LoginPage() {
           <p className={styles["login-blank"]}>이메일</p>
           <TextField
             required
-            id="email"
+            id="userEmail"
             label="Required"
             placeholder="이메일을 입력해주세요"
-            value={form.email}
+            value={form.userEmail}
             variant="standard"
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            onChange={(e) => setForm({ ...form, userEmail: e.target.value })}
           />
         </Grid>
         <Grid container direction="row" columnGap={8}>
           <p className={styles["login-blank"]}>비밀번호</p>
           <TextField
             required
+            type="password"
             id="password"
             label="Required"
             placeholder="비밀번호를 입력해주세요"
