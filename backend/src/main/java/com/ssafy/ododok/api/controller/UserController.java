@@ -156,6 +156,4 @@ public class UserController {
 //        }
 //    }
 
-    // 나의 리뷰 출력 (개인 리뷰)
-
 }

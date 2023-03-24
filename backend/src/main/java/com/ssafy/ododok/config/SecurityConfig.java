@@ -30,6 +30,22 @@ public class SecurityConfig {
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
+
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//
+//        configuration.addAllowedOrigin("*");
+//        configuration.addAllowedHeader("*");
+//        configuration.addAllowedMethod("*");
+//        configuration.setAllowCredentials(true);
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
+
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -51,6 +67,7 @@ public class SecurityConfig {
         return http.build();
     }
 
+
     public class MyCustomDsl extends AbstractHttpConfigurer<MyCustomDsl, HttpSecurity> {
         @Override
         public void configure(HttpSecurity http) throws Exception {
@@ -59,6 +76,8 @@ public class SecurityConfig {
 //                    .addFilter(corsConfig.corsFilter())
                     .addFilter(new JwtAuthenticationFilter(authenticationManager, refreshTokenRepository))
                     .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository, refreshTokenRepository));
+//                    .addFilterBefore(new JwtAuthorizationFilter(authenticationManager, userRepository, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class)
+//                    .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
         }
     }
 
