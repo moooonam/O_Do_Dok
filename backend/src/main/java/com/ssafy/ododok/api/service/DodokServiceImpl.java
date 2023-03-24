@@ -159,7 +159,7 @@ public class DodokServiceImpl implements DodokService {
         dodokRepository.delete(dodok);
     }
 
-    // 지난 도독 조회하기
+    // 지난 도독 조회하기 _ 팀별
     @Override
     public List<Dodok> showLastAllDodoks(User user, Long teamId) {
         TeamUser teamUser = teamUserRepository.findByUser(user);
@@ -177,7 +177,6 @@ public class DodokServiceImpl implements DodokService {
         }
 
     }
-
 
 
     // 도독 기준 페이지별 리뷰 리스트

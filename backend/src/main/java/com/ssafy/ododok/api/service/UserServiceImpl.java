@@ -2,8 +2,11 @@ package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.dto.UserDto;
 import com.ssafy.ododok.api.request.UserRegisterPostReq;
+import com.ssafy.ododok.db.model.Team;
+import com.ssafy.ododok.db.model.TeamUser;
 import com.ssafy.ododok.db.model.User;
 import com.ssafy.ododok.db.model.UserSurvey;
+import com.ssafy.ododok.db.repository.TeamUserRepository;
 import com.ssafy.ododok.db.repository.UserRepository;
 import com.ssafy.ododok.db.repository.UserSurveyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +19,17 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final UserSurveyRepository userSurveyRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TeamUserRepository teamUserRepository;
 
     @Autowired
     UserServiceImpl(UserRepository userRepository,
                     UserSurveyRepository userSurveyRepository,
-                    PasswordEncoder passwordEncoder){
+                    PasswordEncoder passwordEncoder,
+                    TeamUserRepository teamUserRepository){
         this.userRepository = userRepository;
         this.userSurveyRepository = userSurveyRepository;
         this.passwordEncoder = passwordEncoder;
+        this.teamUserRepository = teamUserRepository;
     }
 
     @Override
@@ -175,5 +181,12 @@ public class UserServiceImpl implements UserService{
         } catch (Exception e){
             return false;
         }
+    }
+
+    @Override
+    public Team getUserTeam(User user) {
+        TeamUser teamUser = teamUserRepository.findByUser(user);
+        Team team = teamUser.getTeam();
+        return team;
     }
 }

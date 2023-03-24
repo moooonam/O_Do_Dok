@@ -3,6 +3,7 @@ package com.ssafy.ododok.api.service;
 import com.ssafy.ododok.api.request.EndReviewCreatePostReq;
 import com.ssafy.ododok.api.request.EndReviewModifyPutReq;
 import com.ssafy.ododok.db.model.ReviewEnd;
+import com.ssafy.ododok.db.model.ReviewPage;
 import com.ssafy.ododok.db.model.User;
 
 
@@ -16,4 +17,5 @@ public interface ReviewEndService {
     ReviewEnd getEndReview(Long endReviewId, User user);
     List<ReviewEnd> getCurRivewEndList(User user);
 
+    List<ReviewEnd> getReviewEndList(User user);
 }
