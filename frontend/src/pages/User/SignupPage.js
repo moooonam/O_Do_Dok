@@ -53,10 +53,8 @@ function SignupPage() {
     horror: false,
     sf: false,
     fantasy: false,
-    drama: false,
     game: false,
     romance: false,
-    animation: false,
   });
 
   // 장르 클릭했을때 클래스 변경
@@ -95,13 +93,6 @@ function SignupPage() {
       setGenreList({ ...genreList, fantasy: true });
     }
   };
-  const clickdrama = () => {
-    if (genreList.drama) {
-      setGenreList({ ...genreList, drama: false });
-    } else {
-      setGenreList({ ...genreList, drama: true });
-    }
-  };
   const clickgame = () => {
     if (genreList.game) {
       setGenreList({ ...genreList, game: false });
@@ -114,13 +105,6 @@ function SignupPage() {
       setGenreList({ ...genreList, romance: false });
     } else {
       setGenreList({ ...genreList, romance: true });
-    }
-  };
-  const clickanimation = () => {
-    if (genreList.animation) {
-      setGenreList({ ...genreList, animation: false });
-    } else {
-      setGenreList({ ...genreList, animation: true });
     }
   };
 
@@ -184,7 +168,7 @@ function SignupPage() {
         url: `http://localhost:8080/api/v1/user/checkNickname/${form.nickname}`,
       })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           if (res.data) {
             alert("사용 가능한 닉네임입니다.");
             form.nickCheck = true;
@@ -237,6 +221,7 @@ function SignupPage() {
         Api.post("/user", userInfo)
           .then((res) => {
             console.log(res);
+            alert('회원가입 성공!')
             movePage("/login");
           })
           .catch((err) => {
@@ -476,7 +461,7 @@ function SignupPage() {
             <div
               onClick={() => {
                 clickreason();
-                clickGenre("reason");
+                clickGenre("추리");
               }}
               className={
                 genreList.reason ? styles["active"] : styles["notActive"]
@@ -487,7 +472,7 @@ function SignupPage() {
             <div
               onClick={() => {
                 clickthril();
-                clickGenre("thril");
+                clickGenre("스릴러");
               }}
               className={
                 genreList.thril ? styles["active"] : styles["notActive"]
@@ -498,7 +483,7 @@ function SignupPage() {
             <div
               onClick={() => {
                 clickhorror();
-                clickGenre("horror");
+                clickGenre("호러");
               }}
               className={
                 genreList.horror ? styles["active"] : styles["notActive"]
@@ -509,16 +494,16 @@ function SignupPage() {
             <div
               onClick={() => {
                 clicksf();
-                clickGenre("sf");
+                clickGenre("SF");
               }}
               className={genreList.sf ? styles["active"] : styles["notActive"]}
             >
-              #과학
+              #SF
             </div>
             <div
               onClick={() => {
                 clickfantasy();
-                clickGenre("fantasy");
+                clickGenre("판타지");
               }}
               className={
                 genreList.fantasy ? styles["active"] : styles["notActive"]
@@ -528,47 +513,25 @@ function SignupPage() {
             </div>
             <div
               onClick={() => {
-                clickdrama();
-                clickGenre("drama");
-              }}
-              className={
-                genreList.drama ? styles["active"] : styles["notActive"]
-              }
-            >
-              #드라마
-            </div>
-            <div
-              onClick={() => {
                 clickgame();
-                clickGenre("game");
+                clickGenre("무협");
               }}
               className={
                 genreList.game ? styles["active"] : styles["notActive"]
               }
             >
-              #게임
+              #무협
             </div>
             <div
               onClick={() => {
                 clickromance();
-                clickGenre("romance");
+                clickGenre("로맨스");
               }}
               className={
                 genreList.romance ? styles["active"] : styles["notActive"]
               }
             >
               #로맨스
-            </div>
-            <div
-              onClick={() => {
-                clickanimation();
-                clickGenre("animation");
-              }}
-              className={
-                genreList.animation ? styles["active"] : styles["notActive"]
-              }
-            >
-              #만화
             </div>
           </Grid>
         </div>
@@ -651,7 +614,7 @@ function SignupPage() {
           variant="contained"
           color="success"
           fullWidth
-          onClick={() => userSignup()}
+          onClick={userSignup}
         >
           가입하기
         </Button>
