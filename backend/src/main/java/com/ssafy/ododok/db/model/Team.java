@@ -60,13 +60,13 @@ public class Team {
     @Column
     private String teamGenre3;
 
-    @ColumnDefault("'규칙이 없습니다.'")
+    @ColumnDefault("'no rule'")
     private String teamRule1;
 
-    @ColumnDefault("'규칙이 없습니다.'")
+    @ColumnDefault("'no rule'")
     private String teamRule2;
 
-    @ColumnDefault("'규칙이 없습니다.'")
+    @ColumnDefault("'no rule'")
     private String teamRule3;
 
     @ColumnDefault("'https://cdn.pixabay.com/photo/2018/01/18/20/43/literature-3091212_960_720.jpg'")

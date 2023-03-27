@@ -15,24 +15,22 @@ import java.time.LocalDate;
 @Builder
 @Entity
 @DynamicInsert
-public class TeamUser {
-
+public class Apply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long teamUserId;
+    private Long applyId;
+
+    @Column
+    private String applyMsg;
 
     @OneToOne
     @JoinColumn(name="user_id")
     private User user;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name="team_id")
     private Team team;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
     @Column(nullable = false)
-    private LocalDate joinDate;
-
+    private LocalDate applyDate;
 }

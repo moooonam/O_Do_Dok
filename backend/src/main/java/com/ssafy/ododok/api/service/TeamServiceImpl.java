@@ -139,7 +139,10 @@ public class TeamServiceImpl implements TeamService{
     // 모임의 구성원 삭제
     @Override
     public void deleteMember(Long userId) {
+        // 테이블에서 멤버 삭제
         teamUserRepository.deleteById(userId);
+        // 현재 모임원 -1
+
     }
 
     // 모임 구성원 직책 변경
