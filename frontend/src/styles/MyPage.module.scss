@@ -24,6 +24,7 @@
     border-radius: 100px;
     overflow: hidden;
     margin: 25px;
+    background-color: white;
 
     img {
       width: 100%;
@@ -50,6 +51,7 @@
       height: 35px;
       text-align: center;
       line-height: 35px;
+      cursor: pointer;
     }
   }
 }
