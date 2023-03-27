@@ -9,7 +9,8 @@ import { useNavigate } from "react-router-dom";
 // import PhotoCamera from '@mui/icons-material/PhotoCamera';
 // radio
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserInfo } from "../../redux/slice/userSlice";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -19,6 +20,7 @@ import FormControl from "@mui/material/FormControl";
 // datepicker
 function UserInfoUpdatePage() {
   const movePage = useNavigate();
+  const dispatch = useDispatch()
   function goMyPage() {
     movePage("/mypage");
   }
@@ -27,9 +29,9 @@ function UserInfoUpdatePage() {
     userName: userInfo.userName,
     userEmail: userInfo.userEmail,
     userNickname: userInfo.userNickname,
-    userImage:userInfo.profileImg,
-    userOnoff:userInfo.userOnoff,
-    userRegion:userInfo.userRegion,
+    userImage: userInfo.profileImg,
+    userOnoff: userInfo.userOnoff,
+    userRegion: userInfo.userRegion,
     userFrequency: userInfo.userFrequency,
     userGenre1: "",
     userGenre2: "",
@@ -46,10 +48,8 @@ function UserInfoUpdatePage() {
     horror: false,
     sf: false,
     fantasy: false,
-    drama: false,
     game: false,
     romance: false,
-    animation: false,
   });
 
   // 장르 클릭했을때 클래스 변경
@@ -88,13 +88,6 @@ function UserInfoUpdatePage() {
       setGenreList({ ...genreList, fantasy: true });
     }
   };
-  const clickdrama = () => {
-    if (genreList.drama) {
-      setGenreList({ ...genreList, drama: false });
-    } else {
-      setGenreList({ ...genreList, drama: true });
-    }
-  };
   const clickgame = () => {
     if (genreList.game) {
       setGenreList({ ...genreList, game: false });
@@ -107,13 +100,6 @@ function UserInfoUpdatePage() {
       setGenreList({ ...genreList, romance: false });
     } else {
       setGenreList({ ...genreList, romance: true });
-    }
-  };
-  const clickanimation = () => {
-    if (genreList.animation) {
-      setGenreList({ ...genreList, animation: false });
-    } else {
-      setGenreList({ ...genreList, animation: true });
     }
   };
 
@@ -133,7 +119,6 @@ function UserInfoUpdatePage() {
       Api.get(`/user/checkNickname/${form.userNickname}`)
         .then((res) => {
           if (res.data) {
-            console.log('가능가능')
             setForm({ ...form, nickCheck: true });
             alert("사용 가능한 닉네임입니다.");
           } else {
@@ -154,13 +139,40 @@ function UserInfoUpdatePage() {
     form.userGenre3 = userGenre[2];
     if (form.nickCheck) {
       //axios 들어갈 자리
-      console.log(form)
+      // console.log(form);
+      Api.put("/user", form, {
+        headers: {
+          "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+          "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+        },
+      })
+        .then((res) => {
+          // console.log(res);
+          dispatch(
+            getUserInfo({
+              userName: form.userName,
+              userEmail: form.userEmail,
+              profileImg: form.userImage,
+              userNickname: form.userNickname,
+              userGenre1: form.userGenre1,
+              userGenre2: form.userGenre2,
+              userGenre3: form.userGenre3,
+              userFrequency: form.userFrequency,
+              userOnoff: form.userOnoff,
+              userRegion: form.userRegion,
+              userGender: userInfo.userGender,
+              userAge: userInfo.userAge
+            })
+          );
+          alert('회원정보 수정완료!')
+          goMyPage()
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      alert("닉네임 중복체크를 해주세요!");
     }
-    else {
-      alert('닉네임 중복체크를 해주세요!')
-    }
-
-
   };
 
   // 유효성 검사
@@ -169,18 +181,15 @@ function UserInfoUpdatePage() {
     return check.test(form.nickname);
   };
 
-  let Frequency = ""
-  if (userInfo.userFrequency <3) {
-    Frequency = "under2"
+  let Frequency = "";
+  if (userInfo.userFrequency < 3) {
+    Frequency = "under2";
+  } else if (userInfo.userFrequency < 6) {
+    Frequency = "under5";
+  } else {
+    Frequency = "oversix";
   }
-  else if (userInfo.userFrequency <6){
-    Frequency ='under5'
-  }
-  else {
-    Frequency = 'oversix'
-  }
-  // console.log( userInfo)
-  // console.log(userInfo.userNickname)
+
 
   return (
     <Grid
@@ -202,10 +211,7 @@ function UserInfoUpdatePage() {
           </Button>
         </div>
         <div className={styles["userImg-div"]}>
-          <img
-            src={userInfo.profileImg}
-            alt=""
-          />
+          <img src={userInfo.profileImg} alt="" />
         </div>
         <br />
         <br />
@@ -277,16 +283,16 @@ function UserInfoUpdatePage() {
               value="male"
               control={<Radio />}
               label="남성"
-              checked= { userInfo.userGender === 'M' ? true : false}
+              checked={userInfo.userGender === "M" ? true : false}
               // { userInfo.userGender === 'm' ?  checked='true' : checked="false"}
               onChange={(e) => setForm({ ...form, userGender: e.target.value })}
-              />
+            />
             <FormControlLabel
               disabled
               value="female"
               control={<Radio />}
               label="여성"
-              checked= { userInfo.userGender === 'W' ? true : false}
+              checked={userInfo.userGender === "W" ? true : false}
               onChange={(e) => setForm({ ...form, userGender: e.target.value })}
             />
           </RadioGroup>
@@ -296,11 +302,16 @@ function UserInfoUpdatePage() {
         <div>
           <p>선호 장르</p>
           <br />
+          <p className={styles["origin-genre"]}>
+            기존 선호 장르 : #{userInfo.userGenre1} #{userInfo.userGenre2} #
+            {userInfo.userGenre3}
+          </p>
+          <br />
           <div className={styles["genre-box"]}>
             <div
               onClick={() => {
                 clickreason();
-                clickGenre("reason");
+                clickGenre("추리");
               }}
               className={
                 genreList.reason ? styles["active"] : styles["notActive"]
@@ -311,7 +322,7 @@ function UserInfoUpdatePage() {
             <div
               onClick={() => {
                 clickthril();
-                clickGenre("thril");
+                clickGenre("스릴러");
               }}
               className={
                 genreList.thril ? styles["active"] : styles["notActive"]
@@ -322,7 +333,7 @@ function UserInfoUpdatePage() {
             <div
               onClick={() => {
                 clickhorror();
-                clickGenre("horror");
+                clickGenre("호러");
               }}
               className={
                 genreList.horror ? styles["active"] : styles["notActive"]
@@ -333,16 +344,16 @@ function UserInfoUpdatePage() {
             <div
               onClick={() => {
                 clicksf();
-                clickGenre("sf");
+                clickGenre("SF");
               }}
               className={genreList.sf ? styles["active"] : styles["notActive"]}
             >
-              #과학
+              #SF
             </div>
             <div
               onClick={() => {
                 clickfantasy();
-                clickGenre("fantasy");
+                clickGenre("판타지");
               }}
               className={
                 genreList.fantasy ? styles["active"] : styles["notActive"]
@@ -352,47 +363,25 @@ function UserInfoUpdatePage() {
             </div>
             <div
               onClick={() => {
-                clickdrama();
-                clickGenre("drama");
-              }}
-              className={
-                genreList.drama ? styles["active"] : styles["notActive"]
-              }
-            >
-              #드라마
-            </div>
-            <div
-              onClick={() => {
                 clickgame();
-                clickGenre("game");
+                clickGenre("무협");
               }}
               className={
                 genreList.game ? styles["active"] : styles["notActive"]
               }
             >
-              #게임
+              #무협
             </div>
             <div
               onClick={() => {
                 clickromance();
-                clickGenre("romance");
+                clickGenre("로맨스");
               }}
               className={
                 genreList.romance ? styles["active"] : styles["notActive"]
               }
             >
               #로맨스
-            </div>
-            <div
-              onClick={() => {
-                clickanimation();
-                clickGenre("animation");
-              }}
-              className={
-                genreList.animation ? styles["active"] : styles["notActive"]
-              }
-            >
-              #만화
             </div>
           </div>
         </div>
@@ -411,13 +400,13 @@ function UserInfoUpdatePage() {
               control={<Radio />}
               label="온라인"
               onChange={(e) => setForm({ ...form, userOnoff: e.target.value })}
-              />
+            />
             <FormControlLabel
               value="OFF"
               control={<Radio />}
               label="오프라인"
               onChange={(e) => setForm({ ...form, userOnoff: e.target.value })}
-              />
+            />
             <FormControlLabel
               value="BOTH"
               control={<Radio />}

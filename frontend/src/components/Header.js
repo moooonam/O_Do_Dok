@@ -48,7 +48,7 @@ function Header() {
         },
       })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           dispatch(
             getUserInfo({
               profileImg: res.data.userImage,
