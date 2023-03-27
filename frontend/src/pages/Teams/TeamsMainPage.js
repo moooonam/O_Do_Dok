@@ -35,6 +35,7 @@ function TeamsMainPage() {
     team_onoff: "",
     team_region: "",
     team_membercnt_max: "",
+    team_name_check: false,
   });
 
   // 장르 리스트
@@ -119,7 +120,7 @@ function TeamsMainPage() {
   // 유저 정보에 선호 장르 담기
   const clickGenre = (choice) => {
     if (teamGenre.includes(choice)) {
-      console.log(2222222222);
+      // console.log(2222222222);
       setTeamGenre(teamGenre.filter((genre) => genre !== choice));
     } else {
       setTeamGenre([...teamGenre, choice]);
@@ -152,30 +153,34 @@ function TeamsMainPage() {
       teamInfo.teamRegion = form.team_region;
       teamInfo.teamOnoff = form.team_onoff;
       teamInfo.teamMemberCntMax = form.team_membercnt_max;
-    if (
-      teamInfo.teamName &&
-      teamInfo.teamMemberCntMax &&
-      teamInfo.teamOnoff &&
-      teamInfo.teamRegion &&
-      teamInfo.teamGenre1 &&
-      teamInfo.teamGenre2 &&
-      teamInfo.teamGenre3
-    ) {
-      Api.post("/teams",
-        teamInfo,
-        {headers: {'access-token': `Bearer ${access_token}`, 'refresh-token': `Bearer ${refresh_token}`}}
-        )
-        .then((res) => {
-          console.log(res);
-          alert('모임 생성이 완료되었습니다')
-          teamCreateModalClose()
-          window.location.reload()
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    if (form.team_name_check) {
+      if (
+        teamInfo.teamName &&
+        teamInfo.teamMemberCntMax &&
+        teamInfo.teamOnoff &&
+        teamInfo.teamRegion &&
+        teamInfo.teamGenre1 &&
+        teamInfo.teamGenre2 &&
+        teamInfo.teamGenre3
+      ) {
+        Api.post("/teams",
+          teamInfo,
+          {headers: {'access-token': `Bearer ${access_token}`, 'refresh-token': `Bearer ${refresh_token}`}}
+          )
+          .then((res) => {
+            // console.log(res);
+            alert('모임 생성이 완료되었습니다')
+            teamCreateModalClose()
+            window.location.reload()
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        alert("모든 항목에 대해 답변해주세요");
+      }
     } else {
-      alert("모든 항목에 대해 답변해주세요");
+      alert('중복 검사를 진행해주세요')
     }
   };
 
@@ -184,6 +189,27 @@ function TeamsMainPage() {
     // let check = /[~!@#$%^&*()_+|<>?:{}.,/;='"]/;
     return check.test(form.team_name);
   };
+
+  // 팀 이름 중복검사
+  const teamNameDupli = () => {
+    if (form.team_name) {
+      Api.get(`teams/check/${form.team_name}`)
+      .then((res) => {
+        console.log(res)
+        if (res.data) {
+          alert('사용 가능한 모임 이름 입니다')
+          form.team_name_check = true
+        } else {
+          alert('사용할 수 없는 모임 이름 입니다')
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    } else {
+      alert('모임 이름을 입력해주세요')
+    }
+  }
 
   return (
     <div className={styles["wrap-all"]}>
@@ -221,7 +247,7 @@ function TeamsMainPage() {
                   }
                 />
                 <div className={styles["btn-blank"]}></div>
-                <Button variant="outlined" color="success">
+                <Button variant="outlined" color="success" onClick={() => {teamNameDupli()}}>
                   중복확인
                 </Button>
               </div>

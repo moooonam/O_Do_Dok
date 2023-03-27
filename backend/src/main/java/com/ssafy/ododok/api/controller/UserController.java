@@ -1,10 +1,7 @@
 package com.ssafy.ododok.api.controller;
 
 import com.ssafy.ododok.api.dto.UserDto;
-import com.ssafy.ododok.api.request.FindIdPostReq;
-import com.ssafy.ododok.api.request.FindPasswordPostReq;
-import com.ssafy.ododok.api.request.UserLoginPostReq;
-import com.ssafy.ododok.api.request.UserRegisterPostReq;
+import com.ssafy.ododok.api.request.*;
 import com.ssafy.ododok.api.response.DodokInfoRes;
 import com.ssafy.ododok.api.response.ReviewInfoRes;
 import com.ssafy.ododok.api.response.UserRes;
@@ -23,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @CrossOrigin(value = "*")
@@ -99,14 +97,14 @@ public class UserController {
 
     // 회원 정보 수정하기
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody UserDto.Basic userDto, Authentication authentication) {
+    public ResponseEntity<?> update(@RequestBody UserModifyPostReq userModifyPostReq, Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         String userId = principal.getUser().getUserEmail();
         User user = userService.getUserByUserEmail(userId);
         UserSurvey userSurvey = userService.getUserByUser(user);
 
-        int cnt = userService.updateUser(user, userDto);
-        int cnt2 = userService.updateUserSurvey(userSurvey, userDto);
+        int cnt = userService.updateUser(user, userModifyPostReq);
+        int cnt2 = userService.updateUserSurvey(userSurvey, userModifyPostReq);
         if(cnt == 0){
             return ResponseEntity.status(200).body("회원 수정 실패");
         } else if(cnt2 == 0){
@@ -115,6 +113,21 @@ public class UserController {
             return ResponseEntity.status(200).body("수정 완료");
         }
 
+    }
+
+    // 회원 비밀번호 수정하기
+    @PutMapping("/modifyPassword")
+    public ResponseEntity<?> updatePassword(@RequestBody Map<String, String> modifyPassword, Authentication authentication) throws Exception {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        String userId = principal.getUser().getUserEmail();
+        User user = userService.getUserByUserEmail(userId);
+
+        int cnt = userService.updateUserPassword(user, modifyPassword.get("modifyPassword"));
+        if(cnt == 0){
+            return ResponseEntity.status(200).body("비밀번호 수정 실패");
+        } else{
+            return ResponseEntity.status(200).body("수정 완료");
+        }
     }
 
     // 회원 삭제하기

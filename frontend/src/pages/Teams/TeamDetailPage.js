@@ -24,25 +24,25 @@ function TeamDetailPage() {
     // console.log(location.pathname.split('/')[2]);
     console.log(localStorage.getItem("nowTeam"));
     let Id = localStorage.getItem("nowTeam");
-    Api.get(`/teams/${Id}`)
+    Api.get(`/teams/info/${Id}`)
       .then((res) => {
-        console.log("모임 디테일 정보 불러오기 완료  ");
-        console.log(res.data);
+        // console.log("모임 디테일 정보 불러오기 완료  ");
+        // console.log(res.data);
         setTeamDetail({
           ...teamDetail,
-          teamName: res.data[0].teamName,
-          teamGenre1: res.data[0].teamGenre1,
-          teamGenre2: res.data[0].teamGenre2,
-          teamGenre3: res.data[0].teamGenre3,
-          teamOnoff: res.data[0].teamOnoff,
-          teamRegion: res.data[0].teamRegion,
-          teamRule1: res.data[0].teamRule1,
-          teamRule2: res.data[0].teamRule2,
-          teamRule3: res.data[0].teamRule3,
-          teamRecruitText: res.data[0].teamRecruitText,
+          teamName: res.data.teamName,
+          teamGenre1: res.data.teamGenre1,
+          teamGenre2: res.data.teamGenre2,
+          teamGenre3: res.data.teamGenre3,
+          teamOnoff: res.data.teamOnoff,
+          teamRegion: res.data.teamRegion,
+          teamRule1: res.data.teamRule1,
+          teamRule2: res.data.teamRule2,
+          teamRule3: res.data.teamRule3,
+          teamRecruitText: res.data.teamRecruitText,
         });
-        console.log('저장된 팀 정보')
-        console.log(teamDetail);
+        // console.log('저장된 팀 정보')
+        // console.log(teamDetail);
       })
       .catch((err) => {
         console.log(err);

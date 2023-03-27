@@ -29,7 +29,7 @@ function TeamCard() {
   const renderTeamCard = teams.map((team) => {
     return (
       <div key={team.teamId} className={styles["wrap-team"]} onClick={() => {teamClick(team)}}>
-        <img src="https://cdn.pixabay.com/photo/2016/12/13/05/15/puppy-1903313__340.jpg" alt="" />
+        <img src={team.teamImage} alt="" />
         <div className={styles.teamname}>{team.teamName}</div>
         <div className={styles["wrap-isonline-genre"]}>
           <div>{team.teamOnoff}</div>
