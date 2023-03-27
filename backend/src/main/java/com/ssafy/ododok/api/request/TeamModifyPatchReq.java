@@ -12,4 +12,8 @@ public class TeamModifyPatchReq {
     private String teamGenre3;
     private int teamMemberCntMax;
     private boolean teamRecruit;
+    private String teamRecruitText;
+    private String teamRule1;
+    private String teamRule2;
+    private String teamRule3;
 }

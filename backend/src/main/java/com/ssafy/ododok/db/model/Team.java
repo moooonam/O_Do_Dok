@@ -60,6 +60,15 @@ public class Team {
     @Column
     private String teamGenre3;
 
+    @ColumnDefault("'규칙이 없습니다.'")
+    private String teamRule1;
+
+    @ColumnDefault("'규칙이 없습니다.'")
+    private String teamRule2;
+
+    @ColumnDefault("'규칙이 없습니다.'")
+    private String teamRule3;
+
     public void updateTeam(TeamModifyPatchReq teamModifyPatchReq){
 
         this.teamMemberCntMax = teamModifyPatchReq.getTeamMemberCntMax();
@@ -69,7 +78,10 @@ public class Team {
         this.teamGenre2 = teamModifyPatchReq.getTeamGenre2();
         this.teamGenre3 = teamModifyPatchReq.getTeamGenre3();
         this.teamRecruit = teamModifyPatchReq.isTeamRecruit();
-
+        this.teamRecruitText = teamModifyPatchReq.getTeamRecruitText();
+        this.teamRule1 = teamModifyPatchReq.getTeamRule1();
+        this.teamRule2 = teamModifyPatchReq.getTeamRule2();
+        this.teamRule3 = teamModifyPatchReq.getTeamRule3();
     }
 
 }

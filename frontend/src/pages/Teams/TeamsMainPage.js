@@ -3,6 +3,8 @@ import styles from "../../styles/Teams.module.scss";
 import TeamCard from "../../components/Teams/TeamCard";
 import TextField from "@mui/material/TextField";
 import createstyles from "../../styles/Teams.module.scss";
+import { Api } from "../../Api";
+import { useNavigate } from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -19,6 +21,7 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 
 function TeamsMainPage() {
+  const movePage = useNavigate();
   const [teamCreateModal, setTeamCreateModal] = React.useState(false);
   const teamCreateModalOpen = () => {
     setTeamCreateModal(true);
@@ -123,6 +126,65 @@ function TeamsMainPage() {
     }
   };
 
+  // 모임 생성 axios에 사용할 데이터
+  // axios 보낼 데이터
+  const teamInfo = {
+    teamName: "",
+    teamMemberCntMax: "",
+    teamOnoff: "",
+    teamRegion: "",
+    teamGenre1: "",
+    teamGenre2: "",
+    teamGenre3: "",
+  };
+
+  // 모임 생성 axios
+  const teamCreate = () => {
+      const access_token = localStorage.getItem("access-token")
+      const refresh_token = localStorage.getItem("refresh-token")
+      // console.log(access_token)
+      // console.log(refresh_token)
+
+      teamInfo.teamName = form.team_name;
+      teamInfo.teamGenre1 = teamGenre[0];
+      teamInfo.teamGenre2 = teamGenre[1];
+      teamInfo.teamGenre3 = teamGenre[2];
+      teamInfo.teamRegion = form.team_region;
+      teamInfo.teamOnoff = form.team_onoff;
+      teamInfo.teamMemberCntMax = form.team_membercnt_max;
+    if (
+      teamInfo.teamName &&
+      teamInfo.teamMemberCntMax &&
+      teamInfo.teamOnoff &&
+      teamInfo.teamRegion &&
+      teamInfo.teamGenre1 &&
+      teamInfo.teamGenre2 &&
+      teamInfo.teamGenre3
+    ) {
+      Api.post("/teams",
+        teamInfo,
+        {headers: {'access-token': `Bearer ${access_token}`, 'refresh-token': `Bearer ${refresh_token}`}}
+        )
+        .then((res) => {
+          console.log(res);
+          alert('모임 생성이 완료되었습니다')
+          teamCreateModalClose()
+          window.location.reload()
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      alert("모든 항목에 대해 답변해주세요");
+    }
+  };
+
+  const teamName_validation = () => {
+    let check = /^[가-힣a-zA-Z].{1,11}$/;
+    // let check = /[~!@#$%^&*()_+|<>?:{}.,/;='"]/;
+    return check.test(form.team_name);
+  };
+
   return (
     <div className={styles["wrap-all"]}>
       <div className={styles.title}>모임 신청</div>
@@ -149,14 +211,17 @@ function TeamsMainPage() {
                   value={form.team_name}
                   variant="standard"
                   onChange={(e) =>
-                    setForm({ ...form, team_region: e.target.value })
+                    setForm({ ...form, team_name: e.target.value })
+                  }
+                  error={!teamName_validation() && form.team_name.length > 0}
+                  helperText={
+                    !teamName_validation() && form.team_name.length > 0
+                      ? "한글 혹은 영문 2글자 이상 12글자 이내로 작성해주세요."
+                      : ""
                   }
                 />
                 <div className={styles["btn-blank"]}></div>
-                <Button
-                  variant="outlined"
-                  color="success"
-                >
+                <Button variant="outlined" color="success">
                   중복확인
                 </Button>
               </div>
@@ -175,17 +240,17 @@ function TeamsMainPage() {
                   }
                 >
                   <FormControlLabel
-                    value="online"
+                    value="ON"
                     control={<Radio />}
                     label="온라인"
                   />
                   <FormControlLabel
-                    value="offline"
+                    value="OFF"
                     control={<Radio />}
                     label="오프라인"
                   />
                   <FormControlLabel
-                    value="onoff"
+                    value="BOTH"
                     control={<Radio />}
                     label="병행"
                   />
@@ -345,7 +410,8 @@ function TeamsMainPage() {
             <Button onClick={teamCreateModalClose}>취소</Button>
             <Button
               onClick={() => {
-                teamCreateModalClose();
+                // teamCreateModalClose();
+                teamCreate();
               }}
             >
               생성
