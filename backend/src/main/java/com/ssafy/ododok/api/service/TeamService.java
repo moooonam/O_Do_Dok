@@ -34,4 +34,6 @@ public interface TeamService {
     int modifyGrade(Long userId);
 
     Team getTeamByTeamName(String teamName);
+
+    Team getTeamInfoByTeamId(Long teamId);
 }

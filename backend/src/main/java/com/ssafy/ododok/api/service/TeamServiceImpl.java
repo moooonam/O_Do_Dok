@@ -170,4 +170,10 @@ public class TeamServiceImpl implements TeamService{
         return team;
     }
 
+    @Override
+    public Team getTeamInfoByTeamId(Long teamId) {
+        Team team = teamRepository.findByTeamId(teamId).get();
+        return team;
+    }
+
 }

@@ -64,6 +64,17 @@ public class TeamController {
         return ResponseEntity.status(200).body(teamList);
     }
 
+    // 모임 정보 출력
+    @GetMapping("/info/{teamId}")
+    public ResponseEntity<Team> getTeamInfoByTeamId(@PathVariable Long teamId){
+        try{
+            Team team = teamService.getTeamInfoByTeamId(teamId);
+            return ResponseEntity.status(200).body(team);
+        } catch(NoSuchElementException e){
+            return ResponseEntity.status(200).body(null);
+        }
+    }
+
     // 모임 정보 수정
     @PatchMapping("/{teamId}")
     public ResponseEntity<?> modifyTeamInfo(@PathVariable Long teamId, @RequestBody TeamModifyPatchReq teamModifyPatchReq){

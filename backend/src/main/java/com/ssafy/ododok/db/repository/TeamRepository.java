@@ -23,4 +23,6 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     void updateIsOngoingDodok(@Param("is_ongoing_dodok")boolean is_ongoing_dodok, @Param("team_id")Long team_id) throws Exception;
 
     Optional<Team> findByTeamName(String teamName);
+
+    Optional<Team> findByTeamId(Long teamId);
 }
