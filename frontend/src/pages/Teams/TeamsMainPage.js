@@ -4,7 +4,7 @@ import TeamCard from "../../components/Teams/TeamCard";
 import TextField from "@mui/material/TextField";
 import createstyles from "../../styles/Teams.module.scss";
 import { Api } from "../../Api";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -21,7 +21,7 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 
 function TeamsMainPage() {
-  const movePage = useNavigate();
+  // const movePage = useNavigate();
   const [teamCreateModal, setTeamCreateModal] = React.useState(false);
   const teamCreateModalOpen = () => {
     setTeamCreateModal(true);
