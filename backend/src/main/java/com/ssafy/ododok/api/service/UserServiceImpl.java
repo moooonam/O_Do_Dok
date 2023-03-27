@@ -1,6 +1,7 @@
 package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.dto.UserDto;
+import com.ssafy.ododok.api.request.UserModifyPostReq;
 import com.ssafy.ododok.api.request.UserRegisterPostReq;
 import com.ssafy.ododok.db.model.Team;
 import com.ssafy.ododok.db.model.TeamUser;
@@ -118,10 +119,19 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public int updateUser(User user, UserDto.Basic userDto) {
-        user.changeNickName(userDto.getUserNickname());
-        user.changePassword(passwordEncoder.encode(userDto.getUserPassword()));
-        user.changeImg(userDto.getUserImage());
+    public int updateUserPassword(User user, String modifyPassword) throws Exception {
+        try{
+            userRepository.updateUserPassword(passwordEncoder.encode(modifyPassword), user.getUserId());
+            return 1;
+        }catch(Exception e){
+            return 0;
+        }
+    }
+
+    @Override
+    public int updateUser(User user, UserModifyPostReq userModifyPostReq) {
+        user.changeNickName(userModifyPostReq.getUserNickname());
+        user.changeImg(userModifyPostReq.getUserImage());
 
         userRepository.save(user);
 
@@ -129,13 +139,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public int updateUserSurvey(UserSurvey userSurvey, UserDto.Basic userDto) {
-        userSurvey.changeUserGenre1(userDto.getUserGenre1());
-        userSurvey.changeUserGenre2(userDto.getUserGenre2());
-        userSurvey.changeUserGenre3(userDto.getUserGenre3());
-        userSurvey.changeUserRegion(userDto.getUserRegion());
-        userSurvey.changeUserOnoff(userDto.getUserOnoff());
-        userSurvey.changeUserFrequency(userDto.getUserFrequency());
+    public int updateUserSurvey(UserSurvey userSurvey, UserModifyPostReq userModifyPostReq) {
+        userSurvey.changeUserGenre1(userModifyPostReq.getUserGenre1());
+        userSurvey.changeUserGenre2(userModifyPostReq.getUserGenre2());
+        userSurvey.changeUserGenre3(userModifyPostReq.getUserGenre3());
+        userSurvey.changeUserRegion(userModifyPostReq.getUserRegion());
+        userSurvey.changeUserOnoff(userModifyPostReq.getUserOnoff());
+        userSurvey.changeUserFrequency(userModifyPostReq.getUserFrequency());
 
         userSurveyRepository.save(userSurvey);
 
