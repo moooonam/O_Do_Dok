@@ -14,13 +14,11 @@ public interface DodokService {
     void deleteDodok(Authentication authentication, Long dodokId) throws Exception;
     List<Dodok> showLastAllDodoks(User user, Long teamId);
 
-
-
-
-
     List<ReviewPage> getReviewPageList(Dodok dodok);
     List<ReviewEnd> getRivewEndList(Dodok dodok);
 
     String updateDodokOpen(User user, Long dodokId);
     String updateDodokClose(User user, Long dodokId);
+
+    List<Dodok> searchDodoks(String keyword);
 }

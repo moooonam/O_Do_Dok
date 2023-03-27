@@ -29,6 +29,14 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	implementation group: 'com.auth0', name: 'java-jwt', version: '3.10.2'
+
+	implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.5'
+	implementation group: 'dom4j', name: 'dom4j', version: '1.6.1'
+	implementation group: 'com.opencsv', name: 'opencsv', version: '5.7.1'
+	implementation group: 'org.apache.poi', name: 'poi', version: '3.9'
+	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '3.9'
+	implementation group: 'org.apache.xmlbeans', name: 'xmlbeans', version: '3.0.0'
+
 }
 
 tasks.named('test') {

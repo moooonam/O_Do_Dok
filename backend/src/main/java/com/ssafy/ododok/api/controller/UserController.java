@@ -5,11 +5,14 @@ import com.ssafy.ododok.api.request.FindIdPostReq;
 import com.ssafy.ododok.api.request.FindPasswordPostReq;
 import com.ssafy.ododok.api.request.UserLoginPostReq;
 import com.ssafy.ododok.api.request.UserRegisterPostReq;
+import com.ssafy.ododok.api.response.DodokInfoRes;
+import com.ssafy.ododok.api.response.ReviewInfoRes;
 import com.ssafy.ododok.api.response.UserRes;
+import com.ssafy.ododok.api.service.ReviewEndService;
+import com.ssafy.ododok.api.service.ReviewPageService;
 import com.ssafy.ododok.api.service.UserService;
 import com.ssafy.ododok.common.auth.PrincipalDetails;
-import com.ssafy.ododok.db.model.User;
-import com.ssafy.ododok.db.model.UserSurvey;
+import com.ssafy.ododok.db.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @CrossOrigin(value = "*")
@@ -27,10 +31,16 @@ import java.util.NoSuchElementException;
 public class UserController {
 
     private final UserService userService;
+    private final ReviewPageService reviewPageService;
+    private final ReviewEndService reviewEndService;
 
     @Autowired
-    UserController(UserService userService){
+    UserController(UserService userService,
+                   ReviewPageService reviewPageService,
+                   ReviewEndService reviewEndService){
         this.userService = userService;
+        this.reviewPageService = reviewPageService;
+        this.reviewEndService = reviewEndService;
     }
 
     // 이메일 중복확인
@@ -69,18 +79,22 @@ public class UserController {
         }
     }
 
+    // 나의 팀 정보 불러오기
+    @GetMapping("/myTeam")
+    public ResponseEntity<?> getUserTeam(Authentication authentication) {
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User user = principal.getUser();
+        Team team = userService.getUserTeam(user);
+        return ResponseEntity.status(200).body(team);
+    }
+
     // 회원정보 불러오기
     @GetMapping("/me")
     public ResponseEntity<?> getUserInfoSurvey(Authentication authentication) {
-//        try{
-            PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-            String userId = principal.getUser().getUserEmail();
-            User user = userService.getUserByUserEmail(userId);
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        User user = principal.getUser();
             UserDto.Basic ud = userService.getUserInfo(user);
             return ResponseEntity.status(200).body(ud);
-//        } catch (NullPointerException e){
-//            return ResponseEntity.status(200).body("토큰 만료돼서 다시 생성했으니 봐!");
-//        }
     }
 
     // 회원 정보 수정하기
@@ -144,6 +158,22 @@ public class UserController {
         return ResponseEntity.status(200).body(pwFindCheck);
     }
 
+    // 마이페이지에서 본인이 쓴 리뷰 불러오기
+    @GetMapping("/showReviewList")
+    public ResponseEntity<?>showLastAllReview(Authentication auth){
+        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
+        User user = principal.getUser();
+        List<ReviewPage> reviewPageList = reviewPageService.getReviewPageList(user);
+        List<ReviewEnd> reveiwEndList = reviewEndService.getReviewEndList(user);
+
+        ReviewInfoRes reviewInfoRes =new ReviewInfoRes(user, reviewPageList,reveiwEndList);
+        if(reviewInfoRes == null){
+            return new ResponseEntity<>("검색 결과가 없습니다.",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(reviewInfoRes,HttpStatus.OK);
+        }
+    }
+
     // /check/findPassword에서 true가 나왔다면, 해당 회원의 임시비밀번호를 이메일로 발급
     // 임시 비밀번호로 구현해야함 -> 이는 고도화로
 //    @PostMapping("/check/findPassword/showPassword")
@@ -155,5 +185,6 @@ public class UserController {
 //            return ResponseEntity.status(200).body();
 //        }
 //    }
+
 
 }

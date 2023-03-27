@@ -36,7 +36,7 @@ public class User {
     @Column(nullable = false)
     private String userPhone;
 
-    @Column
+    @ColumnDefault("'https://cdn-icons-png.flaticon.com/512/5264/5264565.png'")
     private String userImage;
 
     @ColumnDefault("0")

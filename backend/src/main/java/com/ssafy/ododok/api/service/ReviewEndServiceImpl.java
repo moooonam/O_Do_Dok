@@ -135,4 +135,10 @@ public class ReviewEndServiceImpl implements ReviewEndService {
         }
     }
 
+    @Override
+    public List<ReviewEnd> getReviewEndList(User user) {
+        List<ReviewEnd> reviewEndList= reviewEndRepository.findAllByUser(user);
+        return reviewEndList;
+    }
+
 }

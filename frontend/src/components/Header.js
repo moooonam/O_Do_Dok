@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import styles from "../styles/Header.module.scss";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch  } from "react-redux";
-import { login, logout } from "../redux/slice/userSlice";
+import { login, logout, getUserInfo } from "../redux/slice/userSlice";
+import { Api } from "../Api";
 function Header() {
   // 이동 관련
   const dispatch = useDispatch()
@@ -39,14 +40,30 @@ function Header() {
   }
   useEffect(() => {
     if (localStorage.getItem('refresh-token')) {
-      dispatch(login())}
+      dispatch(login())
+      Api.get('/user/me',{
+        headers: {
+          "refresh-token": `Bearer ${localStorage.getItem('refresh-token')}` ,
+          "access-token": `Bearer ${localStorage.getItem('access-token')}` ,
+        }
+      })
+      .then((res)=>{
+        dispatch(getUserInfo({profileImg: res.data.userImage
+      }))
+        // console.log(res.data.userImage)
+      }) 
+      .catch((err) =>{
+        console.log(err)
+      })
+    }
     else {
       dispatch(logout())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // 로그인 관련
   const isLogin = useSelector((state) => state.user.isLogin);
-  // console.log(isLogin);
+  const profileImg = useSelector((state) => state.user.profileImg);
 
   let profilOrLogin;
   if (isLogin) {
@@ -54,7 +71,9 @@ function Header() {
       <div className={styles.container}>
         <input id="dropdown" type="checkbox" className={styles['drop-checkbox']} />
         <label className={styles.dropdownLabel} htmlFor="dropdown">
-          <div>로그인됨</div>
+          <div className={styles['userImg-div']}>
+            <img src={profileImg} alt="" />
+          </div>
         </label>
         <div className={styles.content}>
           <ul>

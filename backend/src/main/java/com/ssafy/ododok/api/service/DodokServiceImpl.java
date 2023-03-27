@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -158,7 +159,7 @@ public class DodokServiceImpl implements DodokService {
         dodokRepository.delete(dodok);
     }
 
-    // 지난 도독 조회하기
+    // 지난 도독 조회하기 _ 팀별
     @Override
     public List<Dodok> showLastAllDodoks(User user, Long teamId) {
         TeamUser teamUser = teamUserRepository.findByUser(user);
@@ -176,7 +177,6 @@ public class DodokServiceImpl implements DodokService {
         }
 
     }
-
 
 
     // 도독 기준 페이지별 리뷰 리스트
@@ -227,4 +227,21 @@ public class DodokServiceImpl implements DodokService {
             return "권한이 없습니다.";
         }
     }
+
+    // 도독 찾기
+    @Override
+    public List<Dodok> searchDodoks(String keyword) {
+        List<Book> searchResult= bookRepository.findAllByBookTitleContainingIgnoreCase(keyword);
+
+        List<Dodok> dodokResult = new ArrayList<>();
+
+        for(Book list : searchResult){
+            List<Dodok> dodoklist = dodokRepository.findAllByBook(list).get();
+            for(Dodok dodok : dodoklist){
+                dodokResult.add(dodok);
+            }
+        }
+        return dodokResult;
+    }
+
 }
