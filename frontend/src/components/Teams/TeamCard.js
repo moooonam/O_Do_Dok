@@ -1,74 +1,46 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../../styles/Teams.module.scss";
+import { Api } from "../../Api";
+import { useNavigate } from "react-router-dom";
+
 function TeamCard() {
-  const teams = [
-    {
-      id: 1,
-      teamName: "개발진스1",
-      isOnline: true,
-      genre: "공포",
-      teamImg:
-        "https://velog.velcdn.com/images/heelieben/post/85d5650b-0108-4e9a-89f7-d16f0288d020/image.png",
-    },
-    {
-      id: 2,
-      teamName: "개발진스2",
-      isOnline: true,
-      genre: "공포",
-      teamImg:
-        "https://velog.velcdn.com/images/heelieben/post/bfa1ec30-4514-4d01-aa1d-52011a5fcf91/image.png",
-    },
-    {
-      id: 3,
-      teamName: "개발진스3",
-      isOnline: true,
-      genre: "공포",
-      teamImg:
-        "https://velog.velcdn.com/images/heelieben/post/33a67fb4-edd9-475b-b5e7-6a5f765f601f/image.png",
-    },
-    {
-      id: 4,
-      teamName: "개발진스4",
-      isOnline: false,
-      genre: "공포",
-      teamImg:
-        "https://velog.velcdn.com/images/heelieben/post/85d5650b-0108-4e9a-89f7-d16f0288d020/image.png",
-    },
-    {
-      id: 5,
-      teamName: "개발진스5",
-      isOnline: true,
-      genre: "공포",
-      teamImg:
-        "https://velog.velcdn.com/images/heelieben/post/bfa1ec30-4514-4d01-aa1d-52011a5fcf91/image.png",
-    },
-    // {
-    //   id: 6,
-    //   teamName: "개발진스6",
-    //   isOnline: true,
-    //   genre: "공포",
-    //   teamImg:
-    //     "https://velog.velcdn.com/images/heelieben/post/33a67fb4-edd9-475b-b5e7-6a5f765f601f/image.png",
-    // },
-  ];
+  const movePage = useNavigate();
+
+  const [teams, setTeams] = useState([]);
+
+  useEffect(() => {
+    Api.get("/teams")
+      .then((res) => {
+        console.log('모임 데이터 불러오기 완료----------')
+        console.log(res.data);
+        setTeams(...teams, res.data)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const teamClick = (team) => {
+    console.log(team.teamId)
+    movePage(`/teams/${team.teamId}`);
+    localStorage.setItem("nowTeam", team.teamId)
+  }
 
   const renderTeamCard = teams.map((team) => {
     return (
-      <div key={team.id} className={styles["wrap-team"]}>
-        <img src={team.teamImg} alt="" />
+      <div key={team.teamId} className={styles["wrap-team"]} onClick={() => {teamClick(team)}}>
+        <img src="https://cdn.pixabay.com/photo/2016/12/13/05/15/puppy-1903313__340.jpg" alt="" />
         <div className={styles.teamname}>{team.teamName}</div>
         <div className={styles["wrap-isonline-genre"]}>
-          <div>
-            {team.isOnline ? 
-            <div>#온라인</div> 
-            : 
-            <div>#오프라인</div>}
-            </div>
-          <div>#{team.genre}</div>
+          <div>{team.teamOnoff}</div>
+          <div>#{team.teamGenre1}</div>
+          <div>#{team.teamGenre2}</div>
+          <div>#{team.teamGenre3}</div>
         </div>
       </div>
     );
   });
+
   return <div className={styles["wrap-teamcards"]}>{renderTeamCard}</div>;
 }
 

@@ -4,6 +4,7 @@ import TeamCard from "../../components/Teams/TeamCard";
 import TextField from "@mui/material/TextField";
 import createstyles from "../../styles/Teams.module.scss";
 import { Api } from "../../Api";
+import { useNavigate } from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -20,6 +21,7 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 
 function TeamsMainPage() {
+  const movePage = useNavigate();
   const [teamCreateModal, setTeamCreateModal] = React.useState(false);
   const teamCreateModalOpen = () => {
     setTeamCreateModal(true);
@@ -140,6 +142,8 @@ function TeamsMainPage() {
   const teamCreate = () => {
       const access_token = localStorage.getItem("access-token")
       const refresh_token = localStorage.getItem("refresh-token")
+      // console.log(access_token)
+      // console.log(refresh_token)
 
       teamInfo.teamName = form.team_name;
       teamInfo.teamGenre1 = teamGenre[0];
@@ -157,23 +161,19 @@ function TeamsMainPage() {
       teamInfo.teamGenre2 &&
       teamInfo.teamGenre3
     ) {
-      Api.post("/teams", {
+      Api.post("/teams",
         teamInfo,
-        headers: access_token, refresh_token}
+        {headers: {'access-token': `Bearer ${access_token}`, 'refresh-token': `Bearer ${refresh_token}`}}
         )
         .then((res) => {
           console.log(res);
-          // movePage("/login");
+          alert('모임 생성이 완료되었습니다')
+          teamCreateModalClose()
+          window.location.reload()
         })
         .catch((err) => {
           console.log(err);
         });
-      // console.log(form);
-      // console.log(2023 - Number(dateFormat.slice(0,4)) + 1);
-      // console.log(userGenre[0]);
-      // console.log(userGenre[1]);
-      // console.log(userGenre[2]);
-      // console.log(userGenre);
     } else {
       alert("모든 항목에 대해 답변해주세요");
     }
