@@ -1,8 +1,10 @@
 import React from "react";
 import styles from "../../styles/MyPage.module.scss";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function MyPage() {
+  // 이동
   const movePage = useNavigate();
   function goUserInfoUpdate() {
     movePage("/mypage/update");
@@ -11,6 +13,9 @@ function MyPage() {
   function goUserPasswordUpdate() {
     movePage("/mypage/update/password");
   }
+  // 유저정보
+
+  const userInfo = useSelector((state) => state.user);
 
   const reviews = [
     {
@@ -70,11 +75,11 @@ function MyPage() {
         <div className={styles["myinfo-left"]}>
           <div className={styles["userImg-div"]}>
             <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQifB4Vg3_ARc3CQag2UroPpXuJnujae0a-dA&usqp=CAU"
+              src={userInfo.profileImg}
               alt=""
             />
           </div>
-          <h3>독린이</h3>
+          <h3>{userInfo.userNickname}</h3>
           <div className={styles["myinfo-update-btns"]}>
             <div      
               onClick={goUserInfoUpdate}
@@ -91,8 +96,9 @@ function MyPage() {
         <div className={styles["myinfo-center"]}>
           <div className={styles["center-genre"]}>
             <h4>관심장르</h4>
-            <div>#스릴러</div>
-            <div>#만화</div>
+            <div>#{userInfo.userGenre1}</div>
+            <div>#{userInfo.userGenre2}</div>
+            <div>#{userInfo.userGenre3}</div>
           </div>
           <div className={styles["center-activity"]}>
             <p>활동 현황</p>

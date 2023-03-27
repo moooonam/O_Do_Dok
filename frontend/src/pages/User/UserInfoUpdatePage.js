@@ -3,12 +3,13 @@ import TextField from "@mui/material/TextField";
 import styles from "../../styles/UserInfoUpdate.module.scss";
 import Grid from "@mui/material/Grid"; // Grid version 1
 import Button from "@mui/material/Button";
-// import axios from "axios";
+import { Api } from "../../Api";
 import { useNavigate } from "react-router-dom";
 // import IconButton from "@mui/material/IconButton";
 // import PhotoCamera from '@mui/icons-material/PhotoCamera';
-
 // radio
+
+import { useSelector } from "react-redux";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -16,29 +17,25 @@ import FormControl from "@mui/material/FormControl";
 // import FormLabel from "@mui/material/FormLabel";
 
 // datepicker
-import dayjs from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-
 function UserInfoUpdatePage() {
   const movePage = useNavigate();
   function goMyPage() {
     movePage("/mypage");
   }
-
+  const userInfo = useSelector((state) => state.user);
   const [form, setForm] = useState({
-    nickname: "",
-    onoff: "",
-    region: "",
-    frequency: "",
+    userName: userInfo.userName,
+    userEmail: userInfo.userEmail,
+    userNickname: userInfo.userNickname,
+    userImage:userInfo.profileImg,
+    userOnoff:userInfo.userOnoff,
+    userRegion:userInfo.userRegion,
+    userFrequency: userInfo.userFrequency,
+    userGenre1: "",
+    userGenre2: "",
+    userGenre3: "",
+    nickCheck: true,
   });
-
-  // 날짜 데이터
-  const [birth, setBirth] = React.useState(dayjs());
-  // 날짜 형식 변경
-  const dateFormat = dayjs(birth.$d).format("YYYY-MM-DD");
-  const userAge = 2023 - Number(dateFormat.slice(0, 4)) + 1;
 
   // 장르 리스트
   const [userGenre, setUserGenre] = useState([]);
@@ -123,78 +120,47 @@ function UserInfoUpdatePage() {
   // 유저 정보에 선호 장르 담기
   const clickGenre = (choice) => {
     if (userGenre.includes(choice)) {
-      console.log(2222222222);
       setUserGenre(userGenre.filter((genre) => genre !== choice));
     } else {
       setUserGenre([...userGenre, choice]);
     }
   };
 
-  // axios 보낼 데이터
-  const userUpdateInfo = {
-    name: "",
-    email: "",
-    nickname: "",
-    password: "",
-    passwordConfirm: "",
-    gender: "",
-    onoff: "",
-    region: "",
-    frequency: "",
-    genre1: "",
-    genre2: "",
-    genre3: "",
-    age: 0,
-  };
+  // axios 보낼 데이
 
   const nickDuplication = () => {
-    // if (form.nickname) {
-    //   axios({
-    //     methods: 'get',
-    //     url: `http://localhost:3000/api/v1/user/checkEmail/${form.nickname}`
-    //   })
-    //   .then((res) => {
-    //     console.log(res)
-    //   })
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
-    // }
+    if (form.userNickname) {
+      Api.get(`/user/checkNickname/${form.userNickname}`)
+        .then((res) => {
+          if (res.data) {
+            console.log('가능가능')
+            setForm({ ...form, nickCheck: true });
+            alert("사용 가능한 닉네임입니다.");
+          } else {
+            setForm({ ...form, nickCheck: false });
+            alert("이미 존재하는 닉네임입니다.");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
-  // 정보 업데이트 함수
-  const userupdate = () => {
-    userUpdateInfo.name = form.name;
-    userUpdateInfo.email = form.email;
-    userUpdateInfo.nickname = form.nickname;
-    userUpdateInfo.password = form.password;
-    userUpdateInfo.passwordConfirm = form.passwordConfirm;
-    userUpdateInfo.gender = form.gender;
-    userUpdateInfo.onoff = form.onoff;
-    userUpdateInfo.region = form.region;
-    userUpdateInfo.frequency = form.frequency;
-    userUpdateInfo.genre1 = userGenre[0];
-    userUpdateInfo.genre2 = userGenre[1];
-    userUpdateInfo.genre3 = userGenre[2];
-    userUpdateInfo.age = userAge;
-    // axios({
-    //   methods: 'post',
-    //   url: 'http://localhost:3000/api/v1/user',
-    //   data: userUpdateInfo,
-    // })
-    //   .then((res) => {
-    //     console.log(res)
-    //   })
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
-    // console.log(form);
-    // console.log(2023 - Number(dateFormat.slice(0,4)) + 1);
-    // console.log(userGenre[0]);
-    // console.log(userGenre[1]);
-    // console.log(userGenre[2]);
-    // console.log(userGenre);
-    // console.log(userUpdateInfo);
+  // 정보 제출
+  const userUpdate = () => {
+    form.userGenre1 = userGenre[0];
+    form.userGenre2 = userGenre[1];
+    form.userGenre3 = userGenre[2];
+    if (form.nickCheck) {
+      //axios 들어갈 자리
+      console.log(form)
+    }
+    else {
+      alert('닉네임 중복체크를 해주세요!')
+    }
+
+
   };
 
   // 유효성 검사
@@ -202,6 +168,19 @@ function UserInfoUpdatePage() {
     let check = /[~!@#$%^&*()_+|<>?:{}.,/;='"]/;
     return check.test(form.nickname);
   };
+
+  let Frequency = ""
+  if (userInfo.userFrequency <3) {
+    Frequency = "under2"
+  }
+  else if (userInfo.userFrequency <6){
+    Frequency ='under5'
+  }
+  else {
+    Frequency = 'oversix'
+  }
+  // console.log( userInfo)
+  // console.log(userInfo.userNickname)
 
   return (
     <Grid
@@ -221,18 +200,10 @@ function UserInfoUpdatePage() {
             Upload
             <input hidden accept="image/*" multiple type="file" />
           </Button>
-          {/* <IconButton
-            color="primary"
-            aria-label="upload picture"
-            component="label"
-          >
-            <input hidden accept="image/*" type="file" />
-            <PhotoCamera />
-          </IconButton> */}
         </div>
         <div className={styles["userImg-div"]}>
           <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQifB4Vg3_ARc3CQag2UroPpXuJnujae0a-dA&usqp=CAU"
+            src={userInfo.profileImg}
             alt=""
           />
         </div>
@@ -244,7 +215,7 @@ function UserInfoUpdatePage() {
             required
             id="name"
             disabled
-            value="유저 이름"
+            value={userInfo.userName}
             variant="standard"
           />
           <br />
@@ -260,7 +231,7 @@ function UserInfoUpdatePage() {
             required
             disabled
             id="email"
-            value="test@test.com"
+            value={userInfo.userEmail}
             variant="standard"
           />
         </Grid>
@@ -274,11 +245,12 @@ function UserInfoUpdatePage() {
             required
             id="nickname"
             label="Required"
-            value={form.nickname}
+            // value={form.nickname}
             placeholder="2 ~ 12자 이내로 입력해주세요"
             variant="standard"
-            onChange={(e) => setForm({ ...form, nickname: e.target.value })}
+            onChange={(e) => setForm({ ...form, userNickname: e.target.value })}
             error={nickname_validation()}
+            defaultValue={userInfo.userNickname}
             helperText={
               nickname_validation() ? "특수기호는 하실 수 없습니다." : ""
             }
@@ -287,7 +259,7 @@ function UserInfoUpdatePage() {
             variant="outlined"
             className={styles["update-dupli"]}
             color="success"
-            onClick={nickDuplication()}
+            onClick={nickDuplication}
           >
             중복확인
           </Button>
@@ -305,30 +277,20 @@ function UserInfoUpdatePage() {
               value="male"
               control={<Radio />}
               label="남성"
-              onChange={(e) => setForm({ ...form, gender: e.target.value })}
-            />
+              checked= { userInfo.userGender === 'M' ? true : false}
+              // { userInfo.userGender === 'm' ?  checked='true' : checked="false"}
+              onChange={(e) => setForm({ ...form, userGender: e.target.value })}
+              />
             <FormControlLabel
               disabled
               value="female"
               control={<Radio />}
               label="여성"
-              onChange={(e) => setForm({ ...form, gender: e.target.value })}
+              checked= { userInfo.userGender === 'W' ? true : false}
+              onChange={(e) => setForm({ ...form, userGender: e.target.value })}
             />
           </RadioGroup>
         </FormControl>
-        <br />
-        <br />
-        <div>
-          <p>생년월일</p>
-          <br />
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              disabled
-              value={birth}
-              onChange={(newValue) => setBirth(newValue)}
-            />
-          </LocalizationProvider>
-        </div>
         <br />
         <br />
         <div>
@@ -442,24 +404,25 @@ function UserInfoUpdatePage() {
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
             name="row-radio-buttons-group"
+            defaultValue={userInfo.userOnoff}
           >
             <FormControlLabel
-              value="online"
+              value="ON"
               control={<Radio />}
               label="온라인"
-              onChange={(e) => setForm({ ...form, onoff: e.target.value })}
-            />
+              onChange={(e) => setForm({ ...form, userOnoff: e.target.value })}
+              />
             <FormControlLabel
-              value="offline"
+              value="OFF"
               control={<Radio />}
               label="오프라인"
-              onChange={(e) => setForm({ ...form, onoff: e.target.value })}
-            />
+              onChange={(e) => setForm({ ...form, userOnoff: e.target.value })}
+              />
             <FormControlLabel
-              value="onoff"
+              value="BOTH"
               control={<Radio />}
               label="병행"
-              onChange={(e) => setForm({ ...form, onoff: e.target.value })}
+              onChange={(e) => setForm({ ...form, userOnoff: e.target.value })}
             />
           </RadioGroup>
         </FormControl>
@@ -472,9 +435,10 @@ function UserInfoUpdatePage() {
             id="region"
             label="Required"
             placeholder="활동지역을 입력해주세요"
-            value={form.region}
+            // value={form.region}
+            defaultValue={userInfo.userRegion}
             variant="standard"
-            onChange={(e) => setForm({ ...form, region: e.target.value })}
+            onChange={(e) => setForm({ ...form, userRegion: e.target.value })}
           />
         </Grid>
         <br />
@@ -486,24 +450,25 @@ function UserInfoUpdatePage() {
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
             name="row-radio-buttons-group"
+            defaultValue={Frequency}
           >
             <FormControlLabel
-              value="underthril"
+              value="under2"
               control={<Radio />}
               label="2권 이하"
-              onChange={(e) => setForm({ ...form, frequency: 2 })}
+              onChange={(e) => setForm({ ...form, userFrequency: 2 })}
             />
             <FormControlLabel
-              value="horrorfantasy"
+              value="under5"
               control={<Radio />}
               label="3권 ~ 5권"
-              onChange={(e) => setForm({ ...form, frequency: 5 })}
+              onChange={(e) => setForm({ ...form, userFrequency: 5 })}
             />
             <FormControlLabel
               value="oversix"
               control={<Radio />}
               label="6권 이상"
-              onChange={(e) => setForm({ ...form, frequency: 6 })}
+              onChange={(e) => setForm({ ...form, userFrequency: 6 })}
             />
           </RadioGroup>
         </FormControl>
@@ -518,8 +483,8 @@ function UserInfoUpdatePage() {
             variant="contained"
             color="success"
             onClick={() => {
-              goMyPage();
-                userupdate();
+              userUpdate();
+              // goMyPage();
             }}
           >
             수정 완료

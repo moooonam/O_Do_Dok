@@ -9,7 +9,7 @@ import { Api } from "../../Api";
 import { useDispatch } from "react-redux";
 import { login, getUserInfo } from "../../redux/slice/userSlice";
 function LoginPage() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const movePage = useNavigate();
   const [form, setForm] = useState({
     userEmail: "",
@@ -18,38 +18,52 @@ function LoginPage() {
 
   const goSignup = () => {
     movePage("/signup");
-  }
+  };
   const goMain = () => {
-    movePage("/")
-  }
+    movePage("/");
+  };
   const userLogin = () => {
     // console.log(form)
-    Api.post('/login', form)
+    Api.post("/login", form)
       .then((res) => {
         // console.log(res.data['refresh-token'])
-        localStorage.setItem("refresh-token", res.data['refresh-token'])
-        localStorage.setItem("access-token", res.data['access-token'])
-        dispatch(login())
-        Api.get('/user/me',{
+        localStorage.setItem("refresh-token", res.data["refresh-token"]);
+        localStorage.setItem("access-token", res.data["access-token"]);
+        dispatch(login());
+        Api.get("/user/me", {
           headers: {
-            "refresh-token": `Bearer ${localStorage.getItem('refresh-token')}` ,
-            "access-token": `Bearer ${localStorage.getItem('access-token')}` ,
-          }
+            "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+            "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+          },
         })
-        .then((res)=>{
-          dispatch(getUserInfo({profileImg: res.data.userImage
-          }))
-          // console.log(res.data)
-        }) 
-        .catch((err) =>{
-          console.log(err)
-        })
-        goMain()
+          .then((res) => {
+            dispatch(
+              getUserInfo({
+                profileImg: res.data.userImage,
+                userEmail: res.data.userEmail,
+                userNickname: res.data.userNickname,
+                userGenre1: res.data.userGenre1,
+                userGenre2: res.data.userGenre2,
+                userGenre3: res.data.userGenre3,
+                userName: res.data.userName,
+                userGender: res.data.userGender,
+                userFrequency: res.data.userFrequency,
+                userOnoff: res.data.userOnoff,
+                userRegion: res.data.userRegion,
+                userAge: res.data.userAge,
+              })
+            );
+            // console.log(res.data)
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        goMain();
       })
       .catch((err) => {
-        console.log(err)
-      })
-  }
+        console.log(err);
+      });
+  };
   return (
     <Grid
       container
@@ -87,7 +101,9 @@ function LoginPage() {
         </Grid>
         <Grid container direction="row" justifyContent={"space-between"}>
           <p className={styles["small"]}>아이디/비밀번호 찾기</p>
-          <p className={styles["small"]} onClick={goSignup}>가입하기</p>
+          <p className={styles["small"]} onClick={goSignup}>
+            가입하기
+          </p>
         </Grid>
         <hr />
         <br />
