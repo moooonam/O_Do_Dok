@@ -194,7 +194,7 @@ function SignupPage() {
         })
         .catch((err) => {
           console.log(err);
-         });
+        });
     }
     // else {
     //   alert("닉네임을 입력해주세요.")

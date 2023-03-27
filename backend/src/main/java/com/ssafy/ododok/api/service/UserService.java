@@ -2,6 +2,7 @@ package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.dto.UserDto;
 import com.ssafy.ododok.api.request.UserRegisterPostReq;
+import com.ssafy.ododok.db.model.Team;
 import com.ssafy.ododok.db.model.User;
 import com.ssafy.ododok.db.model.UserSurvey;
 
@@ -19,4 +20,6 @@ public interface UserService {
     boolean idCheck(String email, String name);
 
     boolean passwordCheck(String email, String name);
+
+    Team getUserTeam(User user);
 }

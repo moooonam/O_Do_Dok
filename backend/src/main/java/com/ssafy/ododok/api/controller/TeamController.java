@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @CrossOrigin(value = "*")
@@ -38,6 +39,17 @@ public class TeamController {
         return ResponseEntity.status(200).body("완료");
     }
 
+    // 모임이름 중복확인
+    @GetMapping("/check/{teamName}")
+    public ResponseEntity<Boolean> checkTeamName(@PathVariable String teamName) {
+        try{
+            teamService.getTeamByTeamName(teamName);
+        } catch(NoSuchElementException e){
+            return ResponseEntity.status(200).body(true);
+        }
+        return ResponseEntity.status(200).body(false);
+    }
+
     // 모임 리스트 출력
     @GetMapping()
     public ResponseEntity<List<Team>> getAllTeams(){
@@ -50,6 +62,17 @@ public class TeamController {
     public ResponseEntity<List<Team>> getTeamInfoByTeamName(@PathVariable String teamName){
         List<Team> teamList = teamService.getTeamInfoByTeamName(teamName);
         return ResponseEntity.status(200).body(teamList);
+    }
+
+    // 모임 정보 출력
+    @GetMapping("/info/{teamId}")
+    public ResponseEntity<Team> getTeamInfoByTeamId(@PathVariable Long teamId){
+        try{
+            Team team = teamService.getTeamInfoByTeamId(teamId);
+            return ResponseEntity.status(200).body(team);
+        } catch(NoSuchElementException e){
+            return ResponseEntity.status(200).body(null);
+        }
     }
 
     // 모임 정보 수정

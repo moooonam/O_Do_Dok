@@ -40,7 +40,6 @@ function TeamCard() {
       </div>
     );
   });
-
   return <div className={styles["wrap-teamcards"]}>{renderTeamCard}</div>;
 }
 

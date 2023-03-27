@@ -164,4 +164,16 @@ public class TeamServiceImpl implements TeamService{
         return 0;
     }
 
+    @Override
+    public Team getTeamByTeamName(String teamName) {
+        Team team = teamRepository.findByTeamName(teamName).get();
+        return team;
+    }
+
+    @Override
+    public Team getTeamInfoByTeamId(Long teamId) {
+        Team team = teamRepository.findByTeamId(teamId).get();
+        return team;
+    }
+
 }
