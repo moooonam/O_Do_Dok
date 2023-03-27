@@ -1,17 +1,12 @@
 package com.ssafy.ododok.db.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DynamicInsert
 public class Genre {
@@ -24,60 +19,96 @@ public class Genre {
     @JoinColumn(name="team_id")
     private Team team;
 
-
+    // 추리
     @Column(nullable = false)
     private double reasonRating;
 
     @Column(nullable = false)
     private int reasonCnt;
 
-    @Column(nullable = false)
-    private double thrillRating;
-
-    @Column(nullable = false)
-    private int thrillCnt;
-
-    @Column(nullable = false)
-    private double horrorRating;
-
-    @Column(nullable = false)
-    private int horrorCnt;
-
-    @Column(nullable = false)
-    private double sfRating;
-
-    @Column(nullable = false)
-    private int sfCnt;
-
+    // 판타지
     @Column(nullable = false)
     private double fantasyRating;
 
     @Column(nullable = false)
     private int fantasyCnt;
 
+    // SF
     @Column(nullable = false)
-    private double dramaRating;
+    private double sfRating;
 
     @Column(nullable = false)
-    private int dramaCnt;
+    private int sfCnt;
+
+    // 호러 (공포)
+    @Column(nullable = false)
+    private double horrorRating;
 
     @Column(nullable = false)
-    private double gameRating;
+    private int horrorCnt;
+
+    // 무협
+    @Column(nullable = false)
+    private double martialRating;
 
     @Column(nullable = false)
-    private int gameCnt;
+    private int martialCnt;
 
+    // 스릴러
+    @Column(nullable = false)
+    private double thrillRating;
+
+    @Column(nullable = false)
+    private int thrillCnt;
+
+    // 로맨스
     @Column(nullable = false)
     private double romanceRating;
 
     @Column(nullable = false)
     private int romanceCnt;
 
-    @Column(nullable = false)
-    private double animationRating;
-
-    @Column(nullable = false)
-    private int animationCnt;
-
+    public void changeReasonRating(double reasonRating){
+        this.reasonRating = reasonRating;
+    }
+    public void changeReasonCnt(int reasonCnt){
+        this.reasonCnt = reasonCnt;
+    }
+    public void changeFantasyRating(double fantasyRating){
+        this.fantasyRating = fantasyRating;
+    }
+    public void changeFantasyCnt(int fantasyCnt){
+        this.fantasyCnt = fantasyCnt;
+    }
+    public void changeSfRating(double sfRating){
+        this.sfRating = sfRating;
+    }
+    public void changeSfCnt(int sfCnt){
+        this.sfCnt = sfCnt;
+    }
+    public void changeHorrorRating(double horrorRating){
+        this.horrorRating = horrorRating;
+    }
+    public void changeHorrorCnt(int horrorCnt){
+        this.horrorCnt = horrorCnt;
+    }
+    public void changeMartialRating(double martialRating){
+        this.martialRating = martialRating;
+    }
+    public void changeMartialCnt(int martialCnt){
+        this.martialCnt = martialCnt;
+    }
+    public void changeThrillRating(double thrillRating){
+        this.thrillRating = thrillRating;
+    }
+    public void changeThrillCnt(int thrillCnt){
+        this.thrillCnt = thrillCnt;
+    }
+    public void changeRomanceRating(double romanceRating){
+        this.romanceRating = romanceRating;
+    }
+    public void changeRomanceCnt(int romanceCnt){
+        this.romanceCnt = romanceCnt;
+    }
 
 }

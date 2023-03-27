@@ -1,17 +1,12 @@
 package com.ssafy.ododok.db.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DynamicInsert
 public class UserSurvey {
@@ -66,6 +61,19 @@ public class UserSurvey {
         this.userOnoff = userOnoff;
     }
     public void changeUserFrequency(int userFrequency){
+        this.userFrequency = userFrequency;
+    }
+
+    @Builder
+    public UserSurvey(User user, Gender userGender, int userAge, String userGenre1, String userGenre2, String userGenre3, String userRegion, Onoff userOnoff, int userFrequency) {
+        this.user = user;
+        this.userGender = userGender;
+        this.userAge = userAge;
+        this.userGenre1 = userGenre1;
+        this.userGenre2 = userGenre2;
+        this.userGenre3 = userGenre3;
+        this.userRegion = userRegion;
+        this.userOnoff = userOnoff;
         this.userFrequency = userFrequency;
     }
 

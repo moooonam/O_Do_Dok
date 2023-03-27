@@ -1,18 +1,13 @@
 package com.ssafy.ododok.db.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DynamicInsert
 public class ReviewPage {
@@ -41,4 +36,14 @@ public class ReviewPage {
     public void changeReviewPageContent(String reviewPageContent){
         this.reviewPageContent = reviewPageContent;
     }
+
+    @Builder
+    public ReviewPage(User user, Dodok dodok, String reviewPageContent, LocalDate reviewPageDate, int reviewPagePage) {
+        this.user = user;
+        this.dodok = dodok;
+        this.reviewPageContent = reviewPageContent;
+        this.reviewPageDate = reviewPageDate;
+        this.reviewPagePage = reviewPagePage;
+    }
+
 }

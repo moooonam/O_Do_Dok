@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ododok.api.dto.LoginRequestDto;
 import com.ssafy.ododok.api.dto.RefreshTokenDto;
 import com.ssafy.ododok.db.model.RefreshToken;
+import com.ssafy.ododok.db.model.Team;
 import com.ssafy.ododok.db.model.User;
 import com.ssafy.ododok.db.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -100,9 +101,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.REFRESH_TIME))
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
-        RefreshToken refreshToken1 = new RefreshToken();
-        refreshToken1.setEmail(email);
-        refreshToken1.setRefreshToken(refreshToken);
+        RefreshToken refreshToken1 = RefreshToken.builder()
+                .email(email)
+                .refreshToken(refreshToken)
+                .build();
+
         refreshTokenRepository.save(refreshToken1);
 
         response.setHeader(JwtProperties.REFRESH_HEADER_STRING, JwtProperties.TOKEN_PREFIX+refreshToken);
