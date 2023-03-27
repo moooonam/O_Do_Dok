@@ -1,8 +1,9 @@
 package com.ssafy.ododok.api.request;
 
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class PageReviewPutReq {
     long reviewPageId;
     String content;

@@ -1,20 +1,13 @@
 package com.ssafy.ododok.db.model;
 
-import com.ssafy.ododok.api.request.EndReviewModifyPutReq;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import net.bytebuddy.asm.Advice;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DynamicInsert
 public class ReviewEnd {
@@ -47,4 +40,13 @@ public class ReviewEnd {
         this.reviewEndContent=reviewEndContent;
     }
 
+    @Builder
+    public ReviewEnd(User user, Dodok dodok, String reviewEndContent, LocalDate reviewEndDate, double reviewEndBookrating, double reviewEndGenrerating) {
+        this.user = user;
+        this.dodok = dodok;
+        this.reviewEndContent = reviewEndContent;
+        this.reviewEndDate = reviewEndDate;
+        this.reviewEndBookrating = reviewEndBookrating;
+        this.reviewEndGenrerating = reviewEndGenrerating;
+    }
 }

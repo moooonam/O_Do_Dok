@@ -72,7 +72,6 @@ public class UserServiceImpl implements UserService{
 
         UserSurvey userSurvey = UserSurvey.builder()
                 .user(user)
-                .userSurveyId(registerDto.getId())
                 .userGender(registerDto.getGender())
                 .userAge(registerDto.getAge())
                 .userGenre1(registerDto.getGenre1())
@@ -119,12 +118,18 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public int updateUserPassword(User user, String modifyPassword) throws Exception {
-        try{
-            userRepository.updateUserPassword(passwordEncoder.encode(modifyPassword), user.getUserId());
-            return 1;
-        }catch(Exception e){
-            return 0;
+    public int updateUserPassword(User user, String pwd, String modifyPassword) throws Exception {
+
+        if(passwordEncoder.matches(pwd, user.getUserPassword())){
+            try{
+                user.changePassword(passwordEncoder.encode(modifyPassword));
+                userRepository.save(user);
+                return 1;
+            }catch(Exception e){
+                return 0;
+            }
+        } else{
+            return -1;
         }
     }
 
