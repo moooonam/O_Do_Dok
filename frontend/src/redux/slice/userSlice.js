@@ -16,7 +16,6 @@ export const userSlice = createSlice({
       state.isLogin = false;
     },
     getUserInfo: (state, action) => {
-      // console.log(`액션페이로드: ${action.payload.profileImg}`)
       state.profileImg = action.payload.profileImg;
     }
   },

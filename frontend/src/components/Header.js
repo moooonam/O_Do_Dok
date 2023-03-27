@@ -59,12 +59,11 @@ function Header() {
     else {
       dispatch(logout())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // 로그인 관련
   const isLogin = useSelector((state) => state.user.isLogin);
   const profileImg = useSelector((state) => state.user.profileImg);
-  console.log(profileImg)
-  // console.log(isLogin);
 
   let profilOrLogin;
   if (isLogin) {
