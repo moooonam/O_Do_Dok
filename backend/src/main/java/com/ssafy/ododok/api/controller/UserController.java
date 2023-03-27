@@ -2,9 +2,7 @@ package com.ssafy.ododok.api.controller;
 
 import com.ssafy.ododok.api.dto.UserDto;
 import com.ssafy.ododok.api.request.*;
-import com.ssafy.ododok.api.response.DodokInfoRes;
 import com.ssafy.ododok.api.response.ReviewInfoRes;
-import com.ssafy.ododok.api.response.UserRes;
 import com.ssafy.ododok.api.service.ReviewEndService;
 import com.ssafy.ododok.api.service.ReviewPageService;
 import com.ssafy.ododok.api.service.UserService;
@@ -14,9 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -117,14 +112,16 @@ public class UserController {
 
     // 회원 비밀번호 수정하기
     @PutMapping("/modifyPassword")
-    public ResponseEntity<?> updatePassword(@RequestBody Map<String, String> modifyPassword, Authentication authentication) throws Exception {
+    public ResponseEntity<?> updatePassword(@RequestBody UserPwdModifyPostReq userPwdModifyPostReq, Authentication authentication) throws Exception {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         String userId = principal.getUser().getUserEmail();
         User user = userService.getUserByUserEmail(userId);
 
-        int cnt = userService.updateUserPassword(user, modifyPassword.get("modifyPassword"));
+        int cnt = userService.updateUserPassword(user, userPwdModifyPostReq.getPwd(), userPwdModifyPostReq.getModifyPassword());
         if(cnt == 0){
             return ResponseEntity.status(200).body("비밀번호 수정 실패");
+        } else if(cnt == -1) {
+            return ResponseEntity.status(200).body("현재 비밀번호를 다시 확인해주세요");
         } else{
             return ResponseEntity.status(200).body("수정 완료");
         }

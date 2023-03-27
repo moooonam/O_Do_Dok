@@ -150,13 +150,13 @@ public class TeamServiceImpl implements TeamService{
 
         // 관리자로 변경하면 1 일반 유저로 변경하면 0
         if(teamUser.getRole().equals(USER)) {
-            teamUser.setRole(MANAGER);
+            teamUser.changeRole(MANAGER);
             teamUserRepository.save(teamUser);
             return 1;
         }
 
         if (teamUser.getRole().equals(MANAGER)){
-            teamUser.setRole(USER);
+            teamUser.changeRole(USER);
             teamUserRepository.save(teamUser);
             return 2;
         }

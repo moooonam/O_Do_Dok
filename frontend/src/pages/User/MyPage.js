@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import styles from "../../styles/MyPage.module.scss";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Api } from "../../Api";
 
 function MyPage() {
   // 이동
@@ -14,9 +15,24 @@ function MyPage() {
     movePage("/mypage/update/password");
   }
   // 유저정보
-
-  const userInfo = useSelector((state) => state.user);
-
+  const [myTeamName, setMyTeamName] = useState("")
+  const [myTeamImg, setMyTeamImg] = useState("")
+  useEffect(() => {
+    Api.get("/user/myTeam",{
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },})
+      .then((res) => {
+        setMyTeamName(res.data.teamName)
+        setMyTeamImg(res.data.teamImage)
+      })
+    .catch((err) => {
+      console.log(err)
+    })
+  }, [])
+    const userInfo = useSelector((state) => state.user);
+    
   const reviews = [
     {
       id: 1,
@@ -117,11 +133,15 @@ function MyPage() {
           </div>
         </div>
         <div className={styles["myinfo-right"]}>
-          <h4>가입한 모임 : 무경계</h4>
+          {myTeamName ? <div>
+            <h4>가입한 모임 : {myTeamName}</h4>
           <img
-            src="https://cdn.pixabay.com/photo/2018/05/14/16/54/alpine-3400788_960_720.jpg"
-            alt=""
-          />
+            src={myTeamImg}
+            alt="팀 대표 이미지"
+            /> 
+            </div>
+            : <h4> 가입한모임이 없습니다</h4>}
+        
         </div>
       </div>
       <div className={styles["myinfo-bottom"]}>

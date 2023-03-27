@@ -1,6 +1,5 @@
 package com.ssafy.ododok.db.repository;
 
-
 import com.ssafy.ododok.db.model.User;
 import com.ssafy.ododok.db.model.UserSurvey;
 import org.springframework.data.jpa.repository.JpaRepository;

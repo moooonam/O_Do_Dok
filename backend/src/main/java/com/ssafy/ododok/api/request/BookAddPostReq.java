@@ -1,8 +1,8 @@
 package com.ssafy.ododok.api.request;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class BookAddPostReq {
     String bookTitle;
     String bookAuthor;

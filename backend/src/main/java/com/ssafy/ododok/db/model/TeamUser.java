@@ -1,17 +1,12 @@
 package com.ssafy.ododok.db.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DynamicInsert
 public class TeamUser {
@@ -30,5 +25,16 @@ public class TeamUser {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public void changeRole(Role role){
+        this.role = role;
+    }
+
+    @Builder
+    public TeamUser(User user, Team team, Role role) {
+        this.user = user;
+        this.team = team;
+        this.role = role;
+    }
 
 }

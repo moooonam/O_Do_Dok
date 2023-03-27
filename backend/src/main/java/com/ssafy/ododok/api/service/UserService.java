@@ -14,7 +14,7 @@ public interface UserService {
 
     int createUserInfo(UserRegisterPostReq.Basic registerDto);
     UserDto.Basic getUserInfo(User user);
-    int updateUserPassword(User user, String modifyPassword) throws Exception;
+    int updateUserPassword(User user, String pwd, String modifyPassword) throws Exception;
     int updateUser(User user, UserModifyPostReq userModifyPostReq);
     int updateUserSurvey(UserSurvey userSurvey, UserModifyPostReq userModifyPostReq);
     boolean deleteUser(User user);

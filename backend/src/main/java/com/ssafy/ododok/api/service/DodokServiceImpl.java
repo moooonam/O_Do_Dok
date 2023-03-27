@@ -87,7 +87,8 @@ public class DodokServiceImpl implements DodokService {
                         .build();
 
                 dodokRepository.save(dodok);
-                teamRepository.updateIsOngoingDodok(true, team.getTeamId());
+                team.changeIsOngoingDodok(true);
+                teamRepository.save(team);
                 return "도독을 생성하였습니다.";
             } else{
                 return "도독을 생성할 권한이 없습니다.";
@@ -108,10 +109,12 @@ public class DodokServiceImpl implements DodokService {
             LocalDate curr = now();
             LocalDate expiredDate = dodok.getDodokEnddate();
             if(expiredDate.isEqual(curr)||expiredDate.isBefore(curr)){
-                dodokRepository.updateDodokComplete(true, dodok.getDodokId());
+                dodok.changeComplete(true);
+                dodokRepository.save(dodok);
                 // 해당 도독의 팀 아이디를 가져오기, 해당 팀의 도독 활성화 여부를 false처리.
                 Team team = dodok.getTeam();
-                teamRepository.updateIsOngoingDodok(false, team.getTeamId());
+                team.changeIsOngoingDodok(false);
+                teamRepository.save(team);
             }
         }
     }
@@ -124,9 +127,11 @@ public class DodokServiceImpl implements DodokService {
         if(isEnd){ // 이미 도독이 완료되었다면
             return 0;
         }else{
-            dodokRepository.updateDodokComplete(true, dodokId);
+            dodok.changeComplete(true);
+            dodokRepository.save(dodok);
             Team team = dodok.getTeam();
-            teamRepository.updateIsOngoingDodok(false, team.getTeamId());
+            team.changeIsOngoingDodok(false);
+            teamRepository.save(team);
             return 1;
         }
     }
@@ -153,7 +158,8 @@ public class DodokServiceImpl implements DodokService {
         reviewPageRepository.deleteAllByDodok(dodok);
         reviewEndRepository.deleteAllByDodok(dodok);
         if(dodok.isDodokComplete()==false){
-            teamRepository.updateIsOngoingDodok(false, team.getTeamId());
+            team.changeIsOngoingDodok(false);
+            teamRepository.save(team);
         }
         //도독 삭제 추가해야함.
         dodokRepository.delete(dodok);

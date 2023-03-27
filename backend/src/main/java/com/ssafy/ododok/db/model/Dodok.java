@@ -1,20 +1,15 @@
 package com.ssafy.ododok.db.model;
 
 import com.ssafy.ododok.common.util.BooleanToYNConverter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DynamicInsert
 public class Dodok {
@@ -48,14 +43,16 @@ public class Dodok {
     public void changeDodokOpen(boolean dodokOpen){
         this.dodokOpen = dodokOpen;
     }
+    public void changeComplete(boolean dodokComplete){
+        this.dodokComplete = dodokComplete;
+    }
 
-//    @Builder
-//    public Dodok(Team team, Book book, LocalDate dodokStartdate, LocalDate dodokEndDate) {
-//        this.team = team;
-//        this.book = book;
-//        this.dodokStartdate = dodokStartdate;
-//        this.dodokEnddate = dodokEndDate;
-//    }
-
+    @Builder
+    public Dodok(LocalDate dodokStartdate, LocalDate dodokEnddate, Team team, Book book) {
+        this.dodokStartdate = dodokStartdate;
+        this.dodokEnddate = dodokEnddate;
+        this.team = team;
+        this.book = book;
+    }
 
 }
