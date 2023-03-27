@@ -1,6 +1,7 @@
 package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.dto.UserDto;
+import com.ssafy.ododok.api.request.UserModifyPostReq;
 import com.ssafy.ododok.api.request.UserRegisterPostReq;
 import com.ssafy.ododok.db.model.Team;
 import com.ssafy.ododok.db.model.User;
@@ -13,8 +14,9 @@ public interface UserService {
 
     int createUserInfo(UserRegisterPostReq.Basic registerDto);
     UserDto.Basic getUserInfo(User user);
-    int updateUser(User user, UserDto.Basic userDto);
-    int updateUserSurvey(UserSurvey userSurvey, UserDto.Basic userDto);
+    int updateUserPassword(User user, String modifyPassword) throws Exception;
+    int updateUser(User user, UserModifyPostReq userModifyPostReq);
+    int updateUserSurvey(UserSurvey userSurvey, UserModifyPostReq userModifyPostReq);
     boolean deleteUser(User user);
 
     boolean idCheck(String email, String name);

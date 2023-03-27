@@ -19,4 +19,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByUserEmail(String email);
     Optional<User> findByUserNickname(String nickname);
 
+    @Transactional
+    @Modifying // select 문이 아님을 나타낸다
+    @Query("UPDATE User set userPassword = :password where userId = :user_id")
+    void updateUserPassword(@Param("password")String password, @Param("user_id")Long user_id) throws Exception;
+
 }

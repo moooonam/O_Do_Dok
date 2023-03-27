@@ -6,8 +6,8 @@
 
 .teamImg {
     width: 93%;
-    height: 32%;
-    margin-bottom: 10px;
+    height: 400px;
+    margin-bottom: 30px;
 }
 
 .secondBox {
@@ -18,7 +18,7 @@
 
 .infoBox {
     border-top: 1px solid black;
-    width: 20%; 
+    width: 25%; 
     margin-right: 50px;
     padding-top: 15px;
     display: flex;
@@ -27,34 +27,39 @@
 
 .tagBox {
     border-top: 1px solid black;
-    width: 40%; 
+    width: 30%; 
     margin-right: 50px;
     padding-top: 15px;
 }
 
 .ruleBox {
     border-top: 1px solid black;
-    width: 25%;
+    width: 30%;
     padding-top: 15px; 
-    line-height: 23px;
+    line-height: 30px;
+    font-size: 20px;
 }
 
 .myteam-title {
     text-align: start;
-    line-height: 23px;
+    line-height: 30px;
+    font-size: 20px;
 }
 
 .myteam-content {
-    line-height: 23px;
+    line-height: 30px;
+    font-size: 20px;
     text-align: end;
 }
 
 .onoffRegionBox {
     display: flex;
+    font-size: 20px;
 }
 
 .genreBox {
     display: flex;
+    font-size: 20px;
 }
 
 .myteam-oneGenre {
@@ -67,6 +72,7 @@
     text-align: center;
     justify-content: center;
     color: white;
+    padding-top: 15px;
 }
 
 .myteam-onoff {
@@ -78,6 +84,7 @@
     text-align: center;
     justify-content: center;
     color: white;
+    padding-top: 15px;
 }
 
 .myteam-region {
@@ -88,6 +95,7 @@
     margin-right: 15px;
     text-align: center;
     color: white;
+    padding-top: 15px;
 }
 
 .thirdBox {
@@ -112,14 +120,22 @@
 
 .myteam-newuser-content {
     text-align: start;
-    line-height: 28px;
+    line-height: 40px;
     padding-top: 15px; 
+    font-size: 20px;
 }
 
 .myteam-newuser-name {
     text-align: end;
-    line-height: 28px;
+    line-height: 40px;
     padding-top: 15px; 
+    font-size: 20px;
+}
+
+.myteam-nododok {
+    border-top: 1px solid black;
+    padding-top: 50px;
+    text-align: center;
 }
 
 .myteam-dodok {
@@ -138,7 +154,8 @@
     margin-top:20px;
     margin-left: 30px;
     width: 30%;
-    line-height: 28px;
+    line-height: 30px;
+    font-size: 20px;
 }
 
 .myteam-dodok-content {
@@ -146,5 +163,6 @@
     margin-top:20px;
     width: 30%;
     margin-left: 20px;
-    line-height: 28px;
+    line-height: 30px;
+    font-size: 20px;
 }
