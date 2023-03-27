@@ -5,6 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 // import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from "@mui/material/DialogTitle";
 import styles from "../../../styles/TeamDetail.module.scss";
+import { Api } from "../../../Api";
 
 export default function JoinTeamModal({teamName}) {
   const [open, setOpen] = React.useState(false);
@@ -23,6 +24,16 @@ export default function JoinTeamModal({teamName}) {
   };
   const allow = () => {
     console.log({ form });
+    const Id = localStorage.getItem("nowTeam") 
+    const access_token = localStorage.getItem("access-token")
+    Api.post(`/teams/${Id}`, form.content,
+    {headers: {'access-token': `Bearer ${access_token}`}})
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
   };
 
   return (
@@ -38,9 +49,6 @@ export default function JoinTeamModal({teamName}) {
       >
         <DialogTitle id="alert-dialog-title">Oh Do Dok</DialogTitle>
         <DialogContent>
-          <div className={styles["modal-teamname"]}>
-            모임명:{teamName}
-          </div>
           <div>하고 싶은 말</div>
           <textarea
             type="textfield"
