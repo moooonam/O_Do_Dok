@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Setter
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
