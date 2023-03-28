@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Setter
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -56,6 +57,9 @@ public class Team {
     @Column
     private String teamGenre3;
 
+    @Column
+    private String teamTopGenre;
+
     @ColumnDefault("'no rule'")
     private String teamRule1;
 
@@ -85,7 +89,9 @@ public class Team {
     public void changeIsOngoingDodok(boolean isOngoingDodok){
         this.isOngoingDodok = isOngoingDodok;
     }
-
+    public void changeTeamTopGenre(String teamTopGenre){
+        this.teamTopGenre = teamTopGenre;
+    }
     @Builder
     public Team(String teamName, int teamMemberCntMax, Onoff teamOnoff, String teamRegion,
                 String teamGenre1, String teamGenre2, String teamGenre3,

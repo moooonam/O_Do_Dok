@@ -12,5 +12,5 @@ public interface ReviewEndRepository extends JpaRepository<ReviewEnd,Long> {
     List<ReviewEnd> findAllByUser(User user);
     void deleteAllByDodok(Dodok dodok);
     ReviewEnd findByReviewEndId(long endReviewId);
-    ReviewEnd findByUser(User user);
+    ReviewEnd findByUserAndDodok(User user, Dodok doodok);
 }
