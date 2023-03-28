@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { useSelector } from "react-redux";
+import { Api } from "../../Api";
 
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -17,6 +19,9 @@ function ArticleCreatePage() {
   function goMyTeamArticle() {
     movePage("/myteam/:teamId/article");
   }
+
+  const userName = useSelector((state) => state.user.userNickname)
+  const userId = useSelector((state) => state.user.userId)
 
   const [menu, setMenu] = useState({
     choice : "분류",
@@ -42,8 +47,44 @@ function ArticleCreatePage() {
   };
 
   const clickOption = (option) => {
-    console.log(option)
+    // console.log(option)
     setMenu({ ...menu, choice: option})
+  }
+
+  // axios 보낼 데이터
+  const article = {
+    userId: "", 
+    boardType: "", 
+    title : "",
+    content: "",
+  }
+  const createArticle = () => {
+    article.title = form.title
+    article.content = form.context
+    article.user = userId
+    if (menu.choice === '공지') {
+      article.boardType = "notice"
+    } else if (menu.choice === '자유') {
+      article.boardType = "free"
+    }
+
+    if (menu.choice === '분류') {
+      alert('게시글의 분류를 선택해주세요')
+    } else { 
+      if (article.title && article.content) {
+        Api.post('/board', article)
+        .then((res) => {
+          console.log(res)
+          alert('게시글 작성이 완료되었습니다.')
+          movePage('/board')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+      } else {
+        alert('제목 혹은 내용을 입력해주세요')
+      }
+      }
   }
 
   return (
@@ -102,7 +143,7 @@ function ArticleCreatePage() {
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
               />
             </div>
-            <p className={writestyles["article-writer"]}>작성자 : 독린이</p>
+            <p className={writestyles["article-writer"]}>작성자 : {userName}</p>
             <textarea
               className={writestyles["article-context"]}
               type="text"
@@ -115,12 +156,13 @@ function ArticleCreatePage() {
                 className={writestyles["article-save"]}
                 variant="contained"
                 color="success"
-                // onClick={}
+                onClick={() => {createArticle()}}
               >
                 저장
               </Button>
               <div></div>
             </div>
+            <br /><br />
           </div>
         </div>
       </div>

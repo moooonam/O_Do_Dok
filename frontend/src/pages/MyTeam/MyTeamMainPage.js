@@ -33,7 +33,7 @@ function MyTeamMainPage() {
       },
     })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setTeamDetail({
           ...teamDetail,
           teamName: res.data.teamName,
@@ -55,6 +55,7 @@ function MyTeamMainPage() {
       .catch((err) => {
         console.log(err);
       });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
