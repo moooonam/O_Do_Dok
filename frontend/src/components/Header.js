@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styles from "../styles/Header.module.scss";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { login, logout, getUserInfo } from "../redux/slice/userSlice";
+import { login, logout, getUserInfo, getTeamId } from "../redux/slice/userSlice";
 import { Api } from "../Api";
 function Header() {
   // 이동 관련
@@ -25,10 +25,19 @@ function Header() {
   function goTeams() {
     movePage("/teams");
   }
+  const myTeamId = useSelector((state) => state.user.myTeamId)
   function goMyTeam() {
-    movePage("/myteam/:teamId/main");
-    const checkbox = document.getElementById("dropdown");
-    checkbox.checked = false;
+    if (myTeamId) {
+      movePage("/myteam/:teamId/main");
+      const checkbox = document.getElementById("dropdown");
+      checkbox.checked = false;
+    }
+    else {
+      alert('모임에 먼저 가입해주세요')
+      const checkbox = document.getElementById("dropdown");
+      checkbox.checked = false;
+      goTeams()
+    }
   }
   function goOpenReviews() {
     movePage("/openreviews");
@@ -70,6 +79,21 @@ function Header() {
         .catch((err) => {
           console.log(err);
         });
+      Api.get("/user/myTeam", {
+        headers: {
+          "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+          "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+        },
+      })
+      .then((res) => {
+        if (res.data) {
+          dispatch(getTeamId({ myTeamId:res.data.teamId}))
+          localStorage.setItem('myTeamId',res.data.teamId)
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     } else {
       dispatch(logout());
     }

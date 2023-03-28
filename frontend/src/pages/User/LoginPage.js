@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { Api } from "../../Api";
 import { useDispatch } from "react-redux";
-import { login, getUserInfo } from "../../redux/slice/userSlice";
+import { login, getUserInfo, getTeamId } from "../../redux/slice/userSlice";
 function LoginPage() {
   const dispatch = useDispatch();
   const movePage = useNavigate();
@@ -58,6 +58,21 @@ function LoginPage() {
           .catch((err) => {
             console.log(err);
           });
+          Api.get("/user/myTeam", {
+            headers: {
+              "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+              "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+            },
+          })
+          .then((res) => {
+            if (res.data) {
+              dispatch(getTeamId({ myTeamId:res.data.teamId}))
+              localStorage.setItem('myTeamId',res.data.teamId)
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
         goMain();
       })
       .catch((err) => {

@@ -11,8 +11,8 @@ function TeamCard() {
   useEffect(() => {
     Api.get("/teams")
       .then((res) => {
-        console.log('모임 데이터 불러오기 완료----------')
-        console.log(res.data);
+        // console.log('모임 데이터 불러오기 완료----------')
+        // console.log(res.data);
         setTeams(...teams, res.data)
       })
       .catch((err) => {
