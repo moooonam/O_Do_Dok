@@ -77,6 +77,7 @@ public class ApplyServiceImpl implements ApplyService {
         return list;
     }
 
+    // 신청자 -> 수락하여 팀에 인원 추가
     @Override
     public void addMember(Long applyId) {
         Apply apply = applyRepository.findById(applyId).get();
@@ -98,6 +99,7 @@ public class ApplyServiceImpl implements ApplyService {
         Team updateTeam = teamRepository.findByTeamId(team.getTeamId()).get();
         updateTeam.setTeamMemberCnt(updateTeam.getTeamMemberCnt()+1);
         teamRepository.save(updateTeam);
+
     }
 
     @Override

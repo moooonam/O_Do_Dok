@@ -109,28 +109,28 @@ public class TeamServiceImpl implements TeamService{
     }
 
     // 팀 신청 / 멤버 초대할 시 - USER로 지정
-    @Override
-    public void addMember(Long teamId, User user, String msg) {
-
-        // 팀에 속해있다면 팀 신청 불가
-        if(teamUserRepository.findByUser(user) != null) {
-            System.out.println("팀 가입 불가");
-            return;
-        }
-
-        Optional<Team> oTeam = teamRepository.findById(teamId);
-        Team team = oTeam.get();
-
-        TeamUser teamUser = TeamUser.builder()
-                .team(team)
-                .user(user)
-                .role(USER)
-                .build();
-
-        System.out.println("teamUser = " + teamUser);
-        teamUserRepository.save(teamUser);
-        System.out.println("팀 가입 성공");
-    }
+//    @Override
+//    public void addMember(Long teamId, User user, String msg) {
+//
+//        // 팀에 속해있다면 팀 신청 불가
+//        if(teamUserRepository.findByUser(user) != null) {
+//            System.out.println("팀 가입 불가");
+//            return;
+//        }
+//
+//        Optional<Team> oTeam = teamRepository.findById(teamId);
+//        Team team = oTeam.get();
+//
+//        TeamUser teamUser = TeamUser.builder()
+//                .team(team)
+//                .user(user)
+//                .role(USER)
+//                .build();
+//
+//        System.out.println("teamUser = " + teamUser);
+//        teamUserRepository.save(teamUser);
+//        System.out.println("팀 가입 성공");
+//    }
 
     // 팀ID로 팀 멤버 조회
     @Override
@@ -143,15 +143,17 @@ public class TeamServiceImpl implements TeamService{
     @Override
     public void deleteMember(Long userId) {
         // 인원 감소시킬 팀 테이블 찾기
-        TeamUser teamUser = teamUserRepository.findByUser_UserId(userId);
+        TeamUser teamUser = teamUserRepository.findTeamUserByUser_UserId(userId);
         Team team = teamUser.getTeam();
-
-        // 테이블에서 멤버 삭제
-        teamUserRepository.deleteById(userId);
 
         // 삭제되면 팀 인원 -1
         Team updateTeam = teamRepository.findByTeamId(team.getTeamId()).get();
         updateTeam.setTeamMemberCnt(updateTeam.getTeamMemberCnt()-1);
+
+        // 테이블에서 멤버 삭제
+        teamUserRepository.deleteByUser_UserId(userId);
+
+        // 테이블 업데이트
         teamRepository.save(updateTeam);
     }
 
