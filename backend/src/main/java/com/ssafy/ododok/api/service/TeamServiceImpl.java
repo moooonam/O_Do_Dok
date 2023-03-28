@@ -10,11 +10,13 @@ import com.ssafy.ododok.db.repository.TeamRepository;
 import com.ssafy.ododok.db.repository.TeamUserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static com.ssafy.ododok.db.model.Role.MANAGER;
 import static com.ssafy.ododok.db.model.Role.USER;
+import static java.time.LocalTime.now;
 
 @Service
 public class TeamServiceImpl implements TeamService{
@@ -99,6 +101,7 @@ public class TeamServiceImpl implements TeamService{
                 .team(team)
                 .user(user)
                 .role(Role.ADMIN)
+                .joinDate(LocalDate.now())
                 .build();
 
         System.out.println("teamUser = " + teamUser);
