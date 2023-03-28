@@ -23,8 +23,13 @@ public class TeamUserController {
     public ResponseEntity<?> showMyRole(Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
-        Role role = teamUserService.getUserRole(user);
-        return ResponseEntity.status(200).body(role);
+        try{
+            Role role = teamUserService.getUserRole(user);
+            return ResponseEntity.status(200).body(role);
+        } catch (Exception e){
+            return ResponseEntity.status(200).body(null);
+        }
+
     }
 
 
