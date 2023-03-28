@@ -2,6 +2,7 @@ package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.request.BoardCreatePostReq;
 import com.ssafy.ododok.db.model.Board;
+import com.ssafy.ododok.db.model.User;
 import com.ssafy.ododok.db.repository.BoardRepository;
 import com.ssafy.ododok.db.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -14,25 +15,18 @@ import java.util.Optional;
 public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
 
-    private final UserRepository userRepository;
-
-    public BoardServiceImpl(BoardRepository boardRepository, UserRepository userRepository) {
+    public BoardServiceImpl(BoardRepository boardRepository) {
         this.boardRepository = boardRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
     public Board createWriting(BoardCreatePostReq boardCreatePostReq) {
-        Board board = new Board();
-
-        // 유저정보 불러와야하나?
-//        Optional<User> oUser = userRepository.findById(userId);
-//        User user = oUser.get();
-
-        board.setBoardType(boardCreatePostReq.getBoardType());
-        board.setBoardTitle(boardCreatePostReq.getTitle());
-        board.setBoardContent(boardCreatePostReq.getContent());
-        board.setBoardDate(LocalDate.now());
+        Board board = Board.builder()
+                .boardType(boardCreatePostReq.getBoardType())
+                .boardTitle(boardCreatePostReq.getTitle())
+                .boardContent(boardCreatePostReq.getContent())
+                .boardDate(LocalDate.now())
+                .build();
         return boardRepository.save(board);
     }
 
@@ -43,24 +37,19 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public List<Board> getNoticeWritings() {
-
         return boardRepository.findByBoardType_BoardType("notice");
     }
 
     @Override
     public List<Board> getFreeWritings() {
-
         return boardRepository.findByBoardType_BoardType("free");
     }
 
     @Override
     public Board modifyWriting(Long boardId, BoardCreatePostReq boardCreatePostReq) {
-        Optional<Board> oBoard = boardRepository.findById(boardId);
-        Board board = oBoard.get();
-
-        board.setBoardTitle(boardCreatePostReq.getTitle());
-        board.setBoardContent(boardCreatePostReq.getContent());
-
+        Board board = boardRepository.findById(boardId).get();
+        board.changeTitle(boardCreatePostReq.getTitle());
+        board.changeContent(boardCreatePostReq.getContent());
         return boardRepository.save(board);
     }
 

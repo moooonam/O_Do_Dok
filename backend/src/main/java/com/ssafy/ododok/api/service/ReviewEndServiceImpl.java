@@ -16,26 +16,23 @@ public class ReviewEndServiceImpl implements ReviewEndService {
 
     private final UserRepository userRepository;
     private final DodokRepository dodokRepository;
-    private final ReviewPageRepository reviewPageRepository;
     private final ReviewEndRepository reviewEndRepository;
-    private final TeamRepository teamRepository;
     private final TeamUserRepository teamUserRepository;
     private final BookRepository bookRepository;
+    private final GenreRepository genreRepository;
 
     public ReviewEndServiceImpl(UserRepository userRepository,
-                            DodokRepository dodokRepository,
-                            ReviewPageRepository reviewPageRepository,
-                            ReviewEndRepository reviewEndRepository,
-                            TeamRepository teamRepository,
-                            TeamUserRepository teamUserRepository,
-                            BookRepository bookRepository){
+                                DodokRepository dodokRepository,
+                                ReviewEndRepository reviewEndRepository,
+                                TeamUserRepository teamUserRepository,
+                                BookRepository bookRepository,
+                                GenreRepository genreRepository){
         this.userRepository = userRepository;
         this.dodokRepository=dodokRepository;
         this.reviewEndRepository=reviewEndRepository;
-        this.reviewPageRepository =reviewPageRepository;
-        this.teamRepository = teamRepository;
         this.teamUserRepository=teamUserRepository;
         this.bookRepository=bookRepository;
+        this.genreRepository = genreRepository;
     };
 
     // 총 리뷰 작성
@@ -71,6 +68,12 @@ public class ReviewEndServiceImpl implements ReviewEndService {
             book.changeBookRating(rating_modify/(double)membercnt_modify);
             userRepository.save(user);
             bookRepository.save(book);
+
+            // 장르 테이블 생성 및 수정
+//            try{
+//                Genre genre = genreRepository.findByTeam(team);
+//            }
+
             return "책갈피 입력이 완료되었습니다.";
         } catch (Exception e){
             return "책갈피 입력에 문제가 생겼습니다.";
