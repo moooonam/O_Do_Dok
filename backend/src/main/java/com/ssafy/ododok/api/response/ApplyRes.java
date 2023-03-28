@@ -1,7 +1,10 @@
 package com.ssafy.ododok.api.response;
 
+import lombok.Getter;
+
 import java.time.LocalDate;
 
+@Getter
 public class ApplyRes {
     private String nickname;
     private String msg;
