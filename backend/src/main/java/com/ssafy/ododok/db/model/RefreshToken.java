@@ -1,26 +1,33 @@
 package com.ssafy.ododok.db.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.time.LocalDate;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DynamicInsert
 public class RefreshToken {
 
     @Id
     private String email;
-
     private String refreshToken;
 
+    public void changeEmail(String email){
+        this.email = email;
+    }
+    public void changeRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
+    }
+
+    @Builder
+    public RefreshToken(String email, String refreshToken) {
+        this.email = email;
+        this.refreshToken = refreshToken;
+    }
 
 }

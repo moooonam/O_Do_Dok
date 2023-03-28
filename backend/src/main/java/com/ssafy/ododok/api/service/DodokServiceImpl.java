@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import static com.ssafy.ododok.db.model.Role.ADMIN;
 import static com.ssafy.ododok.db.model.Role.MANAGER;
@@ -27,6 +26,7 @@ public class DodokServiceImpl implements DodokService {
     private final TeamRepository teamRepository;
     private final TeamUserRepository teamUserRepository;
     private final BookRepository bookRepository;
+    private final GenreRepository genreRepository;
 
     public DodokServiceImpl(UserRepository userRepository,
                             DodokRepository dodokRepository,
@@ -34,7 +34,7 @@ public class DodokServiceImpl implements DodokService {
                             ReviewEndRepository reviewEndRepository,
                             TeamRepository teamRepository,
                             TeamUserRepository teamUserRepository,
-                            BookRepository bookRepository){
+                            BookRepository bookRepository, GenreRepository genreRepository){
         this.userRepository = userRepository;
         this.dodokRepository=dodokRepository;
         this.reviewEndRepository=reviewEndRepository;
@@ -42,6 +42,7 @@ public class DodokServiceImpl implements DodokService {
         this.teamRepository = teamRepository;
         this.teamUserRepository=teamUserRepository;
         this.bookRepository=bookRepository;
+        this.genreRepository = genreRepository;
     };
 
     // 도독 생성
@@ -87,7 +88,8 @@ public class DodokServiceImpl implements DodokService {
                         .build();
 
                 dodokRepository.save(dodok);
-                teamRepository.updateIsOngoingDodok(true, team.getTeamId());
+                team.changeIsOngoingDodok(true);
+                teamRepository.save(team);
                 return "도독을 생성하였습니다.";
             } else{
                 return "도독을 생성할 권한이 없습니다.";
@@ -108,10 +110,16 @@ public class DodokServiceImpl implements DodokService {
             LocalDate curr = now();
             LocalDate expiredDate = dodok.getDodokEnddate();
             if(expiredDate.isEqual(curr)||expiredDate.isBefore(curr)){
-                dodokRepository.updateDodokComplete(true, dodok.getDodokId());
+                dodok.changeComplete(true);
+                dodokRepository.save(dodok);
                 // 해당 도독의 팀 아이디를 가져오기, 해당 팀의 도독 활성화 여부를 false처리.
                 Team team = dodok.getTeam();
-                teamRepository.updateIsOngoingDodok(false, team.getTeamId());
+                team.changeIsOngoingDodok(false);
+                updateGenre(dodok);
+                String top = showFirst(team);
+                System.out.println("dd"+top);
+                team.changeTeamTopGenre(top);
+                teamRepository.save(team);
             }
         }
     }
@@ -124,9 +132,15 @@ public class DodokServiceImpl implements DodokService {
         if(isEnd){ // 이미 도독이 완료되었다면
             return 0;
         }else{
-            dodokRepository.updateDodokComplete(true, dodokId);
+            dodok.changeComplete(true);
+            dodokRepository.save(dodok);
             Team team = dodok.getTeam();
-            teamRepository.updateIsOngoingDodok(false, team.getTeamId());
+            team.changeIsOngoingDodok(false);
+            updateGenre(dodok);
+            String top = showFirst(team);
+            System.out.println("dd"+top);
+            team.changeTeamTopGenre(top);
+            teamRepository.save(team);
             return 1;
         }
     }
@@ -153,7 +167,8 @@ public class DodokServiceImpl implements DodokService {
         reviewPageRepository.deleteAllByDodok(dodok);
         reviewEndRepository.deleteAllByDodok(dodok);
         if(dodok.isDodokComplete()==false){
-            teamRepository.updateIsOngoingDodok(false, team.getTeamId());
+            team.changeIsOngoingDodok(false);
+            teamRepository.save(team);
         }
         //도독 삭제 추가해야함.
         dodokRepository.delete(dodok);
@@ -244,4 +259,43 @@ public class DodokServiceImpl implements DodokService {
         return dodokResult;
     }
 
+    // 도독이 종료되었을 때 장르 평점 추가하기
+    public void updateGenre(Dodok dodok){
+        List<ReviewEnd> list = reviewEndRepository.findAllByDodok(dodok);
+        Double ans = 0.0;
+        for(ReviewEnd reviewEnd : list){
+            ans = ans + reviewEnd.getReviewEndGenrerating();
+        }
+        Double res = ans/list.size();
+        String genre = dodok.getBook().getBookGenre();
+        System.out.println(genre);
+
+        try{
+            Genre genre1 = genreRepository.findByTeamAndGenre(dodok.getTeam(), genre);
+            System.out.println(genre1);
+            Double d = genre1.getRating();
+            int cnt = genre1.getCnt();
+            genre1.changeRating((d+res)/(double)(cnt+1));
+            genre1.changeCnt(cnt+1);
+            genreRepository.save(genre1);
+
+        } catch (NullPointerException e){
+            Genre genre1 = Genre.builder()
+                    .team(dodok.getTeam())
+                    .genre(genre)
+                    .rating(res)
+                    .cnt(1)
+                    .build();
+            genreRepository.save(genre1);
+        }
+
+    }
+
+    public String showFirst(Team team){
+        Genre genre = genreRepository.findTopByTeamOrderByRatingDesc(team);
+        System.out.println(genre.getGenre()+" "+genre.getRating());
+        // Team 인 것 중에서 rating이 max인거
+        String res = genre.getGenre();
+        return res;
+    }
 }

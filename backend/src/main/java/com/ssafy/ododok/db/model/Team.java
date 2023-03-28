@@ -2,21 +2,18 @@ package com.ssafy.ododok.db.model;
 
 import com.ssafy.ododok.api.request.TeamModifyPatchReq;
 import com.ssafy.ododok.common.util.BooleanToYNConverter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Setter
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DynamicInsert
 public class Team {
@@ -60,6 +57,9 @@ public class Team {
     @Column
     private String teamGenre3;
 
+    @Column
+    private String teamTopGenre;
+
     @ColumnDefault("'no rule'")
     private String teamRule1;
 
@@ -73,7 +73,6 @@ public class Team {
     private String teamImage;
 
     public void updateTeam(TeamModifyPatchReq teamModifyPatchReq){
-
         this.teamMemberCntMax = teamModifyPatchReq.getTeamMemberCntMax();
         this.teamOnoff = teamModifyPatchReq.getTeamOnoff();
         this.teamRegion = teamModifyPatchReq.getTeamRegion();
@@ -85,6 +84,26 @@ public class Team {
         this.teamRule1 = teamModifyPatchReq.getTeamRule1();
         this.teamRule2 = teamModifyPatchReq.getTeamRule2();
         this.teamRule3 = teamModifyPatchReq.getTeamRule3();
+    }
+
+    public void changeIsOngoingDodok(boolean isOngoingDodok){
+        this.isOngoingDodok = isOngoingDodok;
+    }
+    public void changeTeamTopGenre(String teamTopGenre){
+        this.teamTopGenre = teamTopGenre;
+    }
+    @Builder
+    public Team(String teamName, int teamMemberCntMax, Onoff teamOnoff, String teamRegion,
+                String teamGenre1, String teamGenre2, String teamGenre3,
+                boolean teamRecruit) {
+        this.teamName = teamName;
+        this.teamMemberCntMax = teamMemberCntMax;
+        this.teamOnoff = teamOnoff;
+        this.teamRegion = teamRegion;
+        this.teamGenre1 = teamGenre1;
+        this.teamGenre2 = teamGenre2;
+        this.teamGenre3 = teamGenre3;
+        this.teamRecruit = teamRecruit;
     }
 
 }

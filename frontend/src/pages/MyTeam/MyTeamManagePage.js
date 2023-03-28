@@ -4,6 +4,7 @@ import sidestyles from "../../styles/Sidebar.module.scss";
 import teamstyles from "../../styles/MyTeamManage.module.scss";
 import TextField from "@mui/material/TextField";
 import { Api } from "../../Api";
+import { useNavigate } from "react-router-dom";
 
 // 모달
 import Button from "@mui/material/Button";
@@ -21,6 +22,7 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 
 function MyTeamManagePage() {
+  const movePage = useNavigate();
   const [teamInfoModal, setTeamInfoModal] = React.useState(false);
   const teamInfoModalOpen = () => {
     setTeamInfoModal(true);
@@ -45,7 +47,9 @@ function MyTeamManagePage() {
     teamRule1: "",
     teamRule2: "",
     teamRule3: "",
+    teamRecruit: null,
     teamRecruitText: "",
+    teamId: null,
   });
 
   useEffect(() => {
@@ -71,14 +75,16 @@ function MyTeamManagePage() {
           teamRule1: res.data.teamRule1,
           teamRule2: res.data.teamRule2,
           teamRule3: res.data.teamRule3,
+          teamRecruit: res.data.teamRecruit,
           teamRecruitText: res.data.teamRecruitText,
+          teamId: res.data.teamId,
         });
         setForm({
           ...form,
           team_onoff: res.data.teamOnoff,
           team_region: res.data.teamMemberCnt,
           team_membercnt_max: res.data.teamMemberCntMax,
-          team_recruit: false,
+          team_recruit: res.data.teamRecruit,
           team_recruit_text: res.data.teamRecruitText,
           team_rule1: res.data.teamRule1,
           team_rule2: res.data.teamRule2,
@@ -96,7 +102,7 @@ function MyTeamManagePage() {
     team_onoff: "",
     team_region: "",
     team_membercnt_max: "",
-    team_recruit: false,
+    team_recruit: null,
     team_recruit_text: "",
     team_rule1: "",
     team_rule2: "",
@@ -194,35 +200,74 @@ function MyTeamManagePage() {
 
   // axios 보낼 데이터
   const teamInfo = {
-    team_onoff: "",
-    team_region: "",
-    team_membercnt_max: null,
-    team_recruit: false,
-    team_recruit_text: "",
-    team_rule1: "",
-    team_rule2: "",
-    team_rule3: "",
-    team_genre1: "",
-    team_genre2: "",
-    team_genre3: "",
+    teamOnoff: "",
+    teamRegion: "",
+    teamMembercntMax: null,
+    teamRecruit: null,
+    teamRecruitText: "",
+    teamRule1: "",
+    teamRule2: "",
+    teamRule3: "",
+    teamGenre1: "",
+    teamGenre2: "",
+    teamGenre3: "",
   };
 
   // 모임 정보 수정
   const teamInfoUpdate = () => {
-    teamInfo.team_onoff = form.team_onoff;
-    teamInfo.team_region = form.team_region;
-    teamInfo.team_membercnt_max = form.team_membercnt_max;
-    teamInfo.team_recruit = form.team_recruit;
-    teamInfo.team_recruit_text = form.team_recruit_text;
-    teamInfo.team_rule1 = form.team_rule1;
-    teamInfo.team_rule2 = form.team_rule2;
-    teamInfo.team_rule3 = form.team_rule3;
-    teamInfo.team_genre1 = teamGenre[0];
-    teamInfo.team_genre2 = teamGenre[1];
-    teamInfo.team_genre3 = teamGenre[2];
+    console.log(teamGenre);
+    teamInfo.teamOnoff = form.team_onoff;
+    teamInfo.teamRegion = form.team_region;
+    teamInfo.teamMembercntMax = form.team_membercnt_max;
+    teamInfo.teamRecruit = form.team_recruit;
+    teamInfo.teamRecruitText = form.team_recruit_text;
+    teamInfo.teamRule1 = form.team_rule1;
+    teamInfo.teamRule2 = form.team_rule2;
+    teamInfo.teamRule3 = form.team_rule3;
+    teamInfo.teamGenre1 = teamGenre[0];
+    teamInfo.teamGenre2 = teamGenre[1];
+    teamInfo.teamGenre3 = teamGenre[2];
 
-
+    // 선호 장르를 선택하지 않았다면 기존의 정보로 다시 전송
+    if (teamGenre.length === 0) {
+      teamInfo.teamGenre1 = teamDetail.teamGenre1;
+      teamInfo.teamGenre2 = teamDetail.teamGenre2;
+      teamInfo.teamGenre3 = teamDetail.teamGenre3;
+    }
+    Api.patch(`/teams/${teamDetail.teamId}`, teamInfo)
+      .then((res) => {
+        console.log(res);
+        alert("모임 정보 수정이 완료되었습니다.");
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
+
+  // 모임 삭제 모달
+  const [open, setOpen] = React.useState(false);
+
+  const deleteModalOpen = () => {
+    setOpen(true);
+  };
+
+  const deleteModalclose = () => {
+    setOpen(false);
+  };
+
+  // 모임 삭제
+  const deleteTeam = () => {
+    Api.delete(`/teams/${teamDetail.teamId}`)
+    .then((res) => {
+      console.log(res)
+      alert('모임이 삭제되었습니다.')
+      movePage('/')
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
 
   return (
     <div className={sidestyles["myteam-container"]}>
@@ -336,6 +381,10 @@ function MyTeamManagePage() {
                 <br />
                 <br />
                 <p>선호 장르</p>
+                <p className={teamstyles["pre-choice"]}>
+                  기존에 선택한 선호 장르 : {teamDetail.teamGenre1},{" "}
+                  {teamDetail.teamGenre2}, {teamDetail.teamGenre3}
+                </p>
                 <div className={teamstyles["genre-box"]}>
                   <div
                     onClick={() => {
@@ -555,14 +604,35 @@ function MyTeamManagePage() {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={teamInfoModalClose}>취소</Button>
-              <Button
-                onClick={() => {
-                  teamInfoModalClose();
-                  teamInfoUpdate();
-                }}
-              >
-                수정 완료
+              <div className={teamstyles["btns"]}>
+                <Button color="error"  onClick={deleteModalOpen}>모임 삭제</Button>
+                <div>
+                  <Button onClick={teamInfoModalClose}>취소</Button>
+                  <Button
+                    onClick={() => {
+                      teamInfoModalClose();
+                      teamInfoUpdate();
+                    }}
+                  >
+                    수정 완료
+                  </Button>
+                </div>
+              </div>
+            </DialogActions>
+          </Dialog>
+          <Dialog
+            open={open}
+            onClose={deleteModalclose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"모임을 삭제하시겠습니까?"}
+            </DialogTitle>
+            <DialogActions>
+              <Button onClick={deleteModalclose}>아니오</Button>
+              <Button onClick={() => {deleteModalclose(); deleteTeam()}}>
+                예
               </Button>
             </DialogActions>
           </Dialog>

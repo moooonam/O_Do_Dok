@@ -10,7 +10,6 @@ import lombok.Getter;
 public class UserDto {
 
     @Getter
-    @AllArgsConstructor
     public static class Id {
         private int userId;
     }
@@ -18,7 +17,6 @@ public class UserDto {
     @Getter
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @AllArgsConstructor
     public static class Basic {
         Long id;
         String userName;
