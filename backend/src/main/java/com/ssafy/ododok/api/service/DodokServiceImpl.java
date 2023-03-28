@@ -117,6 +117,7 @@ public class DodokServiceImpl implements DodokService {
                 team.changeIsOngoingDodok(false);
                 updateGenre(dodok);
                 String top = showFirst(team);
+                System.out.println("dd"+top);
                 team.changeTeamTopGenre(top);
                 teamRepository.save(team);
             }
@@ -137,6 +138,7 @@ public class DodokServiceImpl implements DodokService {
             team.changeIsOngoingDodok(false);
             updateGenre(dodok);
             String top = showFirst(team);
+            System.out.println("dd"+top);
             team.changeTeamTopGenre(top);
             teamRepository.save(team);
             return 1;
@@ -290,8 +292,8 @@ public class DodokServiceImpl implements DodokService {
     }
 
     public String showFirst(Team team){
-        Long teamId = team.getTeamId();
-        Genre genre = genreRepository.findTopByTeamOrderByRating(team);
+        Genre genre = genreRepository.findTopByTeamOrderByRatingDesc(team);
+        System.out.println(genre.getGenre()+" "+genre.getRating());
         // Team 인 것 중에서 rating이 max인거
         String res = genre.getGenre();
         return res;

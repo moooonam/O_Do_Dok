@@ -13,7 +13,7 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
     Genre save(Genre genre);
     List<Genre> findAllByTeam(Team team);
 
-    Genre findTopByTeamOrderByRating(Team team);
+    Genre findTopByTeamOrderByRatingDesc(Team team);
 
     Genre findByTeamAndGenre(Team team, String genre);
 }
