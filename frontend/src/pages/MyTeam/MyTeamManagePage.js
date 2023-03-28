@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SideBar from "../../components/SideBar";
 import sidestyles from "../../styles/Sidebar.module.scss";
 import teamstyles from "../../styles/MyTeamManage.module.scss";
 import TextField from "@mui/material/TextField";
-// import axios from "axios";
+import { Api } from "../../Api";
 
 // 모달
 import Button from "@mui/material/Button";
@@ -29,6 +29,69 @@ function MyTeamManagePage() {
     setTeamInfoModal(false);
   };
 
+  // 팀 정보 불러오기
+  const access_token = localStorage.getItem("access-token");
+  const refresh_token = localStorage.getItem("refresh-token");
+  const [teamDetail, setTeamDetail] = useState({
+    teamName: "",
+    teamMemberCnt: "",
+    teamMemberCntMax: "",
+    teamImage: "",
+    teamGenre1: "",
+    teamGenre2: "",
+    teamGenre3: "",
+    teamOnoff: "",
+    teamRegion: "",
+    teamRule1: "",
+    teamRule2: "",
+    teamRule3: "",
+    teamRecruitText: "",
+  });
+
+  useEffect(() => {
+    Api.get("/user/myTeam", {
+      headers: {
+        "access-token": `Bearer ${access_token}`,
+        "refresh-token": `Bearer ${refresh_token}`,
+      },
+    })
+      .then((res) => {
+        console.log(res.data);
+        setTeamDetail({
+          ...teamDetail,
+          teamName: res.data.teamName,
+          teamMemberCnt: res.data.teamMemberCnt,
+          teamMemberCntMax: res.data.teamMemberCntMax,
+          teamImage: res.data.teamImage,
+          teamGenre1: res.data.teamGenre1,
+          teamGenre2: res.data.teamGenre2,
+          teamGenre3: res.data.teamGenre3,
+          teamOnoff: res.data.teamOnoff,
+          teamRegion: res.data.teamRegion,
+          teamRule1: res.data.teamRule1,
+          teamRule2: res.data.teamRule2,
+          teamRule3: res.data.teamRule3,
+          teamRecruitText: res.data.teamRecruitText,
+        });
+        setForm({
+          ...form,
+          team_onoff: res.data.teamOnoff,
+          team_region: res.data.teamMemberCnt,
+          team_membercnt_max: res.data.teamMemberCntMax,
+          team_recruit: false,
+          team_recruit_text: res.data.teamRecruitText,
+          team_rule1: res.data.teamRule1,
+          team_rule2: res.data.teamRule2,
+          team_rule3: res.data.teamRule3,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // 팀 정보 수정에 사용할 데이터
   const [form, setForm] = useState({
     team_onoff: "",
     team_region: "",
@@ -49,9 +112,9 @@ function MyTeamManagePage() {
     horror: false,
     sf: false,
     fantasy: false,
-    drama : false,
+    drama: false,
     game: false,
-    romance : false,
+    romance: false,
     animation: false,
   });
 
@@ -146,48 +209,34 @@ function MyTeamManagePage() {
 
   // 모임 정보 수정
   const teamInfoUpdate = () => {
-    teamInfo.team_onoff = form.team_onoff
-    teamInfo.team_region = form.team_region
-    teamInfo.team_membercnt_max = form.team_membercnt_max
-    teamInfo.team_recruit = form.team_recruit
-    teamInfo.team_recruit_text = form.team_recruit_text
-    teamInfo.team_rule1 = form.team_rule1
-    teamInfo.team_rule2 = form.team_rule2
-    teamInfo.team_rule3 = form.team_rule3
-    teamInfo.team_genre1 = teamGenre[0]
-    teamInfo.team_genre2 = teamGenre[1]
-    teamInfo.team_genre3 = teamGenre[2]
+    teamInfo.team_onoff = form.team_onoff;
+    teamInfo.team_region = form.team_region;
+    teamInfo.team_membercnt_max = form.team_membercnt_max;
+    teamInfo.team_recruit = form.team_recruit;
+    teamInfo.team_recruit_text = form.team_recruit_text;
+    teamInfo.team_rule1 = form.team_rule1;
+    teamInfo.team_rule2 = form.team_rule2;
+    teamInfo.team_rule3 = form.team_rule3;
+    teamInfo.team_genre1 = teamGenre[0];
+    teamInfo.team_genre2 = teamGenre[1];
+    teamInfo.team_genre3 = teamGenre[2];
 
-    // console.log(teamGenre)
-    // console.log(teamInfo)
-    // axios({
-    //   methods: 'patch',
-    //   url: `http://localhost:3000/api/v1/teams/${teamid}`,
-    //   data: teamInfo,
-    // })
-    //   .then((res) => {
-    //     console.log(res)
-    //   })
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
-    // console.log(form)
-    // console.log(teamInfo)
-  }
+
+  };
 
   return (
     <div className={sidestyles["myteam-container"]}>
-      <SideBar location={"teamManage"}/>
+      <SideBar location={"teamManage"} />
       <div className={sidestyles.others}>
         <div className={teamstyles["teammanage-container"]}>
           <div className={teamstyles["teammanage-header"]}>
-            <h2>개미들</h2>
+            <h2>{teamDetail.teamName}</h2>
             <div onClick={teamInfoModalOpen}>정보 수정</div>
           </div>
           <hr />
           <div className={teamstyles["teamInfoBox"]}>
             <img
-              src="https://cdn.pixabay.com/photo/2018/05/14/16/54/alpine-3400788_960_720.jpg"
+              src={teamDetail.teamImage}
               alt=""
               className={teamstyles["teamInfo-left"]}
             />
@@ -204,13 +253,13 @@ function MyTeamManagePage() {
               </div>
               <div className={teamstyles["right-bottom-content"]}>
                 <div className={teamstyles["tag-top"]}>
-                  <div>온라인</div>
-                  <div>전지역</div>
+                  <div>{teamDetail.teamOnoff}</div>
+                  <div>{teamDetail.teamRegion}</div>
                 </div>
                 <div className={teamstyles["tag-bottom"]}>
-                  <div>스릴러</div>
-                  <div>추리</div>
-                  <div>로맨스</div>
+                  <div>{teamDetail.teamGenre1}</div>
+                  <div>{teamDetail.teamGenre2}</div>
+                  <div>{teamDetail.teamGenre3}</div>
                 </div>
               </div>
             </div>
@@ -219,15 +268,17 @@ function MyTeamManagePage() {
             <h2>모임규칙</h2>
             <hr />
             <div className={teamstyles["rule-box"]}>
-              <h4>1. 모임의 첫번째 규칙이 들어갈 자리 입니다.</h4>
-              <h4>2. 모임의 첫번째 규칙이 들어갈 자리 입니다.</h4>
-              <h4>3. 모임의 첫번째 규칙이 들어갈 자리 입니다.</h4>
+              <h4>1. {teamDetail.teamRule1}</h4>
+              <h4>2. {teamDetail.teamRule2}</h4>
+              <h4>3. {teamDetail.teamRule3}</h4>
             </div>
           </div>
           <div className={teamstyles["third-box"]}>
             <h2>홍보글</h2>
             <hr />
-            <div className={teamstyles["introduction-box"]}>ddd</div>
+            <div className={teamstyles["introduction-box"]}>
+              {teamDetail.teamRecruitText}
+            </div>
           </div>
 
           {/* 모임 정보 수정 모달 */}
@@ -254,17 +305,17 @@ function MyTeamManagePage() {
                     }
                   >
                     <FormControlLabel
-                      value="online"
+                      value="ON"
                       control={<Radio />}
                       label="온라인"
                     />
                     <FormControlLabel
-                      value="offline"
+                      value="OFF"
                       control={<Radio />}
                       label="오프라인"
                     />
                     <FormControlLabel
-                      value="onoff"
+                      value="BOTH"
                       control={<Radio />}
                       label="병행"
                     />
@@ -286,101 +337,123 @@ function MyTeamManagePage() {
                 <br />
                 <p>선호 장르</p>
                 <div className={teamstyles["genre-box"]}>
-                <div
-              onClick={() => {
-                clickreason();
-                clickGenre("reason");
-              }}
-              className={genreList.reason ? teamstyles["active"] : teamstyles["notActive"]}
-            >
-              #추리
-            </div>
-            <div
-              onClick={() => {
-                clickthril();
-                clickGenre("thril");
-              }}
-              className={genreList.thril ? teamstyles["active"] : teamstyles["notActive"]}
-            >
-              #스릴러
-            </div>
-            <div
-              onClick={() => {
-                clickhorror();
-                clickGenre("horror");
-              }}
-              className={
-                genreList.horror ? teamstyles["active"] : teamstyles["notActive"]
-              }
-            >
-              #공포
-            </div>
-            <div
-              onClick={() => {
-                clicksf();
-                clickGenre("sf");
-              }}
-              className={
-                genreList.sf ? teamstyles["active"] : teamstyles["notActive"]
-              }
-            >
-              #과학
-            </div>
-            <div
-              onClick={() => {
-                clickfantasy();
-                clickGenre("fantasy");
-              }}
-              className={
-                genreList.fantasy ? teamstyles["active"] : teamstyles["notActive"]
-              }
-            >
-              #판타지
-            </div>
-            <div
-              onClick={() => {
-                clickdrama();
-                clickGenre("drama");
-              }}
-              className={
-                genreList.drama ? teamstyles["active"] : teamstyles["notActive"]
-              }
-            >
-              #드라마
-            </div>
-            <div
-              onClick={() => {
-                clickgame();
-                clickGenre("game");
-              }}
-              className={
-                genreList.game ? teamstyles["active"] : teamstyles["notActive"]
-              }
-            >
-              #게임
-            </div>
-            <div
-              onClick={() => {
-                clickromance();
-                clickGenre("romance");
-              }}
-              className={
-                genreList.romance ? teamstyles["active"] : teamstyles["notActive"]
-              }
-            >
-              #로맨스
-            </div>
-            <div
-              onClick={() => {
-                clickanimation();
-                clickGenre("animation");
-              }}
-              className={
-                genreList.animation ? teamstyles["active"] : teamstyles["notActive"]
-              }
-            >
-              #만화
-            </div>
+                  <div
+                    onClick={() => {
+                      clickreason();
+                      clickGenre("reason");
+                    }}
+                    className={
+                      genreList.reason
+                        ? teamstyles["active"]
+                        : teamstyles["notActive"]
+                    }
+                  >
+                    #추리
+                  </div>
+                  <div
+                    onClick={() => {
+                      clickthril();
+                      clickGenre("thril");
+                    }}
+                    className={
+                      genreList.thril
+                        ? teamstyles["active"]
+                        : teamstyles["notActive"]
+                    }
+                  >
+                    #스릴러
+                  </div>
+                  <div
+                    onClick={() => {
+                      clickhorror();
+                      clickGenre("horror");
+                    }}
+                    className={
+                      genreList.horror
+                        ? teamstyles["active"]
+                        : teamstyles["notActive"]
+                    }
+                  >
+                    #공포
+                  </div>
+                  <div
+                    onClick={() => {
+                      clicksf();
+                      clickGenre("sf");
+                    }}
+                    className={
+                      genreList.sf
+                        ? teamstyles["active"]
+                        : teamstyles["notActive"]
+                    }
+                  >
+                    #과학
+                  </div>
+                  <div
+                    onClick={() => {
+                      clickfantasy();
+                      clickGenre("fantasy");
+                    }}
+                    className={
+                      genreList.fantasy
+                        ? teamstyles["active"]
+                        : teamstyles["notActive"]
+                    }
+                  >
+                    #판타지
+                  </div>
+                  <div
+                    onClick={() => {
+                      clickdrama();
+                      clickGenre("drama");
+                    }}
+                    className={
+                      genreList.drama
+                        ? teamstyles["active"]
+                        : teamstyles["notActive"]
+                    }
+                  >
+                    #드라마
+                  </div>
+                  <div
+                    onClick={() => {
+                      clickgame();
+                      clickGenre("game");
+                    }}
+                    className={
+                      genreList.game
+                        ? teamstyles["active"]
+                        : teamstyles["notActive"]
+                    }
+                  >
+                    #게임
+                  </div>
+                  <div
+                    onClick={() => {
+                      clickromance();
+                      clickGenre("romance");
+                    }}
+                    className={
+                      genreList.romance
+                        ? teamstyles["active"]
+                        : teamstyles["notActive"]
+                    }
+                  >
+                    #로맨스
+                  </div>
+                  <div
+                    onClick={() => {
+                      clickanimation();
+                      clickGenre("animation");
+                    }}
+                    className={
+                      genreList.animation
+                        ? teamstyles["active"]
+                        : teamstyles["notActive"]
+                    }
+                  >
+                    #만화
+                  </div>
                 </div>
                 <br />
                 <br />
@@ -483,7 +556,14 @@ function MyTeamManagePage() {
             </DialogContent>
             <DialogActions>
               <Button onClick={teamInfoModalClose}>취소</Button>
-              <Button onClick= {() => {teamInfoModalClose(); teamInfoUpdate();}}>수정 완료</Button>
+              <Button
+                onClick={() => {
+                  teamInfoModalClose();
+                  teamInfoUpdate();
+                }}
+              >
+                수정 완료
+              </Button>
             </DialogActions>
           </Dialog>
         </div>

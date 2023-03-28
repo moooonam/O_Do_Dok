@@ -36,6 +36,7 @@
     display: flex;
     margin-top: 20px;
     line-height: 2  0px;
+    cursor: pointer;
 }
 
 .articleType {
@@ -48,4 +49,12 @@
 
 .articleUser {
     width: 10%;
+}
+
+.active {
+    display: show;
+}
+
+.notActive {
+    display: none;
 }
