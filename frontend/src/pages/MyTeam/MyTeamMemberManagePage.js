@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SideBar from "../../components/SideBar";
 import sidestyles from "../../styles/Sidebar.module.scss";
 import memberstyles from "../../styles/MyTeamMemberManage.module.scss";
-
+import { Api } from "../../Api";
+// import { useSelector } from "react-redux";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -16,154 +17,154 @@ import DialogTitle from "@mui/material/DialogTitle";
 function MyTeamMemberManagePage() {
   // 선택한 모임원 정보 저장
   const [memberInfo, setMemberInfo] = useState({
-    id: null,
     name: "",
+    role: "",
     imgurl: "",
+    date: "",
+    teamUserId: "",
+    userId: "",
   });
 
   const clickMember = (member) => {
     setMemberInfo({
       ...memberInfo,
-      id: member.id,
-      name: member.name,
-      imgurl: member.imgurl,
+      teamUserId: member.teamUserId,
+      name: member.user.userNickname,
+      imgurl: member.user.userImage,
+      date: member.joinDate,
+      role: member.role,
+      userId: member.user.userId
     });
   };
 
   // 선택한 가입신청자 정보 저장
   const [applicantInfo, setApplicantInfo] = useState({
-    id: null,
+    applyId: "",
     name: "",
     imgurl: "",
     comment: "",
+    date: "",
   });
 
   const clickApplicant = (member) => {
     setApplicantInfo({
       ...applicantInfo,
-      id: member.id,
-      name: member.name,
-      imgurl: member.imgurl,
-      comment: member.comment,
+      applyId: member.applyId,
+      name: member.nickname,
+      imgurl: member.img,
+      comment: member.msg,
+      date: member.date,
     });
   };
 
   // 모임원 데이터
-  const userImgs = [
-    {
-      id: 1,
-      name: "독린이",
-      imgurl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZ44sVUht3bLlDctgqfTi8KWR7Cfr2x3ZRrbWWC4kOLM3E7TRxzwcvn73BpvwEU29REi4&usqp=CAU",
-    },
-    {
-      id: 2,
-      name: "무",
-      imgurl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsQXUFrVgeu47HOQSfq0H--H9UXXQgxlY6Tw&usqp=CAU",
-    },
-    {
-      id: 3,
-      name: "경삼",
-      imgurl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX0Gyy5AmeuuEZDj4r7VfhMZuPzehhxn6fdDLzqiXpuX0-HYQt8auxVkEOcnXxE2pTTxo&usqp=CAU",
-    },
-    {
-      id: 4,
-      name: "사번",
-      imgurl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZ44sVUht3bLlDctgqfTi8KWR7Cfr2x3ZRrbWWC4kOLM3E7TRxzwcvn73BpvwEU29REi4&usqp=CAU",
-    },
-    {
-      id: 5,
-      name: "오번",
-      imgurl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsQXUFrVgeu47HOQSfq0H--H9UXXQgxlY6Tw&usqp=CAU",
-    },
-    {
-      id: 6,
-      name: "6번",
-      imgurl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX0Gyy5AmeuuEZDj4r7VfhMZuPzehhxn6fdDLzqiXpuX0-HYQt8auxVkEOcnXxE2pTTxo&usqp=CAU",
-    },
-    {
-      id: 7,
-      name: "칠번",
-      imgurl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZ44sVUht3bLlDctgqfTi8KWR7Cfr2x3ZRrbWWC4kOLM3E7TRxzwcvn73BpvwEU29REi4&usqp=CAU",
-    },
-    {
-      id: 8,
-      name: "팔번",
-      imgurl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsQXUFrVgeu47HOQSfq0H--H9UXXQgxlY6Tw&usqp=CAU",
-    },
-    {
-      id: 9,
-      name: "구번",
-      imgurl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX0Gyy5AmeuuEZDj4r7VfhMZuPzehhxn6fdDLzqiXpuX0-HYQt8auxVkEOcnXxE2pTTxo&usqp=CAU",
-    },
-  ];
+  const myTeamId = localStorage.getItem("myTeamId");
+  const [members, setMembers] = useState([]);
+  useEffect(() => {
+    Api.get(`/teams/member/${myTeamId}`)
+      .then((res) => {
+        setMembers(...members, res.data);
+        // console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 모임원 반복 출력
-  const renderUserImg = userImgs.map((member) => {
+  const renderUserImg = members.map((member) => {
     return (
-      <div key={member.id}
+      <div
+        key={member.teamUserId}
         onClick={() => {
           memberModalOpen();
           clickMember(member);
         }}
       >
-        <div key={member.id} className={memberstyles["userImg-div"]}>
-          <img src={member.imgurl} alt="프로필" />
+        <div key={member.teamUserId} className={memberstyles["userImg-div"]}>
+          <img src={member.user.userImage} alt="프로필" />
         </div>
-        <p className={memberstyles["username"]}>{member.name}</p>
+
+        <div className={memberstyles["name-container"]}>
+          {member.role === "ADMIN" ? <div>👑</div> : null}
+          {member.role === "MANAGER" ? <div>👒</div> : null}
+          <div className={memberstyles["username"]}>
+            {member.user.userNickname}
+          </div>
+        </div>
       </div>
     );
   });
 
   // 가입 신청자 데이터
-  const newapply = [
-    {
-      id: 1,
-      name: "오도독짱",
-      comment: "안녕하세요!!!!!!!!!!오도독짱",
-      imgurl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZ44sVUht3bLlDctgqfTi8KWR7Cfr2x3ZRrbWWC4kOLM3E7TRxzwcvn73BpvwEU29REi4&usqp=CAU",
-    },
-    {
-      id: 2,
-      name: "오도독러뷰",
-      comment: "안녕하세요!!!!!!!!!!오도독러뷰",
-      imgurl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsQXUFrVgeu47HOQSfq0H--H9UXXQgxlY6Tw&usqp=CAU",
-    },
-    {
-      id: 3,
-      name: "마이럽오도독",
-      comment: "안녕하세요!!!!!!!!!!마이럽",
-      imgurl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX0Gyy5AmeuuEZDj4r7VfhMZuPzehhxn6fdDLzqiXpuX0-HYQt8auxVkEOcnXxE2pTTxo&usqp=CAU",
-    },
-  ];
+  const [apllyMembers, setApllyMembers] = useState([]);
+  useEffect(() => {
+    Api.get(`teams/apply/${myTeamId}`)
+      .then((res) => {
+        setApllyMembers(...apllyMembers, res.data);
+        // console.log(res.data)
+        // console.log(apllyMembers)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 가입 신청자 반복 출력
-  const renderNewApply = newapply.map((member) => {
+  const renderNewApply = apllyMembers.map((member) => {
     return (
-      <div key={member.id}
+      <div
+        key={member.nickname}
         onClick={() => {
           applicantModalOpen();
           clickApplicant(member);
         }}
       >
-        <div key={member.id} className={memberstyles["userImg-div"]}>
-          <img src={member.imgurl} alt="프로필" />
+        <div key={member.nickname} className={memberstyles["userImg-div"]}>
+          <img src={member.img} alt="프로필" />
         </div>
-        <p className={memberstyles["username"]}>{member.name}</p>
+        <p className={memberstyles["username"]}>{member.nickname}</p>
       </div>
     );
   });
+
+  //가입신청 수락, 거절
+  const acceptApply = () => {
+    const acceptForm = {
+      applyId: applicantInfo.applyId,
+      isAccept: true,
+    };
+    console.log(acceptForm);
+    Api.post("/teams/accept", acceptForm)
+      .then((res) => {
+        alert("수락이 완료되었습니다");
+        window.location.reload();
+        // goMyTeamMemberManage()
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const rejectAplly = () => {
+    const rejectForm = {
+      applyId: applicantInfo.applyId,
+      isAccept: false,
+    };
+    console.log(rejectForm);
+    Api.post("/teams/accept", rejectForm)
+      .then((res) => {
+        alert("가입신청 거절이 완료되었습니다");
+        window.location.reload();
+        // goMyTeamMemberManage()
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   // 모임원 정보 모달 관련 데이터 및 함수
   const [memberModal, setMemberModal] = React.useState(false);
@@ -182,6 +183,16 @@ function MyTeamMemberManagePage() {
   const memberOutModalClose = () => {
     setMemberOutModal(false);
   };
+  const deleteMember = ((userId) => {
+    if (userId) {
+      Api.delete(`/teams/member/${userId}`)
+      .then((res) => {
+        alert('모임원을 퇴출했습니다')
+        window.location.reload()
+        console.log(res)
+      })
+    }
+  })
 
   // 모임원 관리자등록 모달 관련 데이터 및 함수
   const [managerModal, setManagerModal] = React.useState(false);
@@ -191,6 +202,16 @@ function MyTeamMemberManagePage() {
   const managerModalClose = () => {
     setManagerModal(false);
   };
+  const switchRole = ((teamUserId) => {
+    if (teamUserId) {
+      Api.patch(`/teams/member/${teamUserId}`)
+      .then((res) => {
+        alert('권한변경을 성공했습니다.')
+        window.location.reload()
+        console.log(res)
+      })
+    }
+  })
 
   // 가입 신청자 정보 모달 관련 데이터 및 함수
   const [applicantModal, setApplicantModal] = React.useState(false);
@@ -221,7 +242,7 @@ function MyTeamMemberManagePage() {
 
   return (
     <div className={sidestyles["myteam-container"]}>
-      <SideBar location={"memberManage"}/>
+      <SideBar location={"memberManage"} />
       <div className={sidestyles.others}>
         <div className={memberstyles["members-container"]}>
           <h2>개미들 모임원</h2>
@@ -240,15 +261,24 @@ function MyTeamMemberManagePage() {
               </div>
               <div className={memberstyles["content-right"]}>
                 <p>닉네임 : {memberInfo.name}</p>
-                <p>가입일자 : 2023.03.15</p>
+                <p>가입일자 : {memberInfo.date}</p>
               </div>
             </DialogContent>
-            <DialogActions>
-              <Button onClick={memberOutModalOpen}>퇴출</Button>
-              <Button onClick={managerModalOpen} autoFocus>
-                관리자 등록
-              </Button>
-            </DialogActions>
+            {memberInfo.role === "USER" ? (
+              <DialogActions>
+                <Button onClick={memberOutModalOpen}>퇴출</Button>
+                <Button onClick={managerModalOpen} autoFocus>
+                  관리자 등록
+                </Button>
+              </DialogActions>
+            ) : memberInfo.role === "MANAGER" ? (
+              <DialogActions>
+                <Button onClick={memberOutModalOpen}>퇴출</Button>
+                <Button onClick={managerModalOpen} autoFocus>
+                  관리자 해제
+                </Button>
+              </DialogActions>
+            ) : null}
           </Dialog>
 
           {/* 모임원 퇴출 모달*/}
@@ -258,22 +288,37 @@ function MyTeamMemberManagePage() {
               <DialogContentText>정말 퇴출하시겠습니까?</DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button>예</Button>
-              <Button autoFocus>아니오</Button>
+              <Button onClick={() => deleteMember(memberInfo.userId)}>예</Button>
+              <Button autoFocus onClick={memberOutModalClose}>아니오</Button>
             </DialogActions>
           </Dialog>
 
           {/* 모임원 관리자등록 모달*/}
           <Dialog open={managerModal} onClose={managerModalClose}>
-            <DialogTitle>{"관리자 등록"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                {memberInfo.name} 님을 관리자로 등록하시겠습니까?
-              </DialogContentText>
-            </DialogContent>
+            {memberInfo.role === "USER" ? (
+              <div>
+                <DialogTitle>{"관리자 등록"}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    {memberInfo.name} 님을 관리자로 등록하시겠습니까?
+                  </DialogContentText>
+                </DialogContent>
+              </div>
+            ) : (
+              <div>
+                <DialogTitle>{"관리자 등록"}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    {memberInfo.name} 님의 관리자 권한을 해제하시겠습니까?
+                  </DialogContentText>
+                </DialogContent>
+              </div>
+            )}
             <DialogActions>
-              <Button>예</Button>
-              <Button autoFocus>아니오</Button>
+              <Button onClick={() => switchRole(memberInfo.teamUserId)}>예</Button>
+              <Button autoFocus onClick={managerModalClose}>
+                아니오
+              </Button>
             </DialogActions>
           </Dialog>
 
@@ -285,12 +330,10 @@ function MyTeamMemberManagePage() {
                 <img src={applicantInfo.imgurl} alt="" />
               </div>
               <div className={memberstyles["content-right"]}>
-                <p>닉예임 : {applicantInfo.name}</p>
-                <p>가입일자 : 2023.03.15</p>
-                <p>가입인사</p>
-                <textarea cols="30" rows="3">
-                  {applicantInfo.comment}
-                </textarea>
+                <p>닉네임 : {applicantInfo.name}</p>
+                <p>신청일자 : {applicantInfo.date}</p>
+                <p>하고싶은말</p>
+                <p className={memberstyles.comment}>{applicantInfo.comment}</p>
               </div>
             </DialogContent>
             <DialogActions>
@@ -313,7 +356,7 @@ function MyTeamMemberManagePage() {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button>예</Button>
+              <Button onClick={rejectAplly}>예</Button>
               <Button autoFocus>아니오</Button>
             </DialogActions>
           </Dialog>
@@ -330,7 +373,7 @@ function MyTeamMemberManagePage() {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button>예</Button>
+              <Button onClick={acceptApply}>예</Button>
               <Button autoFocus>아니오</Button>
             </DialogActions>
           </Dialog>

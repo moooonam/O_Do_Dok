@@ -15,7 +15,8 @@ export const userSlice = createSlice({
     userOnoff: "",
     userRegion:"",
     userAge:"",
-    myTeam:"",
+    myTeamId:"",
+    myRole:"",
     isLogin: false,
   },
   reducers: {
@@ -24,6 +25,7 @@ export const userSlice = createSlice({
     },
     logout: (state) => {
       state.isLogin = false;
+      state.myTeamId=""
     },
     getUserInfo: (state, action) => {
       state.userName = action.payload.userName;
@@ -38,9 +40,15 @@ export const userSlice = createSlice({
       state.userOnoff = action.payload.userOnoff;
       state.userRegion = action.payload.userRegion;
       state.userAge = action.payload.userAge;
+    },
+    getTeamId: (state, action) => {
+      state.myTeamId = action.payload.myTeamId
+    },
+    getMyRole: (state, action) => {
+      state.myRole = action.payload.myRole
     }
   },
 });
 
-export const { login, logout, getUserInfo } =userSlice.actions
+export const { login, logout, getUserInfo, getTeamId, getMyRole } =userSlice.actions
 export default userSlice.reducer;

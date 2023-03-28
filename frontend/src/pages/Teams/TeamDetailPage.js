@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import styles from "../../styles/TeamDetail.module.scss";
 import JoinTeamModal from "../../components/Teams/Modal/JoinTeamModal";
 import { Api } from "../../Api";
+// import { useSelector } from "react-redux";
 // import { useLocation } from "react-router-dom";
 
 function TeamDetailPage() {
   // const location = useLocation();
+  
 
   const [teamDetail, setTeamDetail] = useState({
     teamName: "",
@@ -22,7 +24,7 @@ function TeamDetailPage() {
 
   useEffect(() => {
     // console.log(location.pathname.split('/')[2]);
-    console.log(localStorage.getItem("nowTeam"));
+    // console.log(localStorage.getItem("nowTeam"));
     let Id = localStorage.getItem("nowTeam");
     Api.get(`/teams/info/${Id}`)
       .then((res) => {
