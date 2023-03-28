@@ -66,18 +66,18 @@ public class ApplyServiceImpl implements ApplyService {
 
         List<ApplyRes> list = new ArrayList<>();
         for(int i=0; i<applyList.size(); i++){
+            Long applyId = applyList.get(i).getApplyId();
             String nickname = applyList.get(i).getUser().getUserNickname();
             String msg = applyList.get(i).getApplyMsg();
             LocalDate date = applyList.get(i).getApplyDate();
             String img = applyList.get(i).getUser().getUserImage();
-            ApplyRes applyRes = new ApplyRes(nickname, msg, date, img);
+            ApplyRes applyRes = new ApplyRes(applyId, nickname, msg, date, img);
 
             list.add(applyRes);
         }
         return list;
     }
 
-    // 신청자 -> 수락하여 팀에 인원 추가
     @Override
     public void addMember(Long applyId) {
         Apply apply = applyRepository.findById(applyId).get();
@@ -99,7 +99,6 @@ public class ApplyServiceImpl implements ApplyService {
         Team updateTeam = teamRepository.findByTeamId(team.getTeamId()).get();
         updateTeam.setTeamMemberCnt(updateTeam.getTeamMemberCnt()+1);
         teamRepository.save(updateTeam);
-
     }
 
     @Override
