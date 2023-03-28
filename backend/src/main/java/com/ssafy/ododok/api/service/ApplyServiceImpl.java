@@ -66,11 +66,12 @@ public class ApplyServiceImpl implements ApplyService {
 
         List<ApplyRes> list = new ArrayList<>();
         for(int i=0; i<applyList.size(); i++){
+            Long applyId = applyList.get(i).getApplyId();
             String nickname = applyList.get(i).getUser().getUserNickname();
             String msg = applyList.get(i).getApplyMsg();
             LocalDate date = applyList.get(i).getApplyDate();
             String img = applyList.get(i).getUser().getUserImage();
-            ApplyRes applyRes = new ApplyRes(nickname, msg, date, img);
+            ApplyRes applyRes = new ApplyRes(applyId, nickname, msg, date, img);
 
             list.add(applyRes);
         }
