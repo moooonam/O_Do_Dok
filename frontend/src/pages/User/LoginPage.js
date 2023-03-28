@@ -98,6 +98,7 @@ function LoginPage() {
             value={form.password}
             variant="standard"
             onChange={(e) => setForm({ ...form, password: e.target.value })}
+            onKeyUp={(e) => {if (e.key === "Enter") {userLogin()}}}
           />
         </Grid>
         <Grid container direction="row" justifyContent={"space-between"}>
