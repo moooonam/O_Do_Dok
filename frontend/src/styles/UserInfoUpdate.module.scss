@@ -88,7 +88,8 @@
 
 .btns {
     display: flex;
-    margin-left: 40%;
+    // margin-left: 40%;
+    justify-content: space-between;
 }
 
 .btn-blank {

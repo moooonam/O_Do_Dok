@@ -10,17 +10,24 @@ import { useNavigate } from "react-router-dom";
 // radio
 
 import { useSelector, useDispatch } from "react-redux";
-import { getUserInfo } from "../../redux/slice/userSlice";
+import { getUserInfo, logout } from "../../redux/slice/userSlice";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 // import FormLabel from "@mui/material/FormLabel";
 
+// Dialog
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
 // datepicker
 function UserInfoUpdatePage() {
   const movePage = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   function goMyPage() {
     movePage("/mypage");
   }
@@ -161,11 +168,11 @@ function UserInfoUpdatePage() {
               userOnoff: form.userOnoff,
               userRegion: form.userRegion,
               userGender: userInfo.userGender,
-              userAge: userInfo.userAge
+              userAge: userInfo.userAge,
             })
           );
-          alert('회원정보 수정완료!')
-          goMyPage()
+          alert("회원정보 수정완료!");
+          goMyPage();
         })
         .catch((err) => {
           console.log(err);
@@ -190,6 +197,44 @@ function UserInfoUpdatePage() {
     Frequency = "oversix";
   }
 
+  // 회원 탈퇴 모달
+  const [open, setOpen] = React.useState(false);
+
+  const userDeleteModalOpen = () => {
+    setOpen(true);
+  };
+
+  const userDeleteModalClose = () => {
+    setOpen(false);
+  };
+
+  // 회원탈퇴
+  const userDelete = () => {
+    const access_token = localStorage.getItem("access-token");
+    const refresh_token = localStorage.getItem("refresh-token");
+    Api.delete(
+      "/user",
+      {
+        headers: {
+          "access-token": `Bearer ${access_token}`,
+          "refresh-token": `Bearer ${refresh_token}`,
+        },
+      }
+    )
+      .then((res) => {
+        console.log(res);
+        if (res.data === "삭제 완료") {
+          alert("회원 탈퇴가 완료되었습니다.");
+          dispatch(logout());
+          movePage("/");
+        } else {
+          alert('회원 탈퇴에 실패하였습니다.')
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <Grid
@@ -463,21 +508,50 @@ function UserInfoUpdatePage() {
         </FormControl>
         <br />
         <br />
+        <br />
         <div className={styles["btns"]}>
-          <Button variant="contained" color="error" onClick={goMyPage}>
-            취소
+          <Button color="error" onClick={userDeleteModalOpen}>
+            회원 탈퇴
           </Button>
-          <div className={styles["btn-blank"]}></div>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              userUpdate();
-              // goMyPage();
-            }}
-          >
-            수정 완료
-          </Button>
+          <div>
+            <Button color="success" onClick={goMyPage}>
+              취소
+            </Button>
+            {/* <div className={styles["btn-blank"]}></div> */}
+            <Button
+              color="success"
+              onClick={() => {
+                userUpdate();
+                // goMyPage();
+              }}
+            >
+              수정 완료
+            </Button>
+            <Dialog
+              open={open}
+              onClose={userDeleteModalClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">{"Bye Bye!"}</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  회원탈퇴를 진행하시겠습니까?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={userDeleteModalClose}>아니오</Button>
+                <Button
+                  onClick={() => {
+                    userDeleteModalClose();
+                    userDelete();
+                  }}
+                >
+                  예
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </div>
         </div>
         <br />
         <br />
