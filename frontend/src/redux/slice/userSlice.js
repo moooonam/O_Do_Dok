@@ -38,7 +38,6 @@ export const userSlice = createSlice({
       state.userOnoff = action.payload.userOnoff;
       state.userRegion = action.payload.userRegion;
       state.userAge = action.payload.userAge;
-
     }
   },
 });
