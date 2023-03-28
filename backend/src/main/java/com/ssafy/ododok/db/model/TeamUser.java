@@ -27,15 +27,19 @@ public class TeamUser {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(nullable = false)
+    private LocalDate joinDate;
+
     public void changeRole(Role role){
         this.role = role;
     }
 
     @Builder
-    public TeamUser(User user, Team team, Role role) {
+    public TeamUser(User user, Team team, Role role, LocalDate joinDate) {
         this.user = user;
         this.team = team;
         this.role = role;
+        this.joinDate = joinDate;
     }
 
 }

@@ -95,7 +95,7 @@ public class ApplyServiceImpl implements ApplyService {
 //public void changeNickName(String nickname){
 //        this.userNickname = nickname;
 //    }
-        // 추가되면 팀 인원 +1
+
         Team updateTeam = teamRepository.findByTeamId(team.getTeamId()).get();
         updateTeam.setTeamMemberCnt(updateTeam.getTeamMemberCnt()+1);
         teamRepository.save(updateTeam);

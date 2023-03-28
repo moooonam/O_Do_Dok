@@ -250,4 +250,9 @@ public class DodokServiceImpl implements DodokService {
         return dodokResult;
     }
 
+    // 도독이 종료되었을 때 장르 평점 추가하기
+    public void updateGenre(Dodok dodok){
+
+    }
+
 }
