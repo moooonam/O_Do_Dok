@@ -1,6 +1,7 @@
 package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.request.UserApplyPostReq;
+import com.ssafy.ododok.api.response.ApplyRes;
 import com.ssafy.ododok.db.model.Apply;
 import com.ssafy.ododok.db.model.Team;
 import com.ssafy.ododok.db.model.TeamUser;
@@ -11,8 +12,11 @@ import com.ssafy.ododok.db.repository.TeamUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.ssafy.ododok.db.model.Role.USER;
 
 @Service
 public class ApplyServiceImpl implements ApplyService {
@@ -57,9 +61,20 @@ public class ApplyServiceImpl implements ApplyService {
     }
 
     @Override
-    public List<Apply> getApplyMember(Long teamId) {
+    public List<ApplyRes> getApplyMember(Long teamId) {
         List<Apply> applyList = applyRepository.findMemberByTeam_TeamId(teamId);
-        return applyList;
+
+        List<ApplyRes> list = new ArrayList<>();
+        for(int i=0; i<applyList.size(); i++){
+            String nickname = applyList.get(i).getUser().getUserNickname();
+            String msg = applyList.get(i).getApplyMsg();
+            LocalDate date = applyList.get(i).getApplyDate();
+            String img = applyList.get(i).getUser().getUserImage();
+            ApplyRes applyRes = new ApplyRes(nickname, msg, date, img);
+
+            list.add(applyRes);
+        }
+        return list;
     }
 
     @Override
@@ -71,6 +86,7 @@ public class ApplyServiceImpl implements ApplyService {
         TeamUser teamUser = TeamUser.builder()
                 .user(user)
                 .team(team)
+                .role(USER)
                 .joinDate(LocalDate.now())
                 .build();
 

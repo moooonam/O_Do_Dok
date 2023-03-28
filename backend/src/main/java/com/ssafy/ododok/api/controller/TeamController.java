@@ -4,13 +4,11 @@ import com.ssafy.ododok.api.request.TeamCreatePostReq;
 import com.ssafy.ododok.api.request.TeamModifyPatchReq;
 import com.ssafy.ododok.api.request.UserAcceptPostReq;
 import com.ssafy.ododok.api.request.UserApplyPostReq;
+import com.ssafy.ododok.api.response.ApplyRes;
 import com.ssafy.ododok.api.service.ApplyService;
 import com.ssafy.ododok.api.service.TeamService;
 import com.ssafy.ododok.common.auth.PrincipalDetails;
-import com.ssafy.ododok.db.model.Apply;
-import com.ssafy.ododok.db.model.Team;
-import com.ssafy.ododok.db.model.TeamUser;
-import com.ssafy.ododok.db.model.User;
+import com.ssafy.ododok.db.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -123,7 +121,7 @@ public class TeamController {
     // 모임 신청자 리스트 출력
     @GetMapping("/apply/{teamId}")
     public ResponseEntity<?> applyMember(@PathVariable Long teamId){
-        List<Apply> list = applyService.getApplyMember(teamId);
+        List<ApplyRes> list = applyService.getApplyMember(teamId);
         return ResponseEntity.status(200).body(list);
     }
 
@@ -174,5 +172,8 @@ public class TeamController {
         else return ResponseEntity.status(200).body("일반 사용자로 변경 성공!");
 //        else return ResponseEntity.status(200).body("모임장은 변경 불가능");
     }
+
+    UserSurvey userSurvey;
+
 
 }

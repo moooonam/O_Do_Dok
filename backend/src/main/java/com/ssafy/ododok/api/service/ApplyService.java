@@ -1,6 +1,7 @@
 package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.request.UserApplyPostReq;
+import com.ssafy.ododok.api.response.ApplyRes;
 import com.ssafy.ododok.db.model.Apply;
 import com.ssafy.ododok.db.model.User;
 
@@ -11,7 +12,7 @@ public interface ApplyService {
 
     void setUserApply(UserApplyPostReq userApplyPostReq, User user);
 
-    List<Apply> getApplyMember(Long teamId);
+    List<ApplyRes> getApplyMember(Long teamId);
 
     void addMember(Long applyId);
 
