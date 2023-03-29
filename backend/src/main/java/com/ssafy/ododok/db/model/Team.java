@@ -72,6 +72,9 @@ public class Team {
     @ColumnDefault("'https://cdn.pixabay.com/photo/2018/01/18/20/43/literature-3091212_960_720.jpg'")
     private String teamImage;
 
+    @Column
+    private double teamAge;
+
     public void updateTeam(TeamModifyPatchReq teamModifyPatchReq){
         this.teamMemberCntMax = teamModifyPatchReq.getTeamMemberCntMax();
         this.teamOnoff = teamModifyPatchReq.getTeamOnoff();
@@ -92,10 +95,11 @@ public class Team {
     public void changeTeamTopGenre(String teamTopGenre){
         this.teamTopGenre = teamTopGenre;
     }
+
     @Builder
     public Team(String teamName, int teamMemberCntMax, Onoff teamOnoff, String teamRegion,
                 String teamGenre1, String teamGenre2, String teamGenre3,
-                boolean teamRecruit) {
+                boolean teamRecruit, double teamAge) {
         this.teamName = teamName;
         this.teamMemberCntMax = teamMemberCntMax;
         this.teamOnoff = teamOnoff;
@@ -104,6 +108,7 @@ public class Team {
         this.teamGenre2 = teamGenre2;
         this.teamGenre3 = teamGenre3;
         this.teamRecruit = teamRecruit;
+        this.teamAge = teamAge;
     }
 
 }

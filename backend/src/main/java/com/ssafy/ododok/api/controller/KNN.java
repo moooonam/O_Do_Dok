@@ -6,6 +6,9 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ssafy.ododok.db.model.Book;
+import com.ssafy.ododok.db.model.Team;
+import com.ssafy.ododok.db.repository.TeamRepository;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -18,16 +21,62 @@ import java.util.*;
 @Controller
 public class KNN {
 
-    public void knn() {
-        // csv������ �о� dataset����Ʈ ���� / ������� -> [����, ����, å ����]
+    public List<String> knn(Team team) {
+        // csv���Ͽ��� ��� ������ �о����
         List<Point> dataset = readCSVFile("Book_dataset.csv");
 
-        Point testPoint = new Point(2,20, null);
+        // ��ȣ�帣1,2,3, �� �������� ��õ
+        List<String> list = new ArrayList<>();
+        list.add(team.getTeamGenre1());
+        list.add(team.getTeamGenre2());
+        list.add(team.getTeamGenre3());
+        System.out.println(list.get(0)+" "+list.get(1)+" "+list.get(2));
+
+        List<Integer> numList = new ArrayList<>();
+
+        for(int i=0; i<list.size(); i++) {
+            String genre = list.get(i);
+
+            switch (genre) {
+                case "추리/미스터리":
+                    numList.add(1);
+                    break;
+                case "판타지":
+                    numList.add(2);
+                    break;
+                case "SF":
+                    numList.add(3);
+                    break;
+                case "호러":
+                    numList.add(4);
+                    break;
+                case "무협":
+                    numList.add(5);
+                    break;
+                case "스릴러":
+                    numList.add(6);
+                    break;
+                case "로맨스":
+                    numList.add(7);
+                    break;
+            }
+        }
+
+        double age = team.getTeamAge();
+
+        if(age >= 20 && age < 30) age = 20;
+        else if(age >= 30 && age < 40) age = 30;
+        else if(age >= 40 && age < 50) age = 40;
+        else age = 50;
+
+        System.out.println("나이? : " + age);
+
+        Point testPoint = new Point(numList.get(0),age, null);
         int K = 50;
-        Point testPoint1 = new Point(1,20, null);
-        int K1 = 30;
-        Point testPoint2 = new Point(3,20, null);
-        int K2 = 20;
+        Point testPoint1 = new Point(numList.get(1),age, null);
+        int K1 = 50;
+        Point testPoint2 = new Point(numList.get(2),age, null);
+        int K2 = 50;
 
         List<Point> neighbors = findNearestNeighbors(dataset, testPoint, K);
         List<Point> neighbors1 = findNearestNeighbors(dataset, testPoint1, K1);
@@ -59,7 +108,7 @@ public class KNN {
         List<String> ans2 = new ArrayList<String>();
 
         Random random = new Random();
-        for(int i = 0 ; i < 5 ; i++) {
+        for(int i = 0 ; i < 3 ; i++) {
             String randomString = booknames.remove(random.nextInt(booknames.size()));
             ans.add(randomString);
         }
@@ -69,7 +118,7 @@ public class KNN {
             ans1.add(randomString);
         }
 
-        for(int i = 0 ; i < 2 ; i++) {
+        for(int i = 0 ; i < 3 ; i++) {
             String randomString = booknames3.remove(random.nextInt(booknames3.size()));
             ans2.add(randomString);
         }
@@ -80,16 +129,26 @@ public class KNN {
 
         String listString1 = ans1.toString();
         listString1 = listString1.replace("[","").replace("]","");
-        List<String> S1 = Arrays.asList(listString1.split(","));
+        List<String> S1 = Arrays.asList(listString1.split(", "));
 
         String listString2 = ans2.toString();
         listString2 = listString2.replace("[","").replace("]","");
-        List<String> S2 = Arrays.asList(listString2.split(","));
+        List<String> S2 = Arrays.asList(listString2.split(", "));
 
+//        System.out.println(listString);
+//        System.out.println(listString1);
+//        System.out.println(listString2);
+        System.out.println("--------");
         System.out.println(S);
         System.out.println(S1);
         System.out.println(S2);
 
+        List<String> booklist = new ArrayList<>();
+        booklist.addAll(S);
+        booklist.addAll(S1);
+        booklist.addAll(S2);
+
+        return booklist;
     }
 
     private static List<Point> findNearestNeighbors(List<Point> dataset, Point testPoint , int K) {
