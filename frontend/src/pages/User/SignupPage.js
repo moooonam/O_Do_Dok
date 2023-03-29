@@ -111,12 +111,13 @@ function SignupPage() {
   // 유저 정보에 선호 장르 담기
   const clickGenre = (choice) => {
     if (userGenre.includes(choice)) {
-      console.log(2222222222);
-      setUserGenre(userGenre.filter((genre) => genre !== choice));
+      let newGenres = userGenre.filter((genre) => genre !== choice);
+      setUserGenre(newGenres);
     } else {
       setUserGenre([...userGenre, choice]);
     }
   };
+  // console.log("유저장르", userGenre);
 
   // axios 보낼 데이터
   const userInfo = {
@@ -187,57 +188,54 @@ function SignupPage() {
 
   // 가입하기 함수
   const userSignup = () => {
-    console.log(userInfo);
-    if (form.emailCheck && form.nickCheck) {
-      userInfo.name = form.name;
-      userInfo.email = form.email;
-      userInfo.nickname = form.nickname;
-      userInfo.password = form.password;
-      userInfo.phone = form.phone;
-      userInfo.gender = form.gender;
-      userInfo.age = userAge;
-      userInfo.genre1 = userGenre[0];
-      userInfo.genre2 = userGenre[1];
-      userInfo.genre3 = userGenre[2];
-      userInfo.region = form.region;
-      userInfo.onoff = form.onoff;
-      userInfo.frequency = form.frequency;
-
-      if (
-        userInfo.name &&
-        userInfo.email &&
-        userInfo.nickname &&
-        userInfo.password &&
-        userInfo.phone &&
-        userInfo.gender &&
-        userInfo.onoff &&
-        userInfo.region &&
-        userInfo.frequency &&
-        userInfo.genre1 &&
-        userInfo.genre2 &&
-        userInfo.genre3 &&
-        userInfo.age
-      ) {
-        Api.post("/user", userInfo)
-          .then((res) => {
-            console.log(res);
-            alert('회원가입 성공!')
-            movePage("/login");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        // console.log(form);
-        // console.log(2023 - Number(dateFormat.slice(0,4)) + 1);
-        // console.log(userGenre[0]);
-        // console.log(userGenre[1]);
-        // console.log(userGenre[2]);
-        // console.log(userGenre);
-      } else {
-        alert("모든 항목에 대해 답변해주세요");
-      }
+    // console.log(userInfo);
+    if (userGenre.length !== 3) {
+      alert("장르를 3가지 선택해주세요");
     } else {
-      alert("중복검사를 진행해주세요");
+      if (form.emailCheck && form.nickCheck) {
+        userInfo.name = form.name;
+        userInfo.email = form.email;
+        userInfo.nickname = form.nickname;
+        userInfo.password = form.password;
+        userInfo.phone = form.phone;
+        userInfo.gender = form.gender;
+        userInfo.age = userAge;
+        userInfo.genre1 = userGenre[0];
+        userInfo.genre2 = userGenre[1];
+        userInfo.genre3 = userGenre[2];
+        userInfo.region = form.region;
+        userInfo.onoff = form.onoff;
+        userInfo.frequency = form.frequency;
+        if (
+          userInfo.name &&
+          userInfo.email &&
+          userInfo.nickname &&
+          userInfo.password &&
+          userInfo.phone &&
+          userInfo.gender &&
+          userInfo.onoff &&
+          userInfo.region &&
+          userInfo.frequency &&
+          userInfo.genre1 &&
+          userInfo.genre2 &&
+          userInfo.genre3 &&
+          userInfo.age
+        ) {
+          Api.post("/user", userInfo)
+            .then((res) => {
+              console.log(res);
+              alert("회원가입 성공!");
+              movePage("/login");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          alert("모든 항목에 대해 답변해주세요");
+        }
+      } else {
+        alert("중복검사를 진행해주세요");
+      }
     }
 
     console.log(userInfo);
@@ -455,7 +453,7 @@ function SignupPage() {
         <br />
         <br />
         <div>
-          <p>선호 장르</p>
+          <p>선호 장르 (*총 3가지 장르를 선택해주세요)</p>
           <br />
           <Grid container direction="row" columnGap={3}>
             <div
@@ -489,7 +487,7 @@ function SignupPage() {
                 genreList.horror ? styles["active"] : styles["notActive"]
               }
             >
-              #공포
+              #호러
             </div>
             <div
               onClick={() => {

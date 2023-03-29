@@ -43,7 +43,7 @@ function UserInfoUpdatePage() {
     userGenre1: "",
     userGenre2: "",
     userGenre3: "",
-    nickCheck: true,
+    nickCheck: false,
   });
 
   // 장르 리스트
@@ -113,7 +113,8 @@ function UserInfoUpdatePage() {
   // 유저 정보에 선호 장르 담기
   const clickGenre = (choice) => {
     if (userGenre.includes(choice)) {
-      setUserGenre(userGenre.filter((genre) => genre !== choice));
+      let newGenres = userGenre.filter((genre) => genre !== choice);
+      setUserGenre(newGenres);
     } else {
       setUserGenre([...userGenre, choice]);
     }
@@ -128,6 +129,9 @@ function UserInfoUpdatePage() {
           if (res.data) {
             setForm({ ...form, nickCheck: true });
             alert("사용 가능한 닉네임입니다.");
+          } else if (form.userNickname === userInfo.userNickname) {
+            alert("사용 가능한 기존 닉네임입니다.");
+            setForm({ ...form, nickCheck: true });
           } else {
             setForm({ ...form, nickCheck: false });
             alert("이미 존재하는 닉네임입니다.");
@@ -141,44 +145,48 @@ function UserInfoUpdatePage() {
 
   // 정보 제출
   const userUpdate = () => {
-    form.userGenre1 = userGenre[0];
-    form.userGenre2 = userGenre[1];
-    form.userGenre3 = userGenre[2];
-    if (form.nickCheck) {
-      //axios 들어갈 자리
-      // console.log(form);
-      Api.put("/user", form, {
-        headers: {
-          "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
-          "access-token": `Bearer ${localStorage.getItem("access-token")}`,
-        },
-      })
-        .then((res) => {
-          // console.log(res);
-          dispatch(
-            getUserInfo({
-              userName: form.userName,
-              userEmail: form.userEmail,
-              profileImg: form.userImage,
-              userNickname: form.userNickname,
-              userGenre1: form.userGenre1,
-              userGenre2: form.userGenre2,
-              userGenre3: form.userGenre3,
-              userFrequency: form.userFrequency,
-              userOnoff: form.userOnoff,
-              userRegion: form.userRegion,
-              userGender: userInfo.userGender,
-              userAge: userInfo.userAge,
-            })
-          );
-          alert("회원정보 수정완료!");
-          goMyPage();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    if (userGenre.length !== 3) {
+      alert("장르를 3가지 선택해주세요");
     } else {
-      alert("닉네임 중복체크를 해주세요!");
+      form.userGenre1 = userGenre[0];
+      form.userGenre2 = userGenre[1];
+      form.userGenre3 = userGenre[2];
+      if (form.nickCheck) {
+        //axios 들어갈 자리
+        // console.log(form);
+        Api.put("/user", form, {
+          headers: {
+            "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+            "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+          },
+        })
+          .then((res) => {
+            // console.log(res);
+            dispatch(
+              getUserInfo({
+                userName: form.userName,
+                userEmail: form.userEmail,
+                profileImg: form.userImage,
+                userNickname: form.userNickname,
+                userGenre1: form.userGenre1,
+                userGenre2: form.userGenre2,
+                userGenre3: form.userGenre3,
+                userFrequency: form.userFrequency,
+                userOnoff: form.userOnoff,
+                userRegion: form.userRegion,
+                userGender: userInfo.userGender,
+                userAge: userInfo.userAge,
+              })
+            );
+            alert("회원정보 수정완료!");
+            goMyPage();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        alert("닉네임 중복체크를 해주세요!");
+      }
     }
   };
 
@@ -212,15 +220,12 @@ function UserInfoUpdatePage() {
   const userDelete = () => {
     const access_token = localStorage.getItem("access-token");
     const refresh_token = localStorage.getItem("refresh-token");
-    Api.delete(
-      "/user",
-      {
-        headers: {
-          "access-token": `Bearer ${access_token}`,
-          "refresh-token": `Bearer ${refresh_token}`,
-        },
-      }
-    )
+    Api.delete("/user", {
+      headers: {
+        "access-token": `Bearer ${access_token}`,
+        "refresh-token": `Bearer ${refresh_token}`,
+      },
+    })
       .then((res) => {
         console.log(res);
         if (res.data === "삭제 완료") {
@@ -228,7 +233,7 @@ function UserInfoUpdatePage() {
           dispatch(logout());
           movePage("/");
         } else {
-          alert('회원 탈퇴에 실패하였습니다.')
+          alert("회원 탈퇴에 실패하였습니다.");
         }
       })
       .catch((err) => {
@@ -345,7 +350,7 @@ function UserInfoUpdatePage() {
         <br />
         <br />
         <div>
-          <p>선호 장르</p>
+          <p>선호 장르 (*총 3가지 장르를 선택해주세요)</p>
           <br />
           <p className={styles["origin-genre"]}>
             기존 선호 장르 : #{userInfo.userGenre1} #{userInfo.userGenre2} #
@@ -384,7 +389,7 @@ function UserInfoUpdatePage() {
                 genreList.horror ? styles["active"] : styles["notActive"]
               }
             >
-              #공포
+              #호러
             </div>
             <div
               onClick={() => {
