@@ -7,6 +7,27 @@
     justify-content: space-between;
     margin-top: 50px;
 }
+.search-maketeam-container {
+    display: flex;
+    input {
+        height: 30px;
+        font-size: 15px;
+        margin-right: 10px;
+        border-radius: 5px;
+    }
+    svg {
+        height: 30px;
+    }
+}
+.searchicon {
+    font-size: 20px;
+    margin: auto 0;
+    cursor: pointer;
+}
+.search-container {
+    margin-right: 30px;
+    display: flex;
+}
 .title {
     font-size: 25px;
     text-align: center;

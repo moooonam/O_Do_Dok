@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "../../styles/Teams.module.scss";
 import TeamCard from "../../components/Teams/TeamCard";
+import SearchedTeamCard from "../../components/Teams/SearchedTeamCard";
 import TextField from "@mui/material/TextField";
 import createstyles from "../../styles/Teams.module.scss";
 import { Api } from "../../Api";
@@ -12,7 +13,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-
 // radio
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -23,6 +23,10 @@ import FormLabel from "@mui/material/FormLabel";
 function TeamsMainPage() {
   const movePage = useNavigate();
   const [teamCreateModal, setTeamCreateModal] = React.useState(false);
+
+  const [searchKeyword, setSearchKeyword] = React.useState("")
+  const [isSearched, setIsSearched] = React.useState(false)
+  const [searchedTeamData, setSearchedTeamData] = React.useState([])
 
   const isLogin = useSelector((state) => state.user.isLogin);
   const myTeamId = useSelector((state) => state.user.myTeamId);
@@ -136,6 +140,21 @@ function TeamsMainPage() {
     teamGenre3: "",
   };
 
+  // 검색
+  const searchTeam = (() => {
+    if (searchKeyword) {
+
+      console.log(searchKeyword)
+      Api.get(`/teams/${searchKeyword}`)
+      .then((res) => {
+        console.log(res.data)
+        setSearchedTeamData(...searchedTeamData, res.data)
+        setIsSearched(true)
+      })
+    }
+  })
+
+
   // 모임 생성 axios
   const teamCreate = () => {
     const access_token = localStorage.getItem("access-token");
@@ -215,8 +234,14 @@ function TeamsMainPage() {
       <div className={styles.title}>모임 신청</div>
       <div className={styles["wrap-bar"]}>
         <div>필터</div>
-        <div className={styles["maketeam-btn"]} onClick={teamCreateModalOpen}>
+        <div className={styles["search-maketeam-container"]}>
+          <div className={styles["search-container"]}>
+            <input type="text" onChange={(e)=> {setSearchKeyword(e.target.value)}}/>
+            <div className={styles.searchicon} onClick={searchTeam}>🔍</div>
+          </div>
+          <div className={styles["maketeam-btn"]} onClick={teamCreateModalOpen}>
           모임생성
+          </div>
         </div>
         <Dialog
           open={teamCreateModal}
@@ -410,7 +435,7 @@ function TeamsMainPage() {
           </DialogActions>
         </Dialog>
       </div>
-      <TeamCard />
+      { isSearched ? <SearchedTeamCard teams={searchedTeamData}/> : <TeamCard />}
     </div>
   );
 }
