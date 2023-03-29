@@ -41,6 +41,9 @@ public class Book {
     @ColumnDefault("false")
     private boolean needCheck;
 
+    @ColumnDefault("0")
+    private double award;
+
     @Builder
     public Book(String bookTitle,String bookAuthor,String bookGenre,int bookPagecnt, boolean needCheck){
         this.bookTitle=bookTitle;
