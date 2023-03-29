@@ -57,15 +57,16 @@ public class BookServiceImpl implements BookService{
 
         // 추천된 책 리스트 -> books
         List<String> books = knn.knn(team);
-        System.out.println("books : "+books);
+        System.out.println("books : " + books);
 
         // Book객체 리스트로 보내줌
         List<Book> recomBookList = new ArrayList<Book>();
-        for(int i=0; i<books.size(); i++){
+        for (int i = 0; i < books.size(); i++) {
             recomBookList.add(bookRepository.findByBookTitle(books.get(i)));
         }
 
         return recomBookList;
+    }
 
     @Override
     public List<Book> listBestBooks() {
