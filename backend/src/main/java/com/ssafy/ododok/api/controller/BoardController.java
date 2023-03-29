@@ -32,6 +32,12 @@ public class BoardController {
         return ResponseEntity.status(200).body("게시글 작성 성공");
     }
 
+    @GetMapping("/details/{boardId}")
+    public ResponseEntity<?> getWritings(@PathVariable Long boardId){
+        Board board = boardService.getWriting(boardId);
+        return ResponseEntity.status(200).body(board);
+    }
+
     // 게시판 글 전체 조회
     @GetMapping()
     public ResponseEntity<?> getAllWritings(Authentication auth){
