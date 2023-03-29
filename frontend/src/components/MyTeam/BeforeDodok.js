@@ -16,18 +16,53 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
+//검색
+import { Api } from "../../Api";
+import BookSearchList from "./BookSearchList";
 function BeforeDodok() {
   const [form, setForm] = useState({
-    bookName: "",
+    bookTitle: "",
     author: "",
     genre: "",
     page: "",
-    searchWord: "",
+    endDate:"",
   });
+  // 책 검색
+  const [searchKeyword, setSearchKeyword] = useState("")
+  const [searchBookData, setSearchBookData] = useState([])
+  const hendelCallback = ((selectedBook) => {
+    // console.log('여기로옴 ', selectedBook)
+    setForm({...form,
+    bookTitle: selectedBook.bookTitle,
+    author: selectedBook.bookAuthor,
+    genre: selectedBook.bookGenre,
+    page: selectedBook.bookPagecnt
+  })
+  })
+  const searchBook = (()=> {
+    console.log(searchKeyword)
+    if (searchKeyword) {
+
+      Api.get(`/book/search/${searchKeyword}`)
+      .then((res) => {
+        console.log(res)
+        if (res.data !== '검색 결과가 없습니다.'){
+          setSearchBookData(res.data)
+        }
+        else {
+          alert('검색 결과가 없습니다!')
+        }
+      })
+    }
+    else {
+      alert('검색어를 입력해주세요')
+    }
+  })
+
 
   // 도독 시작일
-  const [startDate, setStartDate] = React.useState(dayjs());
-  const dateFormat1 = dayjs(startDate.$d).format("YYYY-MM-DD");
+  // const [startDate, setStartDate] = React.useState(dayjs());
+  // const dateFormat1 = dayjs(startDate.$d).format("YYYY-MM-DD");
 
   // 도독 종료일
   const [endDate, setEndDate] = React.useState(dayjs());
@@ -60,8 +95,12 @@ function BeforeDodok() {
   });
 
   const startDodok = () => {
-    console.log(dateFormat1)
-    console.log(dateFormat2)
+    const requestForm = {...form,
+    endDate: dateFormat2,
+    }
+    // console.log(dateFormat1)
+    // console.log(dateFormat2)
+    console.log(requestForm)
   }
 
   return (
@@ -89,9 +128,9 @@ function BeforeDodok() {
                 <p>도서</p>
                 <input
                   type="text"
-                  value={form.bookName}
+                  value={form.bookTitle}
                   onChange={(e) =>
-                    setForm({ ...form, bookName: e.target.value })
+                    setForm({ ...form, bookTitle: e.target.value })
                   }
                 />
               </div>
@@ -105,17 +144,17 @@ function BeforeDodok() {
                     }
                     autoWidth
                   >
-                    <MenuItem value={1}>추리</MenuItem>
-                    <MenuItem value={2}>판타지</MenuItem>
-                    <MenuItem value={3}>SF</MenuItem>
-                    <MenuItem value={4}>호러</MenuItem>
-                    <MenuItem value={5}>무협</MenuItem>
-                    <MenuItem value={6}>스릴러</MenuItem>
-                    <MenuItem value={7}>로맨스</MenuItem>
+                    <MenuItem value={'추리/미스터리'}>추리</MenuItem>
+                    <MenuItem value={'판타지'}>판타지</MenuItem>
+                    <MenuItem value={'SF'}>SF</MenuItem>
+                    <MenuItem value={'호러'}>호러</MenuItem>
+                    <MenuItem value={'무협'}>무협</MenuItem>
+                    <MenuItem value={'스릴러'}>스릴러</MenuItem>
+                    <MenuItem value={'로맨스'}>로맨스</MenuItem>
                   </Select>
                 </FormControl>
               </div>
-              <div className={dodokstyles["left-startdate"]}>
+              {/* <div className={dodokstyles["left-startdate"]}>
                 <p>시작</p>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
@@ -123,7 +162,7 @@ function BeforeDodok() {
                     onChange={(newValue) => setStartDate(newValue)}
                   />
                 </LocalizationProvider>
-              </div>
+              </div> */}
             </div>
             <div className={dodokstyles["content-right"]}>
               <div className={dodokstyles["right-author"]}>
@@ -163,14 +202,15 @@ function BeforeDodok() {
                 value={form.searchWord}
                 variant="standard"
                 onChange={(e) =>
-                  setForm({ ...form, searchWord: e.target.value })
+                  setSearchKeyword(e.target.value)
                 }
               />
-              <SearchIcon />
+              <SearchIcon onClick={searchBook}/>
             </div>
           </div>
           <hr />
         </div>
+        <BookSearchList searchBookData={searchBookData} parentCallback={hendelCallback}/>
       </div>
     </div>
   );

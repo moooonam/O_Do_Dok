@@ -5,8 +5,8 @@ import AfterDodok from "../../components/MyTeam/AfterDodok";
 function MyTeamDodokPage() {
   return (
     <div>
-      {/* <BeforeDodok/> */}
-      <AfterDodok/>
+      <BeforeDodok/>
+      {/* <AfterDodok/> */}
     </div>
   );
 }

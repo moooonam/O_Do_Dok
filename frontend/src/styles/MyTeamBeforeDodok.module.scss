@@ -148,3 +148,45 @@
     display: flex;
     margin-top: 30px;
 }
+
+.no-result {
+    margin-top: 30px;
+    text-align: center;
+}
+.book-container {
+    .wrap-img{
+        // justify-content: center;
+        text-align: center;
+        position: relative;
+    }
+    img {
+        width: 10vw;
+        aspect-ratio: 1.5/ 2;
+    }
+    :hover img {
+        cursor: pointer;
+        filter: brightness(60%);
+    } 
+    p {
+        text-align: center;
+    }
+}
+// .img-text{
+//     opacity: 0;
+//     position: absolute;
+//     top:50%;
+//     left:50%;
+// }
+
+.result-container {
+    margin: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 20px;
+    place-items: center;
+    margin-top: 20px;   
+    // cursor: pointer;
+    // display: flex;
+    // flex-wrap: wrap;
+    // border-color: red;
+}
