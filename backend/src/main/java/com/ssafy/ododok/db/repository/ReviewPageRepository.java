@@ -19,4 +19,5 @@ public interface ReviewPageRepository  extends JpaRepository<ReviewPage,Long> {
 
     ReviewPage findByReviewPageId(Long reviewPageId);
 
+    void deleteAllByUser(User user);
 }
