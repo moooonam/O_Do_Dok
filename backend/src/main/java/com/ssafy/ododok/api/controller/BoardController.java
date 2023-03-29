@@ -1,6 +1,7 @@
 package com.ssafy.ododok.api.controller;
 
 import com.ssafy.ododok.api.request.BoardCreatePostReq;
+import com.ssafy.ododok.api.request.CommentCreatePostReq;
 import com.ssafy.ododok.api.service.BoardService;
 import com.ssafy.ododok.common.auth.PrincipalDetails;
 import com.ssafy.ododok.db.model.Board;
@@ -32,6 +33,7 @@ public class BoardController {
         return ResponseEntity.status(200).body("게시글 작성 성공");
     }
 
+    // 게시글 상세보기
     @GetMapping("/details/{boardId}")
     public ResponseEntity<?> getWritings(@PathVariable Long boardId){
         Board board = boardService.getWriting(boardId);
@@ -81,6 +83,34 @@ public class BoardController {
         PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
         User user = principal.getUser();
         String res = boardService.deleteWriting(boardId, user);
+        return ResponseEntity.status(200).body(res);
+    }
+
+    // 게시판 답글 생성
+    @PostMapping("/comment")
+    public ResponseEntity<?> createComment(@RequestBody CommentCreatePostReq commentCreatePostReq, Authentication auth){
+        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
+        User user = principal.getUser();
+        boardService.createComment(commentCreatePostReq, user);
+        return ResponseEntity.status(200).body("답글 작성 성공");
+    }
+
+    // 게시판 답글 수정
+    @PutMapping("/comment")
+    public ResponseEntity<?> modifyComment(@RequestBody CommentCreatePostReq commentCreatePostReq,
+                                           Authentication auth){
+        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
+        User user = principal.getUser();
+        String res = boardService.modifyComment(commentCreatePostReq, user);
+        return ResponseEntity.status(200).body(res);
+    }
+
+    // 게시판 답글 삭제
+    @DeleteMapping("/comment/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId, Authentication auth){
+        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
+        User user = principal.getUser();
+        String res = boardService.deleteComment(commentId, user);
         return ResponseEntity.status(200).body(res);
     }
 }

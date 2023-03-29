@@ -1,13 +1,13 @@
 package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.request.BoardCreatePostReq;
-import com.ssafy.ododok.db.model.Board;
-import com.ssafy.ododok.db.model.Team;
-import com.ssafy.ododok.db.model.TeamUser;
-import com.ssafy.ododok.db.model.User;
+import com.ssafy.ododok.api.request.CommentCreatePostReq;
+import com.ssafy.ododok.db.model.*;
 import com.ssafy.ododok.db.repository.BoardRepository;
+import com.ssafy.ododok.db.repository.CommentRepository;
 import com.ssafy.ododok.db.repository.TeamUserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,10 +19,12 @@ import static com.ssafy.ododok.db.model.BoardType.notice;
 public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
     private final TeamUserRepository teamUserRepository;
+    private final CommentRepository commentRepository;
 
-    public BoardServiceImpl(BoardRepository boardRepository, TeamUserRepository teamUserRepository) {
+    public BoardServiceImpl(BoardRepository boardRepository, TeamUserRepository teamUserRepository, CommentRepository commentRepository) {
         this.boardRepository = boardRepository;
         this.teamUserRepository = teamUserRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -79,11 +81,15 @@ public class BoardServiceImpl implements BoardService{
         }
     }
 
+    @Transactional
     @Override
     public String deleteWriting(Long boardId, User user) {
         Board board = boardRepository.findById(boardId).get();
 
         if(board.getUser().getUserId() == user.getUserId()){
+            System.out.println("1");
+            commentRepository.deleteAllByBoard_BoardId(boardId);
+            System.out.println("2");
             boardRepository.deleteById(boardId);
             return "삭제 성공";
         } else {
@@ -96,4 +102,44 @@ public class BoardServiceImpl implements BoardService{
         Board board = boardRepository.findById(boardId).get();
         return board;
     }
+
+    @Override
+    public void createComment(CommentCreatePostReq commentCreatePostReq, User user) {
+        Board board = boardRepository.findByBoardId(commentCreatePostReq.getBoardId());
+        Comment comment = Comment.builder()
+                .board(board)
+                .user(user)
+                .commentContent(commentCreatePostReq.getComment())
+                .commentDate(LocalDate.now())
+                .build();
+        commentRepository.save(comment);
+    }
+
+    @Override
+    public String modifyComment(CommentCreatePostReq commentCreatePostReq, User user) {
+
+        Comment comment = commentRepository.findById(commentCreatePostReq.getBoardId()).get();
+
+        if(comment.getUser().getUserId() == user.getUserId()){
+            comment.changeComment(commentCreatePostReq.getComment());
+            commentRepository.save(comment);
+            return "수정 되었습니다.";
+        } else {
+            return "권한이 없습니다.";
+        }
+    }
+
+    @Override
+    public String deleteComment(Long commentId, User user) {
+        Comment comment = commentRepository.findById(commentId).get();
+
+        if(comment.getUser().getUserId() == user.getUserId()){
+            commentRepository.deleteById(commentId);
+            return "삭제 성공";
+        } else {
+            return "권한 없음";
+        }
+    }
+
+
 }
