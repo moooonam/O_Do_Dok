@@ -88,9 +88,7 @@ public class BoardServiceImpl implements BoardService{
         Board board = boardRepository.findById(boardId).get();
 
         if(board.getUser().getUserId() == user.getUserId()){
-            System.out.println("1");
             commentRepository.deleteAllByBoard_BoardId(boardId);
-            System.out.println("2");
             boardRepository.deleteById(boardId);
             return "삭제 성공";
         } else {
@@ -135,6 +133,7 @@ public class BoardServiceImpl implements BoardService{
         }
     }
 
+    @Transactional
     @Override
     public String deleteComment(Long commentId, User user) {
         Comment comment = commentRepository.findById(commentId).get();

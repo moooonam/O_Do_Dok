@@ -3,16 +3,14 @@ package com.ssafy.ododok.api.service;
 import com.ssafy.ododok.api.dto.UserDto;
 import com.ssafy.ododok.api.request.UserModifyPostReq;
 import com.ssafy.ododok.api.request.UserRegisterPostReq;
-import com.ssafy.ododok.db.model.Team;
-import com.ssafy.ododok.db.model.TeamUser;
-import com.ssafy.ododok.db.model.User;
-import com.ssafy.ododok.db.model.UserSurvey;
-import com.ssafy.ododok.db.repository.TeamUserRepository;
-import com.ssafy.ododok.db.repository.UserRepository;
-import com.ssafy.ododok.db.repository.UserSurveyRepository;
+import com.ssafy.ododok.db.model.*;
+import com.ssafy.ododok.db.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -21,16 +19,28 @@ public class UserServiceImpl implements UserService{
     private final UserSurveyRepository userSurveyRepository;
     private final PasswordEncoder passwordEncoder;
     private final TeamUserRepository teamUserRepository;
+    private final TeamService teamService;
+    private final CommentRepository commentRepository;
+    private final BoardRepository boardRepository;
+    private final BoardService boardService;
+    private final ReviewPageRepository reviewPageRepository;
+    private final ReviewEndRepository reviewEndRepository;
 
     @Autowired
     UserServiceImpl(UserRepository userRepository,
                     UserSurveyRepository userSurveyRepository,
                     PasswordEncoder passwordEncoder,
-                    TeamUserRepository teamUserRepository){
+                    TeamUserRepository teamUserRepository, TeamService teamService, CommentRepository commentRepository, BoardRepository boardRepository, BoardService boardService, ReviewPageRepository reviewPageRepository, ReviewEndRepository reviewEndRepository){
         this.userRepository = userRepository;
         this.userSurveyRepository = userSurveyRepository;
         this.passwordEncoder = passwordEncoder;
         this.teamUserRepository = teamUserRepository;
+        this.teamService = teamService;
+        this.commentRepository = commentRepository;
+        this.boardRepository = boardRepository;
+        this.boardService = boardService;
+        this.reviewPageRepository = reviewPageRepository;
+        this.reviewEndRepository = reviewEndRepository;
     }
 
     @Override
@@ -157,11 +167,25 @@ public class UserServiceImpl implements UserService{
         return 1;
     }
 
+    @Transactional
     @Override
     public boolean deleteUser(User user) {
         UserSurvey userSurvey = userSurveyRepository.findByUser(user);
         // 관련된 정보들 모두 삭제 (리뷰, 모임 등등)
          try{
+             // 팀에서 탈퇴처리
+             teamService.deleteMember(user.getUserId());
+             // 유저가 쓴 comment, 게시글, 책갈피, 총평 삭제
+             commentRepository.deleteAllByUser(user);
+
+             List<Board> list = boardRepository.findAllByUser(user);
+             for(Board board : list){
+                 boardService.deleteWriting(board.getBoardId(), user);
+             }
+
+             reviewPageRepository.deleteAllByUser(user);
+             reviewEndRepository.deleteAllByUser(user);
+
              userSurveyRepository.delete(userSurvey);
              userRepository.delete(user);
             return true;
