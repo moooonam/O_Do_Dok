@@ -71,61 +71,57 @@ public class KNN {
 
         System.out.println("나이? : " + age);
 
-        Point testPoint = new Point(numList.get(0),age, null);
-        int K = 50;
-        Point testPoint1 = new Point(numList.get(1),age, null);
+        Point testPoint1 = new Point(numList.get(0),age, null);
         int K1 = 50;
-        Point testPoint2 = new Point(numList.get(2),age, null);
+        Point testPoint2 = new Point(numList.get(1),age, null);
         int K2 = 50;
+        Point testPoint3 = new Point(numList.get(2),age, null);
+        int K3 = 50;
 
-        List<Point> neighbors = findNearestNeighbors(dataset, testPoint, K);
         List<Point> neighbors1 = findNearestNeighbors(dataset, testPoint1, K1);
         List<Point> neighbors2 = findNearestNeighbors(dataset, testPoint2, K2);
+        List<Point> neighbors3 = findNearestNeighbors(dataset, testPoint3, K3);
 
-
-        List<String> majorityClasses = Collections.singletonList(getMajoriyClass(neighbors));
         List<String> majorityClasses1 = Collections.singletonList(getMajoriyClass(neighbors1));
         List<String> majorityClasses2 = Collections.singletonList(getMajoriyClass(neighbors2));
+        List<String> majorityClasses3 = Collections.singletonList(getMajoriyClass(neighbors3));
 
-        List<String> maj = new ArrayList<String>(majorityClasses);
         List<String> maj1 = new ArrayList<String>(majorityClasses1);
         List<String> maj2 = new ArrayList<String>(majorityClasses2);
+        List<String> maj3 = new ArrayList<String>(majorityClasses3);
 
-        List<String> index1 = Arrays.asList(maj.toString());
-        String[] booknamesArray = index1.get(0).split(", ");
-        List<String> booknames = new ArrayList<>(Arrays.asList(booknamesArray));
+        List<String> index1 = Arrays.asList(maj1.toString());
+        String[] booknamesArray1 = index1.get(0).split(", ");
+        List<String> booknames1 = new ArrayList<>(Arrays.asList(booknamesArray1));
 
-        List<String> index2 = Arrays.asList(maj1.toString());
+        List<String> index2 = Arrays.asList(maj2.toString());
         String[] booknamesArray2 = index2.get(0).split(", ");
         List<String> booknames2 = new ArrayList<>(Arrays.asList(booknamesArray2));
 
-        List<String> index3 = Arrays.asList(maj2.toString());
-        String[] booknamesArray3 = index2.get(0).split(", ");
+        List<String> index3 = Arrays.asList(maj3.toString());
+        String[] booknamesArray3 = index3.get(0).split(", ");
         List<String> booknames3 = new ArrayList<>(Arrays.asList(booknamesArray3));
 
-        List<String> ans = new ArrayList<String>();
         List<String> ans1 = new ArrayList<String>();
         List<String> ans2 = new ArrayList<String>();
+        List<String> ans3 = new ArrayList<String>();
 
         Random random = new Random();
-        for(int i = 0 ; i < 3 ; i++) {
-            String randomString = booknames.remove(random.nextInt(booknames.size()));
-            ans.add(randomString);
-        }
 
         for(int i = 0 ; i < 3 ; i++) {
-            String randomString = booknames2.remove(random.nextInt(booknames2.size()));
-            ans1.add(randomString);
+            if(booknames1.size() > 0) {
+                String randomString1 = booknames1.remove(random.nextInt(booknames1.size()));
+                ans1.add(randomString1);
+            }
+            if(booknames2.size() > 0) {
+                String randomString2 = booknames2.remove(random.nextInt(booknames2.size()));
+                ans2.add(randomString2);
+            }
+            if(booknames3.size() > 0) {
+                String randomString3 = booknames3.remove(random.nextInt(booknames3.size()));
+                ans3.add(randomString3);
+            }
         }
-
-        for(int i = 0 ; i < 3 ; i++) {
-            String randomString = booknames3.remove(random.nextInt(booknames3.size()));
-            ans2.add(randomString);
-        }
-
-        String listString = ans.toString();
-        listString = listString.replace("[","").replace("]","");
-        List<String> S = Arrays.asList(listString.split(", "));
 
         String listString1 = ans1.toString();
         listString1 = listString1.replace("[","").replace("]","");
@@ -135,18 +131,19 @@ public class KNN {
         listString2 = listString2.replace("[","").replace("]","");
         List<String> S2 = Arrays.asList(listString2.split(", "));
 
-//        System.out.println(listString);
-//        System.out.println(listString1);
-//        System.out.println(listString2);
+        String listString3 = ans3.toString();
+        listString3 = listString3.replace("[","").replace("]","");
+        List<String> S3 = Arrays.asList(listString3.split(", "));
+
         System.out.println("--------");
-        System.out.println(S);
         System.out.println(S1);
         System.out.println(S2);
+        System.out.println(S3);
 
         List<String> booklist = new ArrayList<>();
-        booklist.addAll(S);
         booklist.addAll(S1);
         booklist.addAll(S2);
+        booklist.addAll(S3);
 
         return booklist;
     }
