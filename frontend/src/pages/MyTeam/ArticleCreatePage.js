@@ -16,12 +16,12 @@ import MenuItem from "@mui/material/MenuItem";
 
 function ArticleCreatePage() {
   const movePage = useNavigate();
+  const myTeamId = useSelector((state) => state.user.myTeamId)
   function goMyTeamArticle() {
-    movePage("/myteam/:teamId/article");
+    movePage(`/myteam/${myTeamId}/article`);
   }
 
   const userName = useSelector((state) => state.user.userNickname)
-  const userId = useSelector((state) => state.user.userId)
 
   const [menu, setMenu] = useState({
     choice : "분류",
@@ -58,10 +58,12 @@ function ArticleCreatePage() {
     title : "",
     content: "",
   }
+
+  const myRole = useSelector((state) => state.user.myRole);
   const createArticle = () => {
+    console.log(myRole)
     article.title = form.title
     article.content = form.context
-    article.user = userId
     if (menu.choice === '공지') {
       article.boardType = "notice"
     } else if (menu.choice === '자유') {
@@ -70,13 +72,18 @@ function ArticleCreatePage() {
 
     if (menu.choice === '분류') {
       alert('게시글의 분류를 선택해주세요')
+    } else if (myRole === 'USER' ) {
+      alert('일반 유저는 공지를 작성할 수 없습니다. 자유 게시글로 전환해주세요!')
     } else { 
       if (article.title && article.content) {
-        Api.post('/board', article)
+        Api.post('/board', article, {headers: {
+          "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+          "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+        }})
         .then((res) => {
           console.log(res)
           alert('게시글 작성이 완료되었습니다.')
-          movePage('/board')
+          movePage(`/myteam/${myTeamId}/article`)
         })
         .catch((err) => {
           console.log(err)

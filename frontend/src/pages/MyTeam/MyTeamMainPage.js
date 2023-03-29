@@ -3,8 +3,12 @@ import SideBar from "../../components/SideBar";
 import sidestyles from "../../styles/Sidebar.module.scss";
 import mainstyles from "../../styles/MyTeamMain.module.scss";
 import { Api } from "../../Api";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function MyTeamMainPage() {
+  const movePage = useNavigate();
+  const myTeamId = useSelector((state) => state.user.myTeamId)
   const access_token = localStorage.getItem("access-token");
   const refresh_token = localStorage.getItem("refresh-token");
 
@@ -24,6 +28,10 @@ function MyTeamMainPage() {
     teamRecruitText: "",
     ongoingDodok: false,
   });
+
+  const [teamNotice, setTeamNotice] = useState({
+    notice: "",
+  })
 
   useEffect(() => {
     Api.get("/user/myTeam", {
@@ -55,26 +63,48 @@ function MyTeamMainPage() {
       .catch((err) => {
         console.log(err);
       });
+      Api.get("/board/notice", {
+        headers: {
+          "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+          "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+        },
+      })
+        .then((res) => {
+          console.log("공지글 불러오기 완료----------");
+          const cnt = res.data.length
+          console.log(cnt)
+          console.log(res.data[cnt-1]);
+          setTeamNotice({
+            ...teamNotice,
+            notice: res.data[cnt-1]
+          })
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const goNotice = () => {
+    movePage(`/myteam/${myTeamId}/article/${teamNotice.notice.boardId}`)
+  }
 
   return (
     <div className={sidestyles["myteam-container"]}>
       <SideBar location={"main"} />
       <div className={sidestyles.others}>
         <div className={mainstyles["myteam-content-box"]}>
-          <h4>
-            공지 | 다음 도독 시작 예정일을 정하기 위한 게시판입니다 다들 댓글
-            달아주세요!
+          <h4 onClick={() => {goNotice()}}>
+            공지 | {teamNotice.notice.boardTitle}
           </h4>
           <img
             src={teamDetail.teamImage}
             alt=""
             className={mainstyles["teamImg"]}
           />
-          <h1>
+          <h2>
             <b>{teamDetail.teamName}</b>
-          </h1>
+          </h2>
           <div className={mainstyles["secondBox"]}>
             <div className={mainstyles["infoBox"]}>
               <div className={mainstyles["myteam-title"]}>
@@ -119,7 +149,7 @@ function MyTeamMainPage() {
           </div>
           <div className={mainstyles["thirdBox"]}>
             <div className={mainstyles["myteam-newuserBox"]}>
-              <h2>신규 가입 인사</h2>
+              <h3>신규 가입 인사</h3>
               <div className={mainstyles["myteam-newuser"]}>
                 <div className={mainstyles["myteam-newuser-content"]}>
                   <p>신규 가입자의 인사말이 들어갈 자리입니다</p>
@@ -134,7 +164,7 @@ function MyTeamMainPage() {
               </div>
             </div>
             <div className={mainstyles["myteam-dodokBox"]}>
-              <h2>진행중인 도독</h2>
+              <h3>진행중인 도독</h3>
               <div>
                 { teamDetail.ongoingDodok === false
                 ? <h3 className={mainstyles["myteam-nododok"]}>진행중인 도독이 없습니다!</h3>

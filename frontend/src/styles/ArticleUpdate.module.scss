@@ -8,13 +8,17 @@
     margin-top: 25px;
 }
 
+.go-back {
+    cursor: pointer;
+}
+
 .article-header {
     display: flex;
     // border-bottom : 1px solid black;
 
-    h4{
-        width: 5%;
-        margin-top: 15px;
+    h3{
+        width: 6%;
+        margin-top: 10px;
     }
 
     .dropdown {
