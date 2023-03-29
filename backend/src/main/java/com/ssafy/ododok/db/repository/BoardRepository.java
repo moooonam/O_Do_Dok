@@ -13,4 +13,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     List<Board> findAllByTeamAndBoardType(Team team, BoardType type);
     List<Board> findAllByTeam(Team team);
+    Board findByBoardId(Long BoardId);
 }

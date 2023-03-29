@@ -1,6 +1,7 @@
 package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.request.BoardCreatePostReq;
+import com.ssafy.ododok.api.request.CommentCreatePostReq;
 import com.ssafy.ododok.db.model.Board;
 import com.ssafy.ododok.db.model.User;
 
@@ -20,4 +21,10 @@ public interface BoardService {
     String deleteWriting(Long boardId, User user);
 
     Board getWriting(Long boardId);
+
+    void createComment(CommentCreatePostReq commentCreatePostReq, User user);
+
+    String modifyComment(CommentCreatePostReq commentCreatePostReq, User user);
+
+    String deleteComment(Long commentId, User user);
 }
