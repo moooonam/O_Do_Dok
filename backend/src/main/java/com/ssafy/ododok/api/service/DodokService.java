@@ -21,4 +21,6 @@ public interface DodokService {
     String updateDodokClose(User user, Long dodokId);
 
     List<Dodok> searchDodoks(String keyword);
+
+    Dodok nowDodok(User user);
 }
