@@ -15,4 +15,6 @@ public interface DodokRepository extends JpaRepository<Dodok,Long> {
     Optional<List<Dodok>> findAllByTeamAndDodokCompleteAndDodokOpen(Team team, Boolean dodokComplete, Boolean dodokOpen);
     Optional<List<Dodok>> findAllByBook(Book Book);
 
+    List<Dodok> findAllByTeam_TeamId(Long teamId);
+
 }

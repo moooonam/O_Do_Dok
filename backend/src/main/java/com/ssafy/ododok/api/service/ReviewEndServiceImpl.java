@@ -5,6 +5,7 @@ import com.ssafy.ododok.api.request.EndReviewModifyPutReq;
 import com.ssafy.ododok.db.model.*;
 import com.ssafy.ododok.db.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -96,6 +97,7 @@ public class ReviewEndServiceImpl implements ReviewEndService {
     }
 
     // 총 리뷰 삭제
+    @Transactional
     @Override
     public boolean deleteEndReview(Long endReviewId, User user) {
         ReviewEnd reviewEnd = reviewEndRepository.findById(endReviewId).get();

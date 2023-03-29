@@ -2,13 +2,10 @@ package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.request.TeamCreatePostReq;
 import com.ssafy.ododok.api.request.TeamModifyPatchReq;
-import com.ssafy.ododok.db.model.Role;
-import com.ssafy.ododok.db.model.Team;
-import com.ssafy.ododok.db.model.TeamUser;
-import com.ssafy.ododok.db.model.User;
-import com.ssafy.ododok.db.repository.TeamRepository;
-import com.ssafy.ododok.db.repository.TeamUserRepository;
+import com.ssafy.ododok.db.model.*;
+import com.ssafy.ododok.db.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,10 +20,23 @@ public class TeamServiceImpl implements TeamService{
 
     private final TeamRepository teamRepository;
     private final TeamUserRepository teamUserRepository;
+    private final DodokRepository dodokRepository;
+    private final ReviewPageRepository reviewPageRepository;
+    private final ReviewEndRepository reviewEndRepository;
+    private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
+    private final BoardRepository boardRepository;
 
-    public TeamServiceImpl(TeamRepository teamRepository, TeamUserRepository teamUserRepository) {
+    public TeamServiceImpl(TeamRepository teamRepository, TeamUserRepository teamUserRepository,
+                           DodokRepository dodokRepository, ReviewPageRepository reviewPageRepository, ReviewEndRepository reviewEndRepository, UserRepository userRepository, CommentRepository commentRepository, BoardRepository boardRepository) {
         this.teamRepository = teamRepository;
         this.teamUserRepository = teamUserRepository;
+        this.dodokRepository = dodokRepository;
+        this.reviewPageRepository = reviewPageRepository;
+        this.reviewEndRepository = reviewEndRepository;
+        this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
+        this.boardRepository = boardRepository;
     }
 
     // 팀 생성
@@ -81,11 +91,47 @@ public class TeamServiceImpl implements TeamService{
         return teamRepository.save(team);
     }
 
+
     // 팀 삭제
+    @Transactional
     @Override
     public void deleteTeam(Long teamId) {
+        // 도독이 삭제되어야 함
+        // 도독이 삭제되려면 페이지별 리뷰 책별 리뷰 다 삭제되어야 함
+        List<Dodok> dodokList = dodokRepository.findAllByTeam_TeamId(teamId);
+        for(Dodok dodok : dodokList){
+
+            // 페이지별 리뷰, 총평 삭제
+            List<ReviewPage> pageReviewList =reviewPageRepository.findAllByDodok(dodok);
+            for(ReviewPage reviewPage: pageReviewList){
+                User user = reviewPage.getUser();
+                user.changeReviewcnt(user.getUserReviewcnt()-1);
+                userRepository.save(user);
+            }
+
+            List<ReviewEnd> endReviewList =reviewEndRepository.findAllByDodok(dodok);
+            for(ReviewEnd reviewEnd : endReviewList){
+                User user = reviewEnd.getUser();
+                user.changeReviewcnt(user.getUserReviewcnt()-1);
+                userRepository.save(user);
+            }
+            reviewPageRepository.deleteAllByDodok(dodok);
+            reviewEndRepository.deleteAllByDodok(dodok);
+
+            //도독 삭제 추가해야함.
+            dodokRepository.delete(dodok);
+        }
+
+        List<Board> list_board = boardRepository.findAllByTeam_TeamId(teamId);
+        for(Board board : list_board){
+            commentRepository.deleteAllByBoard_BoardId(board.getBoardId());
+        }
+        Team team = teamRepository.findByTeamId(teamId).get();
+        boardRepository.deleteAllByTeam(team);
+
         // teamUser 먼저 삭제
         teamUserRepository.deleteByTeam_TeamId(teamId);
+        // team
         // team 삭제
         teamRepository.deleteById(teamId);
     }
@@ -140,6 +186,7 @@ public class TeamServiceImpl implements TeamService{
     }
 
     // 모임의 구성원 삭제
+    @Transactional
     @Override
     public void deleteMember(Long userId) {
         // 인원 감소시킬 팀 테이블 찾기
