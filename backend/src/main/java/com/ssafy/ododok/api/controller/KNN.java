@@ -19,6 +19,7 @@ import java.util.*;
 public class KNN {
 
     public void knn() {
+        // csv颇老阑 佬绢 dataset府胶飘 积己 / 备己夸家 -> [林力, 楷飞, 氓 力格]
         List<Point> dataset = readCSVFile("Book_dataset.csv");
 
         Point testPoint = new Point(2,20, null);
