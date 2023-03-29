@@ -107,6 +107,32 @@ function ArticleDetailPage() {
     );
   });
 
+  // 댓글 axios 보낼 데이터
+  const data = {
+    comment: "",
+    boardId: localStorage.getItem("articleId")
+  }
+
+  //댓글
+  const createComment = () => {
+    data.comment = form.comment
+
+    if (data.comment) {
+      Api.post('/board/comment', data, {headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      }} )
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    } else {
+      alert('댓글을 입력해주세요.')
+    }
+  }
+
   return (
     <div className={sidestyles["myteam-container"]}>
       <SideBar location={"article"} />
@@ -151,7 +177,7 @@ function ArticleDetailPage() {
                 fullWidth
                 onChange={(e) => setForm({ ...form, comment: e.target.value })}
               />
-              <AddIcon />
+              <AddIcon onClick={() => {createComment()}}/>
             </div>
             {renderComment}
           </div>
