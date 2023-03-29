@@ -11,5 +11,6 @@ public interface BookService {
     List<Book> listBooks();
     List<Book> searchBooks(String keyword);
 
+    List<Book> listBestBooks();
 }
 

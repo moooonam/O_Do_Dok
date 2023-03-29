@@ -40,5 +40,11 @@ public class BookServiceImpl implements BookService{
         return searchResult;
     }
 
+    @Override
+    public List<Book> listBestBooks() {
+        List<Book> list = bookRepository.findTop20ByOrderByAwardDesc();
+        return list;
+    }
+
 
 }

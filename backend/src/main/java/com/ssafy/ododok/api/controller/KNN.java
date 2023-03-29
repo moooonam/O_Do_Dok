@@ -19,7 +19,7 @@ import java.util.*;
 public class KNN {
 
     public void knn() {
-        // csvÆÄÀÏÀ» ÀÐ¾î dataset¸®½ºÆ® »ý¼º / ±¸¼º¿ä¼Ò -> [ÁÖÁ¦, ¿¬·É, Ã¥ Á¦¸ñ]
+        // csvï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ datasetï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ / ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ -> [ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½, Ã¥ ï¿½ï¿½ï¿½ï¿½]
         List<Point> dataset = readCSVFile("Book_dataset.csv");
 
         Point testPoint = new Point(2,20, null);
