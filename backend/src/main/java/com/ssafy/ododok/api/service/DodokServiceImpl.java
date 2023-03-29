@@ -259,6 +259,19 @@ public class DodokServiceImpl implements DodokService {
         return dodokResult;
     }
 
+    @Override
+    public Dodok nowDodok(User user) {
+        try{
+            TeamUser teamUser = teamUserRepository.findByUser(user);
+            Team team = teamUser.getTeam();
+            Dodok dodok = dodokRepository.findByTeamAndDodokComplete(team, false).get();
+            return dodok;
+        } catch (Exception e){
+            return null;
+        }
+
+    }
+
     // 도독이 종료되었을 때 장르 평점 추가하기
     public void updateGenre(Dodok dodok){
         List<ReviewEnd> list = reviewEndRepository.findAllByDodok(dodok);
