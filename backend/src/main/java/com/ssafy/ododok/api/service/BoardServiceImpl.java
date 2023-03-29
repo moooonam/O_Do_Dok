@@ -2,6 +2,7 @@ package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.request.BoardCreatePostReq;
 import com.ssafy.ododok.api.request.CommentCreatePostReq;
+import com.ssafy.ododok.api.response.BoardRes;
 import com.ssafy.ododok.db.model.*;
 import com.ssafy.ododok.db.repository.BoardRepository;
 import com.ssafy.ododok.db.repository.CommentRepository;
@@ -98,9 +99,14 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public Board getWriting(Long boardId) {
+    public BoardRes getWriting(Long boardId) {
         Board board = boardRepository.findById(boardId).get();
-        return board;
+        List<Comment> comments = commentRepository.findAllByBoard_BoardId(boardId);
+        BoardRes boardRes = BoardRes.builder()
+                .board(board)
+                .comments(comments)
+                .build();
+        return boardRes;
     }
 
     @Override

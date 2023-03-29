@@ -2,6 +2,7 @@ package com.ssafy.ododok.api.controller;
 
 import com.ssafy.ododok.api.request.BoardCreatePostReq;
 import com.ssafy.ododok.api.request.CommentCreatePostReq;
+import com.ssafy.ododok.api.response.BoardRes;
 import com.ssafy.ododok.api.service.BoardService;
 import com.ssafy.ododok.common.auth.PrincipalDetails;
 import com.ssafy.ododok.db.model.Board;
@@ -36,8 +37,8 @@ public class BoardController {
     // 게시글 상세보기
     @GetMapping("/details/{boardId}")
     public ResponseEntity<?> getWritings(@PathVariable Long boardId){
-        Board board = boardService.getWriting(boardId);
-        return ResponseEntity.status(200).body(board);
+        BoardRes boardRes = boardService.getWriting(boardId);
+        return ResponseEntity.status(200).body(boardRes);
     }
 
     // 게시판 글 전체 조회

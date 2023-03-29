@@ -78,7 +78,6 @@ public class ApplyServiceImpl implements ApplyService {
         return list;
     }
 
-    // ??????? ???????? ???
     @Override
     public void addMember(Long applyId) {
         Apply apply = applyRepository.findById(applyId).get();
@@ -94,12 +93,10 @@ public class ApplyServiceImpl implements ApplyService {
 
         teamUserRepository.save(teamUser);
 
-        // ÆÀ¿ø Ãß°¡ +1
         Team updateTeam = teamRepository.findByTeamId(team.getTeamId()).get();
         updateTeam.setTeamMemberCnt(updateTeam.getTeamMemberCnt()+1);
         teamRepository.save(updateTeam);
 
-        // ÆÀ¿ø Æò±Õ ³ªÀÌ °»½Å
         double x = team.getTeamAge();
         System.out.println("x ? : "+x);
         double y = team.getTeamMemberCnt()-1;
