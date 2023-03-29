@@ -95,7 +95,7 @@ function MyTeamMainPage() {
       <div className={sidestyles.others}>
         <div className={mainstyles["myteam-content-box"]}>
           <h4 onClick={() => {goNotice()}}>
-            공지 | {teamNotice.notice.boardTitle}
+            {/* 공지 | {teamNotice.notice.boardTitle} */}
           </h4>
           <img
             src={teamDetail.teamImage}
