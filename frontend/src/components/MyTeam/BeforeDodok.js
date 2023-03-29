@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SideBar from "../../components/SideBar";
 import sidestyles from "../../styles/Sidebar.module.scss";
 import dodokstyles from "../../styles/MyTeamBeforeDodok.module.scss";
@@ -19,7 +19,31 @@ import Select from "@mui/material/Select";
 //검색
 import { Api } from "../../Api";
 import BookSearchList from "./BookSearchList";
+
 function BeforeDodok() {
+  const myTeamId = localStorage.getItem('myTeamId')
+  const [teamName, setTeamName] = useState('')
+  const [recommandBook, setRecommandBook] = useState([])
+  useEffect(()=> {
+    Api.get("/user/myTeam", {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+    .then((res) => {
+      setTeamName(res.data.teamName)
+      console.log('여기저기', res)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+    Api.get(`book/recommend/${myTeamId}`)
+    .then((res) => {
+      console.log('모임추천도서', res)
+    })
+  }
+  ,[])
   const [form, setForm] = useState({
     bookTitle: "",
     author: "",
@@ -98,40 +122,38 @@ function BeforeDodok() {
     const requestForm = {...form,
     endDate: dateFormat2,
     }
-    Api.get('/dodok/nowdodoks', {
+    Api.post('/dodok/start', requestForm, {
       headers: {
-            "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
-            "access-token": `Bearer ${localStorage.getItem("access-token")}`,
-          },
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
     })
     .then((res) => {
-      console.log('조회성공', res)
+      console.log('도독시작', res)
+      alert('도독을 시작합니다!')
+      window.location.reload()
     })
-    // Api.post('/dodok/start', requestForm, {
-    //   headers: {
-    //     "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
-    //     "access-token": `Bearer ${localStorage.getItem("access-token")}`,
-    //   },
-    // })
-    // .then((res) => {
-    //   console.log('도독시작', res)
-    // })
-    // console.log(dateFormat1)
-    // console.log(dateFormat2)
-    console.log(requestForm)
+    .catch((err) => {
+      console.log(err)
+    })
+   
   }
-
+  const handleKeyPress = e => {
+    if(e.key === 'Enter') {
+      searchBook()
+    }
+  }
   return (
     <div className={sidestyles["myteam-container"]}>
       <SideBar location={"dodok"}/>
       <div className={sidestyles.others}>
         <div className={dodokstyles["firstBox"]}>
-          <h2>개미들을 위한 추천 도서</h2>
+          <h2>'{teamName}' 모임을 위한 추천 도서</h2>
           <div className={dodokstyles["myteam-wrap-bookimg"]}>
             {renderTeamRecomendBook}
           </div>
           <h3 className={dodokstyles["recommend-reason"]}>
-            개미들 모임의 78%가 추리소설을 좋아합니다
+          '{teamName}' 모임의 78%가 추리소설을 좋아합니다
           </h3>
         </div>
         <div className={dodokstyles["secondBox"]}>
@@ -219,11 +241,12 @@ function BeforeDodok() {
                 placeholder="도서명을 입력해주세요"
                 value={form.searchWord}
                 variant="standard"
+                onKeyPress={handleKeyPress}
                 onChange={(e) =>
                   setSearchKeyword(e.target.value)
                 }
               />
-              <SearchIcon onClick={searchBook}/>
+              <SearchIcon onClick={searchBook} className={dodokstyles.searchicon}/>
             </div>
           </div>
           <hr />
