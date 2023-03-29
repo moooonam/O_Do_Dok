@@ -90,4 +90,10 @@ public class BoardServiceImpl implements BoardService{
             return "권한 없음";
         }
     }
+
+    @Override
+    public Board getWriting(Long boardId) {
+        Board board = boardRepository.findById(boardId).get();
+        return board;
+    }
 }

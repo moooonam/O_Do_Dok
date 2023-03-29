@@ -18,4 +18,6 @@ public interface BoardService {
     String modifyWriting(Long boardId, BoardCreatePostReq boardCreatePostReq, User user);
 
     String deleteWriting(Long boardId, User user);
+
+    Board getWriting(Long boardId);
 }
