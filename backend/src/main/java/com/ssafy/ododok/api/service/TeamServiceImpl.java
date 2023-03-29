@@ -2,12 +2,10 @@ package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.request.TeamCreatePostReq;
 import com.ssafy.ododok.api.request.TeamModifyPatchReq;
-import com.ssafy.ododok.db.model.Role;
-import com.ssafy.ododok.db.model.Team;
-import com.ssafy.ododok.db.model.TeamUser;
-import com.ssafy.ododok.db.model.User;
+import com.ssafy.ododok.db.model.*;
 import com.ssafy.ododok.db.repository.TeamRepository;
 import com.ssafy.ododok.db.repository.TeamUserRepository;
+import com.ssafy.ododok.db.repository.UserSurveyRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,10 +21,12 @@ public class TeamServiceImpl implements TeamService{
 
     private final TeamRepository teamRepository;
     private final TeamUserRepository teamUserRepository;
+    private final UserSurveyRepository userSurveyRepository;
 
-    public TeamServiceImpl(TeamRepository teamRepository, TeamUserRepository teamUserRepository) {
+    public TeamServiceImpl(TeamRepository teamRepository, TeamUserRepository teamUserRepository, UserSurveyRepository userSurveyRepository) {
         this.teamRepository = teamRepository;
         this.teamUserRepository = teamUserRepository;
+        this.userSurveyRepository = userSurveyRepository;
     }
 
     // 팀 생성
@@ -39,6 +39,8 @@ public class TeamServiceImpl implements TeamService{
             return;
         }
 
+        UserSurvey userSurvey = userSurveyRepository.findByUser(user);
+
         Team team = Team.builder()
                 .teamName(teamCreatePostReq.getTeamName())
                 .teamMemberCntMax(teamCreatePostReq.getTeamMemberCntMax())
@@ -48,6 +50,7 @@ public class TeamServiceImpl implements TeamService{
                 .teamGenre2(teamCreatePostReq.getTeamGenre2())
                 .teamGenre3(teamCreatePostReq.getTeamGenre3())
                 .teamRecruit(true)
+                .teamAge(userSurvey.getUserAge())
                 .build();
         teamRepository.save(team);
 
@@ -144,6 +147,7 @@ public class TeamServiceImpl implements TeamService{
     public void deleteMember(Long userId) {
         // 인원 감소시킬 팀 테이블 찾기
         TeamUser teamUser = teamUserRepository.findTeamUserByUser_UserId(userId);
+        User user = teamUser.getUser();
         Team team = teamUser.getTeam();
 
         // 삭제되면 팀 인원 -1
@@ -154,6 +158,16 @@ public class TeamServiceImpl implements TeamService{
         teamUserRepository.deleteByUser_UserId(userId);
 
         // 테이블 업데이트
+        teamRepository.save(updateTeam);
+
+        // 팀원 평균 나이 갱신
+        double x = team.getTeamAge(); // 33.5
+        System.out.println("x : "+x);
+        double y = team.getTeamMemberCnt()+1; // 2
+        System.out.println("y : "+y);
+        double z = ((x * y) - (double) userSurveyRepository.findByUser(user).getUserAge()) / (y-1);
+        System.out.println("z : "+z);
+        updateTeam.setTeamAge(z);
         teamRepository.save(updateTeam);
     }
 

@@ -10,4 +10,6 @@ public interface BookRepository extends JpaRepository<Book,Long> {
     List<Book> findAll();
     List<Book> findAllByBookTitleContainingIgnoreCase(String bookTitle);
     Optional<Book> findByBookTitleAndBookAuthorAndBookPagecnt(String bookTitle, String bookAuthor,int bookPageCnt);
+
+    Book findByBookTitle(String s);
 }
