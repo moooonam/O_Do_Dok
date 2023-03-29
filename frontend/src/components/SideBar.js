@@ -6,6 +6,7 @@ import { getMyRole } from "../redux/slice/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 
 const SideBar = ({ location }) => {
+  const myTeamId = useSelector((state) => state.user.myTeamId)
   const dispatch = useDispatch();
   const [status, setStatus] = useState({
     main: false,
@@ -41,25 +42,25 @@ const SideBar = ({ location }) => {
   // console.log(myRole)
   const movePage = useNavigate();
   function goMyTeamMain() {
-    movePage("/myteam/:teamId/main");
+    movePage(`/myteam/${myTeamId}/main`);
   }
   function goMyTeamDodok() {
-    movePage("/myteam/:teamId/dodok");
+    movePage(`/myteam/${myTeamId}/dodok`);
   }
   function goMyTeamArticle() {
-    movePage("/myteam/:teamId/article");
+    movePage(`/myteam/${myTeamId}/article`);
   }
 
   function goMyTeamRecord() {
-    movePage("/myteam/:teamId/record");
+    movePage(`/myteam/${myTeamId}/record`);
   }
 
   function goMyTeamManage() {
-    movePage("/myteam/:teamId/manage");
+    movePage(`/myteam/${myTeamId}/manage`);
   }
 
   function goMyTeamMemberManage() {
-    movePage("/myteam/:teamId/membermanage");
+    movePage(`/myteam/${myTeamId}/membermanage`);
   }
 
   return (

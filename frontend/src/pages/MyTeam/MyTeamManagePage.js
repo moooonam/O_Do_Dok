@@ -259,15 +259,25 @@ function MyTeamManagePage() {
   // 모임 삭제
   const deleteTeam = () => {
     Api.delete(`/teams/${teamDetail.teamId}`)
-    .then((res) => {
-      console.log(res)
-      alert('모임이 삭제되었습니다.')
-      movePage('/')
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+      .then((res) => {
+        console.log(res);
+        alert("모임이 삭제되었습니다.");
+        movePage("/");
+        window.location.reload()
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  // 모임 이미지 수정
+  const [files, setFiles] = useState('')
+  const onLoadFile = (e) => {
+    const file = e.target.files;
+    console.log(file)
+    setFiles(file);
   }
+
 
   return (
     <div className={sidestyles["myteam-container"]}>
@@ -292,8 +302,17 @@ function MyTeamManagePage() {
                   <p>모임원 모집</p>
                 </div>
                 <div className={teamstyles["content-right"]}>
-                  <p>9명 / 15명</p>
-                  <p>비공개</p>
+                  <p>
+                    {teamDetail.teamMemberCnt}명 / {teamDetail.teamMemberCntMax}
+                    명
+                  </p>
+                  <p>
+                    {teamDetail.teamRecruit === true ? (
+                      <p>공개</p>
+                    ) : (
+                      <p>비공개</p>
+                    )}
+                  </p>
                 </div>
               </div>
               <div className={teamstyles["right-bottom-content"]}>
@@ -337,6 +356,23 @@ function MyTeamManagePage() {
             <DialogContent>
               <DialogContentText>
                 <FormControl>
+                  <div className={teamstyles["teamImg-box"]}>
+                    <p>모임 대표 이미지</p>
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      color="success"
+                    >
+                      Upload
+                      <input hidden accept="image/*" multiple type="file" onChange={onLoadFile}/>
+                    </Button>
+                  </div>
+                  <div className={teamstyles["teamImg-div"]}>
+                    <img src={teamDetail.teamImage} alt="" />
+                  </div>
+                  
+                  <br />
+                  <br />
                   <FormLabel id="demo-controlled-radio-buttons-group">
                     온/오프라인
                   </FormLabel>
@@ -529,7 +565,7 @@ function MyTeamManagePage() {
                     row
                     value={form.team_recruit}
                     onChange={(e) =>
-                      setForm({ ...form, team_onoff: e.target.value })
+                      setForm({ ...form, team_recruit: e.target.value })
                     }
                   >
                     <FormControlLabel
@@ -605,7 +641,9 @@ function MyTeamManagePage() {
             </DialogContent>
             <DialogActions>
               <div className={teamstyles["btns"]}>
-                <Button color="error"  onClick={deleteModalOpen}>모임 삭제</Button>
+                <Button color="error" onClick={deleteModalOpen}>
+                  모임 삭제
+                </Button>
                 <div>
                   <Button onClick={teamInfoModalClose}>취소</Button>
                   <Button
@@ -631,7 +669,12 @@ function MyTeamManagePage() {
             </DialogTitle>
             <DialogActions>
               <Button onClick={deleteModalclose}>아니오</Button>
-              <Button onClick={() => {deleteModalclose(); deleteTeam()}}>
+              <Button
+                onClick={() => {
+                  deleteModalclose();
+                  deleteTeam();
+                }}
+              >
                 예
               </Button>
             </DialogActions>

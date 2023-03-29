@@ -1,113 +1,110 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SideBar from "../../components/SideBar";
 import sidestyles from "../../styles/Sidebar.module.scss";
 import updatestyles from "../../styles/ArticleUpdate.module.scss";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
-import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { Api } from "../../Api";
+import { useSelector } from "react-redux";
 
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 
 
 function ArticleUpdatePage() {
-    const movePage = useNavigate();
+  const myTeamId = useSelector((state) => state.user.myTeamId)
+
+  const movePage = useNavigate();
   function goMyTeamArticle() {
     movePage("/myteam/:teamId/article");
   }
 
-  const [menu, setMenu] = useState({
-    choice : "분류",
-  })
-
-  const [form, setForm] = useState({
-    title: "",
-    context: "",
-    writer: "",
+  const [articleDetail, setArticleDetail] = useState({
+    boardType: "",
+    boardTitle: "",
+    boardContent: "",
+    writeUserNickname: "",
   });
 
-  const options = ["분류", "공지", "자유"];
+  useEffect(() => {
+    const articleId = localStorage.getItem("articleId");
+    Api.get(`/board/details/${articleId}`, articleId)
+      .then((res) => {
+        console.log(res.data);
+        setArticleDetail({
+          ...articleDetail,
+          boardType: res.data.boardType,
+          boardContent: res.data.boardContent,
+          boardTitle: res.data.boardTitle,
+          writeUserNickname: res.data.user.userNickname,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const ITEM_HEIGHT = 48;
+    // axios 보낼 데이터
+    const article = {
+      // boardType: "", 
+      title : "",
+      content: "",
+      // boardId : localStorage.getItem("articleId"),
+    }
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  // 게시글 수정
+  const articleUpdate = () => {
+    const articleId = localStorage.getItem("articleId");
+    article.title = articleDetail.boardTitle
+    article.content = articleDetail.boardContent
 
-  const clickOption = (option) => {
-    console.log(option)
-    setMenu({ ...menu, choice: option})
+    if (article.boardType === "분류") {
+      alert('분류를 선택해주세요')
+    } else {
+      console.log(article)
+      Api.put(`/board/${articleId}`, article, {headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      }})
+      .then((res) => {
+        console.log(res)
+        alert('수정이 완료되었습니다')
+        movePage(`/myTeam/${myTeamId}/article/${articleId}`)
+
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
+
   }
   return (
     <div className={sidestyles["myteam-container"]}>
       <SideBar location={"article"}/>
       <div className={sidestyles.others}>
         <div className={updatestyles["write-container"]}>
-          <ArrowBackIcon onClick={goMyTeamArticle} />
+          <ArrowBackIcon onClick={goMyTeamArticle} className={updatestyles["go-back"]}/>
           <div className={updatestyles["inner-container"]}>
             <div className={updatestyles["article-header"]}>
-              <h4>{menu.choice}</h4>
-              <IconButton
-                aria-label="more"
-                id="long-button"
-                aria-controls={open ? "long-menu" : undefined}
-                aria-expanded={open ? "true" : undefined}
-                aria-haspopup="true"
-                onClick={handleClick}
-                className={updatestyles["dropdown"]}
-              >
-                <ArrowDropDownCircleIcon />
-              </IconButton>
-              <Menu
-                id="long-menu"
-                MenuListProps={{
-                  "aria-labelledby": "long-button",
-                }}
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                PaperProps={{
-                  style: {
-                    maxHeight: ITEM_HEIGHT * 4.5,
-                    width: "10ch",
-                  },
-                }}
-              >
-                {options.map((option) => (
-                  <MenuItem
-                    key={option}
-                    //   selected={option === "선택"}
-                    onClick={() => {handleClose(); clickOption(option);}}
-                  >
-                    {option}
-                  </MenuItem>
-                ))}
-              </Menu>
+              {articleDetail.boardType === 'notice' ? <h3>공지</h3> : <h3>자유</h3>}
               <TextField
                 multiline
                 required
                 id="title"
-                value={form.title}
+                value={articleDetail.boardTitle}
                 variant="standard"
                 placeholder=" 제목을 입력해주세요."
                 fullWidth
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                onChange={(e) => setArticleDetail({ ...articleDetail, boardTitle: e.target.value })}
               />
             </div>
-            <p className={updatestyles["article-writer"]}>작성자 : 독린이</p>
+            <p className={updatestyles["article-writer"]}>작성자 : {articleDetail.writeUserNickname}</p>
             <textarea
               className={updatestyles["article-context"]}
               type="text"
-              value={form.context}
-              onChange={(e) => setForm({ ...form, context: e.target.value })}
+              value={articleDetail.boardContent}
+              onChange={(e) => setArticleDetail({ ...articleDetail, boardContent: e.target.value })}
             />
             <div className={updatestyles["save-btn-box"]}>
               <div></div>
@@ -115,12 +112,13 @@ function ArticleUpdatePage() {
                 className={updatestyles["article-save"]}
                 variant="contained"
                 color="success"
-                // onClick={}
+                onClick={() => {articleUpdate();}}
               >
                 수정
               </Button>
               <div></div>
             </div>
+            <br /><br />
           </div>
         </div>
       </div>

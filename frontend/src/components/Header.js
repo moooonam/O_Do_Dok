@@ -28,7 +28,7 @@ function Header() {
   const myTeamId = useSelector((state) => state.user.myTeamId)
   function goMyTeam() {
     if (myTeamId) {
-      movePage("/myteam/:teamId/main");
+      movePage(`/myteam/${myTeamId}/main`);
       const checkbox = document.getElementById("dropdown");
       checkbox.checked = false;
     }
