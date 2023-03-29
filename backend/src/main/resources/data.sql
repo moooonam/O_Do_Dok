@@ -1,4 +1,4 @@
-Insert into board_type(board_type) values ("notice"), ("free");
+-- Insert into board_type(board_type) values ("notice"), ("free");
 
 insert into book values ('1','유키 하루오','추리/미스터리','https://image.aladin.co.kr/product/31062/41/cover500/k672831528_1.jpg','0','356','0','방주',FALSE);
 insert into book values ('2','미치오 슈스케','추리/미스터리','https://image.aladin.co.kr/product/31090/58/cover500/k112831835_2.jpg','0','400','0','N',FALSE);
