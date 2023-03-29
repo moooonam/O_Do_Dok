@@ -63,4 +63,11 @@ public class BookController {
         return ResponseEntity.status(200).body(list);
     }
 
+    // 베스트 셀러 책 조회
+    @GetMapping("/bestBook")
+    public ResponseEntity<?> bestBook(){
+        List<Book> bookList = bookService.listBestBooks();
+        return new ResponseEntity(bookList,HttpStatus.OK);
+    }
+
 }

@@ -12,5 +12,6 @@ public interface BookService {
     List<Book> searchBooks(String keyword);
 
     List<Book> recommendBooks(Long teamId);
+    List<Book> listBestBooks();
 }
 
