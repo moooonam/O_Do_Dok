@@ -1,4 +1,4 @@
-import React, { } from "react";
+import React, { useState, useEffect } from "react";
 import SideBar from "../../components/SideBar";
 import sidestyles from "../../styles/Sidebar.module.scss";
 import dodokstyles from "../../styles/MyTeamAfterDodok.module.scss";
@@ -8,16 +8,65 @@ import WritePageReviewModal from "./Modal/WritePageReviewModal";
 import WriteReviewModal from "./Modal/WriteReviewModal";
 import Rating from "@mui/material/Rating";
 import AllPageReviewModal from "./Modal/AllPageReviewModal";
+import { Api } from "../../Api";
 
 
 function AfterDodok() {
-  const testDodokBook = {
-    img: "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
-    bookName: "춥다",
-    startDodok: "2023.03.20",
-    endDodok: "2023.03.26",
-    genre: ["추리", "스릴러", "판타지"],
-  };
+  const [bookDetail, setBookDetail] = useState({
+    bookImg : "",
+    bookTitle: "",
+    dodokStartdate: "",
+    dodokEnddate: "",
+    year: 0,
+    month: 0,
+    day: 0,
+  })
+  
+  const [dodokDday, setDodokDday] = useState(0);
+  
+  useEffect(() => {
+    Api.get('/dodok/nowdodoks', {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+    .then((res) => {
+      console.log('조회성공', res.data.dodokEnddate.split('-'))
+      setBookDetail({
+        ...bookDetail,
+        bookImg: res.data.book.bookImg,
+        bookTitle: res.data.book.bookTitle,
+        dodokStartdate : res.data.dodokStartdate,
+        dodokEnddate : res.data.dodokEnddate,
+        year: Number(res.data.dodokEnddate.split('-')[0]),
+        month: Number(res.data.dodokEnddate.split('-')[1]),
+        day: Number(res.data.dodokEnddate.split('-')[2]),
+      })
+      const today = new Date();
+      const dday = new Date(`${bookDetail.year}-${bookDetail.month}-${bookDetail.day}`);
+      // const dday = new Date("2023-03-29");
+      console.log(bookDetail.year, bookDetail.month, bookDetail.day)
+      const gap = dday.getTime() - today.getTime();
+      const result = Math.ceil(gap/(1000*60*60*24));
+      setDodokDday(result)   
+      console.log('여기',typeof dodokDday)
+      console.log(dodokDday) 
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // const dday2 = () => {
+  //   const today = new Date();
+  //     const dday = new Date(`${bookDetail.year}-${bookDetail.month}-${bookDetail.day}`);
+  //     // const dday = new Date("2023-03-29");
+  //     console.log(bookDetail.year, bookDetail.month, bookDetail.day)
+  //     const gap = dday.getTime() - today.getTime();
+  //     const result = Math.ceil(gap/(1000*60*60*24));
+  //     setDodokDday(result)
+  //     return dodokDday
+  // }
+
   
   const pageReviews =[
     {
@@ -99,21 +148,21 @@ function AfterDodok() {
           </div>
           <div className={dodokstyles["wrap-book"]}>
             <div>
-              <img src={testDodokBook.img} alt="책" />
+              <img src={bookDetail.bookImg} alt="책" />
             </div>
             <div className={dodokstyles["wrap-bookinfo"]}>
               <div className={dodokstyles["book-info"]}>
                 <p>도서명</p>
-                <p>{testDodokBook.bookName}</p>
+                <p>{bookDetail.bookTitle}</p>
               </div>
               <div className={dodokstyles["book-info"]}>
                 <p>도독기간</p>
                 <p>
-                  {testDodokBook.startDodok} ~ {testDodokBook.endDodok}
+                  {bookDetail.dodokStartdate} ~ {bookDetail.dodokEnddate}
                 </p>
               </div>
             </div>
-            <div className={dodokstyles.dday}>D-7</div>
+            <div className={dodokstyles.dday}>D-{dodokDday}</div>
           </div>
           <WritePageReviewModal />
           <AllPageReviewModal/>
