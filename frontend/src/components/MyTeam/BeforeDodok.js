@@ -98,6 +98,24 @@ function BeforeDodok() {
     const requestForm = {...form,
     endDate: dateFormat2,
     }
+    Api.get('/dodok/nowdodoks', {
+      headers: {
+            "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+            "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+          },
+    })
+    .then((res) => {
+      console.log('조회성공', res)
+    })
+    // Api.post('/dodok/start', requestForm, {
+    //   headers: {
+    //     "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+    //     "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+    //   },
+    // })
+    // .then((res) => {
+    //   console.log('도독시작', res)
+    // })
     // console.log(dateFormat1)
     // console.log(dateFormat2)
     console.log(requestForm)
