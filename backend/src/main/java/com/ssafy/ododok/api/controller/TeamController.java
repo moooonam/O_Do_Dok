@@ -173,7 +173,4 @@ public class TeamController {
 //        else return ResponseEntity.status(200).body("모임장은 변경 불가능");
     }
 
-    UserSurvey userSurvey;
-
-
 }

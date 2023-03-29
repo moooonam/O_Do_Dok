@@ -85,7 +85,7 @@ public class TeamServiceImpl implements TeamService{
     @Override
     public void deleteTeam(Long teamId) {
         // teamUser 먼저 삭제
-        teamUserRepository.deleteById(teamId);
+        teamUserRepository.deleteByTeam_TeamId(teamId);
         // team 삭제
         teamRepository.deleteById(teamId);
     }
