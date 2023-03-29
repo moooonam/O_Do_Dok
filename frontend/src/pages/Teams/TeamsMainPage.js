@@ -20,13 +20,19 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 
+//filter
+import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+
 function TeamsMainPage() {
   const movePage = useNavigate();
   const [teamCreateModal, setTeamCreateModal] = React.useState(false);
 
-  const [searchKeyword, setSearchKeyword] = React.useState("")
-  const [isSearched, setIsSearched] = React.useState(false)
-  const [searchedTeamData, setSearchedTeamData] = React.useState([])
+  const [searchKeyword, setSearchKeyword] = React.useState("");
+  const [isSearched, setIsSearched] = React.useState(false);
+  const [searchedTeamData, setSearchedTeamData] = React.useState([]);
 
   const isLogin = useSelector((state) => state.user.isLogin);
   const myTeamId = useSelector((state) => state.user.myTeamId);
@@ -141,19 +147,16 @@ function TeamsMainPage() {
   };
 
   // 검색
-  const searchTeam = (() => {
+  const searchTeam = () => {
     if (searchKeyword) {
-
-      console.log(searchKeyword)
-      Api.get(`/teams/${searchKeyword}`)
-      .then((res) => {
-        console.log(res.data)
-        setSearchedTeamData(...searchedTeamData, res.data)
-        setIsSearched(true)
-      })
+      console.log(searchKeyword);
+      Api.get(`/teams/${searchKeyword}`).then((res) => {
+        console.log(res.data);
+        setSearchedTeamData(...searchedTeamData, res.data);
+        setIsSearched(true);
+      });
     }
-  })
-
+  };
 
   // 모임 생성 axios
   const teamCreate = () => {
@@ -229,18 +232,89 @@ function TeamsMainPage() {
     }
   };
 
+  // 필터
+  const [menu, setMenu] = useState({
+    choice: "장르",
+  });
+
+  const options = ["장르", "추리", "스릴러", "공포", "SF", "판타지", "무협", "로맨스"];
+
+  const ITEM_HEIGHT = 48;
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const clickOption = (option) => {
+    // console.log(option)
+    setMenu({ ...menu, choice: option });
+  };
+
   return (
     <div className={styles["wrap-all"]}>
       <div className={styles.title}>모임 신청</div>
       <div className={styles["wrap-bar"]}>
-        <div>필터</div>
+        <div className={styles["filter-div"]}>
+          <h4>{menu.choice}</h4>
+          <IconButton
+            aria-label="more"
+            id="long-button"
+            aria-controls={open ? "long-menu" : undefined}
+            aria-expanded={open ? "true" : undefined}
+            aria-haspopup="true"
+            onClick={handleClick}
+            className={styles["dropdown"]}
+          >
+            <ArrowDropDownCircleIcon />
+          </IconButton>
+          <Menu
+            id="long-menu"
+            MenuListProps={{
+              "aria-labelledby": "long-button",
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            PaperProps={{
+              style: {
+                maxHeight: ITEM_HEIGHT * 4.5,
+                width: "10ch",
+              },
+            }}
+          >
+            {options.map((option) => (
+              <MenuItem
+                key={option}
+                //   selected={option === "선택"}
+                onClick={() => {
+                  handleClose();
+                  clickOption(option);
+                }}
+              >
+                {option}
+              </MenuItem>
+            ))}
+          </Menu>
+        </div>
         <div className={styles["search-maketeam-container"]}>
           <div className={styles["search-container"]}>
-            <input type="text" onChange={(e)=> {setSearchKeyword(e.target.value)}}/>
-            <div className={styles.searchicon} onClick={searchTeam}>🔍</div>
+            <input
+              type="text"
+              onChange={(e) => {
+                setSearchKeyword(e.target.value);
+              }}
+            />
+            <div className={styles.searchicon} onClick={searchTeam}>
+              🔍
+            </div>
           </div>
           <div className={styles["maketeam-btn"]} onClick={teamCreateModalOpen}>
-          모임생성
+            모임생성
           </div>
         </div>
         <Dialog
@@ -435,7 +509,11 @@ function TeamsMainPage() {
           </DialogActions>
         </Dialog>
       </div>
-      { isSearched ? <SearchedTeamCard teams={searchedTeamData}/> : <TeamCard />}
+      {isSearched ? (
+        <SearchedTeamCard teams={searchedTeamData} />
+      ) : (
+        <TeamCard genre={menu.choice}/>
+      )}
     </div>
   );
 }
