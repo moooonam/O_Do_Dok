@@ -5,12 +5,12 @@ import DialogContent from "@mui/material/DialogContent";
 // import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from "@mui/material/DialogTitle";
 import styles from "../../../styles/MyTeamAfterDodok.module.scss";
-
+import { Api } from "../../../Api";
 export default function WritePageReviewModal() {
   const [open, setOpen] = React.useState(false);
   const [form, setForm] = React.useState({
     page: "",
-    review: "",
+    content: "",
   });
   const handleClickOpen = () => {
     setOpen(true);
@@ -19,12 +19,23 @@ export default function WritePageReviewModal() {
   const handleClose = () => {
     setOpen(false);
     setForm({
-      page: "",
+      content: "",
       review: "",
     });
   };
   const allow = () => {
     console.log({ form });
+    Api.post('/dodok/pageReview/add', form, {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+    .then((res) =>{
+      console.log(res)
+      alert('페이지리뷰 작성 성공!')
+      window.location.reload()
+    })
   };
 
   return (
@@ -52,7 +63,7 @@ export default function WritePageReviewModal() {
           <textarea
             type="textfield"
             className={styles["review-input"]}
-            onChange={(e) => setForm({ ...form, review: e.target.value })}
+            onChange={(e) => setForm({ ...form, content: e.target.value })}
           />
           <div className={styles["wrap-modal-btn"]}>
             <div className={styles["cancle-btn"]} onClick={handleClose}>
