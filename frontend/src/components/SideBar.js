@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles/Sidebar.module.scss";
 import { useNavigate } from "react-router-dom";
+import { Api } from "../Api";
+import { getMyRole } from "../redux/slice/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 
-const SideBar = ({location}) => {
+const SideBar = ({ location }) => {
+  const myTeamId = useSelector((state) => state.user.myTeamId)
+  const dispatch = useDispatch();
   const [status, setStatus] = useState({
     main: false,
     dodok: false,
@@ -11,35 +16,51 @@ const SideBar = ({location}) => {
     teamManage: false,
     memberManage: false,
   });
-  
+  const myRole = useSelector((state) => state.user.myRole);
+
   useEffect(() => {
     setStatus({
       ...status,
-      [location] : true,
-       });
-       // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+      [location]: true,
+    });
+    Api.get("/teams/user/myRole", {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+      .then((res) => {
+        dispatch(getMyRole({ myRole: res.data }));
+        // console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // console.log(myRole)
   const movePage = useNavigate();
   function goMyTeamMain() {
-    movePage("/myteam/:teamId/main");
+    movePage(`/myteam/${myTeamId}/main`);
   }
   function goMyTeamDodok() {
-    movePage("/myteam/:teamId/dodok");
+    movePage(`/myteam/${myTeamId}/dodok`);
   }
   function goMyTeamArticle() {
-    movePage("/myteam/:teamId/article");
+    movePage(`/myteam/${myTeamId}/article`);
   }
 
   function goMyTeamRecord() {
-    movePage("/myteam/:teamId/record");
+    movePage(`/myteam/${myTeamId}/record`);
   }
 
   function goMyTeamManage() {
-    movePage("/myteam/:teamId/manage");
+    movePage(`/myteam/${myTeamId}/manage`);
   }
 
   function goMyTeamMemberManage() {
-    movePage("/myteam/:teamId/membermanage");
+    movePage(`/myteam/${myTeamId}/membermanage`);
   }
 
   return (
@@ -70,22 +91,30 @@ const SideBar = ({location}) => {
           >
             지난활동
           </li>
-          <li
-            onClick={goMyTeamManage}
-            className={status.teamManage ? styles["active"] : styles["notActive"]}
-          >
-            모임 관리
-          </li>
-          <li
-            onClick={goMyTeamMemberManage}
-            className={status.memberManage ? styles["active"] : styles["notActive"]}
-          >
-            모임원 관리
-          </li>
+          {myRole === "USER"  ? 
+          null : (
+            <div>
+              <li
+                onClick={goMyTeamManage}
+                className={
+                  status.teamManage ? styles["active"] : styles["notActive"]
+                }
+              >
+                모임 관리
+              </li>
+              <li
+                onClick={goMyTeamMemberManage}
+                className={
+                  status.memberManage ? styles["active"] : styles["notActive"]
+                }
+              >
+                모임원 관리
+              </li>
+            </div>)}
         </ul>
       </div>
     </div>
   );
-}
+};
 
 export default SideBar;

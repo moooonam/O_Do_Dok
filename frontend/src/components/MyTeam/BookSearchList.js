@@ -1,31 +1,12 @@
-import React, { useState, useEffect } from "react";
-import styles from "../../styles/Main.module.scss";
-import { Api } from "../../Api";
+import React, { useState,useEffect } from "react";
+import styles from "../../styles/MyTeamBeforeDodok.module.scss";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-// import DialogContentText from "@mui/material/DialogContentText";
+import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-
-function RecomendBook() {
-  const [best5Book, setBest5Book] = useState([]);
-  useEffect(() => {
-    Api.get("/book/bestBook").then((res) => {
-      console.log(res);
-      const recomendBook = [...res.data];
-      let newBook = [];
-      while (recomendBook.length > 15) {
-        let movenum = recomendBook.splice(
-          Math.floor(Math.random() * recomendBook.length),
-          1
-        )[0];
-        newBook.push(movenum);
-      }
-      setBest5Book([...newBook]);
-      console.log(best5Book);
-    });
-  }, []);
+function BookSearchList({ searchBookData, parentCallback}) {
   const [open, setOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState({});
   const handleClickOpen = (book) => {
@@ -34,21 +15,33 @@ function RecomendBook() {
     setOpen(true);
   };
 
+  const insertBookData = (()=> {
+    parentCallback(selectedBook)
+    setOpen(false)
+  })
+  // console.log('들어온책',selectedBook)
   const handleClose = () => {
     setOpen(false);
-  }
-
-  const renderRecomendBook = best5Book.map((book) => {
+  };
+  const renderResult = searchBookData.map((book) => {
+    // console.log("책", book);
     return (
-      <div key={book.bookId}>
-        <img src={book.bookImg} alt="책" onClick={() =>handleClickOpen(book)}/>
+      <div key={book.bookId} className={styles["book-container"]}>
+        <div className={styles["wrap-img"]}>
+          <img
+            src={book.bookImg}
+            alt="책"
+            onClick={() => {
+              handleClickOpen(book);
+            }}
+          />
+        </div>
+        <p>{book.bookTitle}</p>
       </div>
     );
   });
   return (
-    <div className={styles["wrap-recomendbook"]}>
-      <div className={styles["recomendbook-title"]}>오늘의 추천 도서</div>
-      <div className={styles["wrap-bookimg"]}>{renderRecomendBook}</div>
+    <div>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -69,10 +62,18 @@ function RecomendBook() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>닫기</Button>
+          <Button onClick={insertBookData} autoFocus>
+            도독에 책정보 넣기
+          </Button>
         </DialogActions>
       </Dialog>
+      {searchBookData.length !== 0 ? (
+        <div className={styles["result-container"]}>{renderResult}</div>
+      ) : (
+        <div className={styles["no-result"]}>검색결과가 없습니다</div>
+      )}
     </div>
   );
 }
 
-export default RecomendBook;
+export default BookSearchList;

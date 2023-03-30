@@ -53,10 +53,8 @@ function SignupPage() {
     horror: false,
     sf: false,
     fantasy: false,
-    drama: false,
     game: false,
     romance: false,
-    animation: false,
   });
 
   // 장르 클릭했을때 클래스 변경
@@ -95,13 +93,6 @@ function SignupPage() {
       setGenreList({ ...genreList, fantasy: true });
     }
   };
-  const clickdrama = () => {
-    if (genreList.drama) {
-      setGenreList({ ...genreList, drama: false });
-    } else {
-      setGenreList({ ...genreList, drama: true });
-    }
-  };
   const clickgame = () => {
     if (genreList.game) {
       setGenreList({ ...genreList, game: false });
@@ -116,23 +107,17 @@ function SignupPage() {
       setGenreList({ ...genreList, romance: true });
     }
   };
-  const clickanimation = () => {
-    if (genreList.animation) {
-      setGenreList({ ...genreList, animation: false });
-    } else {
-      setGenreList({ ...genreList, animation: true });
-    }
-  };
 
   // 유저 정보에 선호 장르 담기
   const clickGenre = (choice) => {
     if (userGenre.includes(choice)) {
-      console.log(2222222222);
-      setUserGenre(userGenre.filter((genre) => genre !== choice));
+      let newGenres = userGenre.filter((genre) => genre !== choice);
+      setUserGenre(newGenres);
     } else {
       setUserGenre([...userGenre, choice]);
     }
   };
+  // console.log("유저장르", userGenre);
 
   // axios 보낼 데이터
   const userInfo = {
@@ -184,7 +169,7 @@ function SignupPage() {
         url: `http://localhost:8080/api/v1/user/checkNickname/${form.nickname}`,
       })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           if (res.data) {
             alert("사용 가능한 닉네임입니다.");
             form.nickCheck = true;
@@ -203,56 +188,54 @@ function SignupPage() {
 
   // 가입하기 함수
   const userSignup = () => {
-    console.log(userInfo);
-    if (form.emailCheck && form.nickCheck) {
-      userInfo.name = form.name;
-      userInfo.email = form.email;
-      userInfo.nickname = form.nickname;
-      userInfo.password = form.password;
-      userInfo.phone = form.phone;
-      userInfo.gender = form.gender;
-      userInfo.age = userAge;
-      userInfo.genre1 = userGenre[0];
-      userInfo.genre2 = userGenre[1];
-      userInfo.genre3 = userGenre[2];
-      userInfo.region = form.region;
-      userInfo.onoff = form.onoff;
-      userInfo.frequency = form.frequency;
-
-      if (
-        userInfo.name &&
-        userInfo.email &&
-        userInfo.nickname &&
-        userInfo.password &&
-        userInfo.phone &&
-        userInfo.gender &&
-        userInfo.onoff &&
-        userInfo.region &&
-        userInfo.frequency &&
-        userInfo.genre1 &&
-        userInfo.genre2 &&
-        userInfo.genre3 &&
-        userInfo.age
-      ) {
-        Api.post("/user", userInfo)
-          .then((res) => {
-            console.log(res);
-            movePage("/login");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        // console.log(form);
-        // console.log(2023 - Number(dateFormat.slice(0,4)) + 1);
-        // console.log(userGenre[0]);
-        // console.log(userGenre[1]);
-        // console.log(userGenre[2]);
-        // console.log(userGenre);
-      } else {
-        alert("모든 항목에 대해 답변해주세요");
-      }
+    // console.log(userInfo);
+    if (userGenre.length !== 3) {
+      alert("장르를 3가지 선택해주세요");
     } else {
-      alert("중복검사를 진행해주세요");
+      if (form.emailCheck && form.nickCheck) {
+        userInfo.name = form.name;
+        userInfo.email = form.email;
+        userInfo.nickname = form.nickname;
+        userInfo.password = form.password;
+        userInfo.phone = form.phone;
+        userInfo.gender = form.gender;
+        userInfo.age = userAge;
+        userInfo.genre1 = userGenre[0];
+        userInfo.genre2 = userGenre[1];
+        userInfo.genre3 = userGenre[2];
+        userInfo.region = form.region;
+        userInfo.onoff = form.onoff;
+        userInfo.frequency = form.frequency;
+        if (
+          userInfo.name &&
+          userInfo.email &&
+          userInfo.nickname &&
+          userInfo.password &&
+          userInfo.phone &&
+          userInfo.gender &&
+          userInfo.onoff &&
+          userInfo.region &&
+          userInfo.frequency &&
+          userInfo.genre1 &&
+          userInfo.genre2 &&
+          userInfo.genre3 &&
+          userInfo.age
+        ) {
+          Api.post("/user", userInfo)
+            .then((res) => {
+              console.log(res);
+              alert("회원가입 성공!");
+              movePage("/login");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          alert("모든 항목에 대해 답변해주세요");
+        }
+      } else {
+        alert("중복검사를 진행해주세요");
+      }
     }
 
     console.log(userInfo);
@@ -470,13 +453,13 @@ function SignupPage() {
         <br />
         <br />
         <div>
-          <p>선호 장르</p>
+          <p>선호 장르 (*총 3가지 장르를 선택해주세요)</p>
           <br />
           <Grid container direction="row" columnGap={3}>
             <div
               onClick={() => {
                 clickreason();
-                clickGenre("reason");
+                clickGenre("추리");
               }}
               className={
                 genreList.reason ? styles["active"] : styles["notActive"]
@@ -487,7 +470,7 @@ function SignupPage() {
             <div
               onClick={() => {
                 clickthril();
-                clickGenre("thril");
+                clickGenre("스릴러");
               }}
               className={
                 genreList.thril ? styles["active"] : styles["notActive"]
@@ -498,27 +481,27 @@ function SignupPage() {
             <div
               onClick={() => {
                 clickhorror();
-                clickGenre("horror");
+                clickGenre("호러");
               }}
               className={
                 genreList.horror ? styles["active"] : styles["notActive"]
               }
             >
-              #공포
+              #호러
             </div>
             <div
               onClick={() => {
                 clicksf();
-                clickGenre("sf");
+                clickGenre("SF");
               }}
               className={genreList.sf ? styles["active"] : styles["notActive"]}
             >
-              #과학
+              #SF
             </div>
             <div
               onClick={() => {
                 clickfantasy();
-                clickGenre("fantasy");
+                clickGenre("판타지");
               }}
               className={
                 genreList.fantasy ? styles["active"] : styles["notActive"]
@@ -528,47 +511,25 @@ function SignupPage() {
             </div>
             <div
               onClick={() => {
-                clickdrama();
-                clickGenre("drama");
-              }}
-              className={
-                genreList.drama ? styles["active"] : styles["notActive"]
-              }
-            >
-              #드라마
-            </div>
-            <div
-              onClick={() => {
                 clickgame();
-                clickGenre("game");
+                clickGenre("무협");
               }}
               className={
                 genreList.game ? styles["active"] : styles["notActive"]
               }
             >
-              #게임
+              #무협
             </div>
             <div
               onClick={() => {
                 clickromance();
-                clickGenre("romance");
+                clickGenre("로맨스");
               }}
               className={
                 genreList.romance ? styles["active"] : styles["notActive"]
               }
             >
               #로맨스
-            </div>
-            <div
-              onClick={() => {
-                clickanimation();
-                clickGenre("animation");
-              }}
-              className={
-                genreList.animation ? styles["active"] : styles["notActive"]
-              }
-            >
-              #만화
             </div>
           </Grid>
         </div>
@@ -651,7 +612,7 @@ function SignupPage() {
           variant="contained"
           color="success"
           fullWidth
-          onClick={() => userSignup()}
+          onClick={userSignup}
         >
           가입하기
         </Button>

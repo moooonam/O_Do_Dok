@@ -3,42 +3,48 @@ import TextField from "@mui/material/TextField";
 import styles from "../../styles/UserInfoUpdate.module.scss";
 import Grid from "@mui/material/Grid"; // Grid version 1
 import Button from "@mui/material/Button";
-// import axios from "axios";
+import { Api } from "../../Api";
 import { useNavigate } from "react-router-dom";
 // import IconButton from "@mui/material/IconButton";
 // import PhotoCamera from '@mui/icons-material/PhotoCamera';
-
 // radio
+
+import { useSelector, useDispatch } from "react-redux";
+import { getUserInfo, logout } from "../../redux/slice/userSlice";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 // import FormLabel from "@mui/material/FormLabel";
 
-// datepicker
-import dayjs from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// Dialog
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
+// datepicker
 function UserInfoUpdatePage() {
   const movePage = useNavigate();
+  const dispatch = useDispatch();
   function goMyPage() {
     movePage("/mypage");
   }
-
+  const userInfo = useSelector((state) => state.user);
   const [form, setForm] = useState({
-    nickname: "",
-    onoff: "",
-    region: "",
-    frequency: "",
+    userName: userInfo.userName,
+    userEmail: userInfo.userEmail,
+    userNickname: userInfo.userNickname,
+    userImage: userInfo.profileImg,
+    userOnoff: userInfo.userOnoff,
+    userRegion: userInfo.userRegion,
+    userFrequency: userInfo.userFrequency,
+    userGenre1: "",
+    userGenre2: "",
+    userGenre3: "",
+    nickCheck: false,
   });
-
-  // 날짜 데이터
-  const [birth, setBirth] = React.useState(dayjs());
-  // 날짜 형식 변경
-  const dateFormat = dayjs(birth.$d).format("YYYY-MM-DD");
-  const userAge = 2023 - Number(dateFormat.slice(0, 4)) + 1;
 
   // 장르 리스트
   const [userGenre, setUserGenre] = useState([]);
@@ -49,10 +55,8 @@ function UserInfoUpdatePage() {
     horror: false,
     sf: false,
     fantasy: false,
-    drama: false,
     game: false,
     romance: false,
-    animation: false,
   });
 
   // 장르 클릭했을때 클래스 변경
@@ -91,13 +95,6 @@ function UserInfoUpdatePage() {
       setGenreList({ ...genreList, fantasy: true });
     }
   };
-  const clickdrama = () => {
-    if (genreList.drama) {
-      setGenreList({ ...genreList, drama: false });
-    } else {
-      setGenreList({ ...genreList, drama: true });
-    }
-  };
   const clickgame = () => {
     if (genreList.game) {
       setGenreList({ ...genreList, game: false });
@@ -112,95 +109,136 @@ function UserInfoUpdatePage() {
       setGenreList({ ...genreList, romance: true });
     }
   };
-  const clickanimation = () => {
-    if (genreList.animation) {
-      setGenreList({ ...genreList, animation: false });
-    } else {
-      setGenreList({ ...genreList, animation: true });
-    }
-  };
 
   // 유저 정보에 선호 장르 담기
   const clickGenre = (choice) => {
     if (userGenre.includes(choice)) {
-      console.log(2222222222);
-      setUserGenre(userGenre.filter((genre) => genre !== choice));
+      let newGenres = userGenre.filter((genre) => genre !== choice);
+      setUserGenre(newGenres);
     } else {
       setUserGenre([...userGenre, choice]);
     }
   };
 
-  // axios 보낼 데이터
-  const userUpdateInfo = {
-    name: "",
-    email: "",
-    nickname: "",
-    password: "",
-    passwordConfirm: "",
-    gender: "",
-    onoff: "",
-    region: "",
-    frequency: "",
-    genre1: "",
-    genre2: "",
-    genre3: "",
-    age: 0,
-  };
+  // axios 보낼 데이
 
   const nickDuplication = () => {
-    // if (form.nickname) {
-    //   axios({
-    //     methods: 'get',
-    //     url: `http://localhost:3000/api/v1/user/checkEmail/${form.nickname}`
-    //   })
-    //   .then((res) => {
-    //     console.log(res)
-    //   })
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
-    // }
+    if (form.userNickname) {
+      Api.get(`/user/checkNickname/${form.userNickname}`)
+        .then((res) => {
+          if (res.data) {
+            setForm({ ...form, nickCheck: true });
+            alert("사용 가능한 닉네임입니다.");
+          } else if (form.userNickname === userInfo.userNickname) {
+            alert("사용 가능한 기존 닉네임입니다.");
+            setForm({ ...form, nickCheck: true });
+          } else {
+            setForm({ ...form, nickCheck: false });
+            alert("이미 존재하는 닉네임입니다.");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
-  // 정보 업데이트 함수
-  const userupdate = () => {
-    userUpdateInfo.name = form.name;
-    userUpdateInfo.email = form.email;
-    userUpdateInfo.nickname = form.nickname;
-    userUpdateInfo.password = form.password;
-    userUpdateInfo.passwordConfirm = form.passwordConfirm;
-    userUpdateInfo.gender = form.gender;
-    userUpdateInfo.onoff = form.onoff;
-    userUpdateInfo.region = form.region;
-    userUpdateInfo.frequency = form.frequency;
-    userUpdateInfo.genre1 = userGenre[0];
-    userUpdateInfo.genre2 = userGenre[1];
-    userUpdateInfo.genre3 = userGenre[2];
-    userUpdateInfo.age = userAge;
-    // axios({
-    //   methods: 'post',
-    //   url: 'http://localhost:3000/api/v1/user',
-    //   data: userUpdateInfo,
-    // })
-    //   .then((res) => {
-    //     console.log(res)
-    //   })
-    //   .catch((err) => {
-    //     console.log(err)
-    //   })
-    // console.log(form);
-    // console.log(2023 - Number(dateFormat.slice(0,4)) + 1);
-    // console.log(userGenre[0]);
-    // console.log(userGenre[1]);
-    // console.log(userGenre[2]);
-    // console.log(userGenre);
-    // console.log(userUpdateInfo);
+  // 정보 제출
+  const userUpdate = () => {
+    if (userGenre.length !== 3) {
+      alert("장르를 3가지 선택해주세요");
+    } else {
+      form.userGenre1 = userGenre[0];
+      form.userGenre2 = userGenre[1];
+      form.userGenre3 = userGenre[2];
+      if (form.nickCheck) {
+        //axios 들어갈 자리
+        // console.log(form);
+        Api.put("/user", form, {
+          headers: {
+            "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+            "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+          },
+        })
+          .then((res) => {
+            // console.log(res);
+            dispatch(
+              getUserInfo({
+                userName: form.userName,
+                userEmail: form.userEmail,
+                profileImg: form.userImage,
+                userNickname: form.userNickname,
+                userGenre1: form.userGenre1,
+                userGenre2: form.userGenre2,
+                userGenre3: form.userGenre3,
+                userFrequency: form.userFrequency,
+                userOnoff: form.userOnoff,
+                userRegion: form.userRegion,
+                userGender: userInfo.userGender,
+                userAge: userInfo.userAge,
+              })
+            );
+            alert("회원정보 수정완료!");
+            goMyPage();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        alert("닉네임 중복체크를 해주세요!");
+      }
+    }
   };
 
   // 유효성 검사
   const nickname_validation = () => {
     let check = /[~!@#$%^&*()_+|<>?:{}.,/;='"]/;
     return check.test(form.nickname);
+  };
+
+  let Frequency = "";
+  if (userInfo.userFrequency < 3) {
+    Frequency = "under2";
+  } else if (userInfo.userFrequency < 6) {
+    Frequency = "under5";
+  } else {
+    Frequency = "oversix";
+  }
+
+  // 회원 탈퇴 모달
+  const [open, setOpen] = React.useState(false);
+
+  const userDeleteModalOpen = () => {
+    setOpen(true);
+  };
+
+  const userDeleteModalClose = () => {
+    setOpen(false);
+  };
+
+  // 회원탈퇴
+  const userDelete = () => {
+    const access_token = localStorage.getItem("access-token");
+    const refresh_token = localStorage.getItem("refresh-token");
+    Api.delete("/user", {
+      headers: {
+        "access-token": `Bearer ${access_token}`,
+        "refresh-token": `Bearer ${refresh_token}`,
+      },
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.data === "삭제 완료") {
+          alert("회원 탈퇴가 완료되었습니다.");
+          dispatch(logout());
+          movePage("/");
+        } else {
+          alert("회원 탈퇴에 실패하였습니다.");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -221,20 +259,9 @@ function UserInfoUpdatePage() {
             Upload
             <input hidden accept="image/*" multiple type="file" />
           </Button>
-          {/* <IconButton
-            color="primary"
-            aria-label="upload picture"
-            component="label"
-          >
-            <input hidden accept="image/*" type="file" />
-            <PhotoCamera />
-          </IconButton> */}
         </div>
         <div className={styles["userImg-div"]}>
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQifB4Vg3_ARc3CQag2UroPpXuJnujae0a-dA&usqp=CAU"
-            alt=""
-          />
+          <img src={userInfo.profileImg} alt="" />
         </div>
         <br />
         <br />
@@ -244,7 +271,7 @@ function UserInfoUpdatePage() {
             required
             id="name"
             disabled
-            value="유저 이름"
+            value={userInfo.userName}
             variant="standard"
           />
           <br />
@@ -260,7 +287,7 @@ function UserInfoUpdatePage() {
             required
             disabled
             id="email"
-            value="test@test.com"
+            value={userInfo.userEmail}
             variant="standard"
           />
         </Grid>
@@ -274,11 +301,12 @@ function UserInfoUpdatePage() {
             required
             id="nickname"
             label="Required"
-            value={form.nickname}
+            // value={form.nickname}
             placeholder="2 ~ 12자 이내로 입력해주세요"
             variant="standard"
-            onChange={(e) => setForm({ ...form, nickname: e.target.value })}
+            onChange={(e) => setForm({ ...form, userNickname: e.target.value })}
             error={nickname_validation()}
+            defaultValue={userInfo.userNickname}
             helperText={
               nickname_validation() ? "특수기호는 하실 수 없습니다." : ""
             }
@@ -287,7 +315,7 @@ function UserInfoUpdatePage() {
             variant="outlined"
             className={styles["update-dupli"]}
             color="success"
-            onClick={nickDuplication()}
+            onClick={nickDuplication}
           >
             중복확인
           </Button>
@@ -305,40 +333,35 @@ function UserInfoUpdatePage() {
               value="male"
               control={<Radio />}
               label="남성"
-              onChange={(e) => setForm({ ...form, gender: e.target.value })}
+              checked={userInfo.userGender === "M" ? true : false}
+              // { userInfo.userGender === 'm' ?  checked='true' : checked="false"}
+              onChange={(e) => setForm({ ...form, userGender: e.target.value })}
             />
             <FormControlLabel
               disabled
               value="female"
               control={<Radio />}
               label="여성"
-              onChange={(e) => setForm({ ...form, gender: e.target.value })}
+              checked={userInfo.userGender === "W" ? true : false}
+              onChange={(e) => setForm({ ...form, userGender: e.target.value })}
             />
           </RadioGroup>
         </FormControl>
         <br />
         <br />
         <div>
-          <p>생년월일</p>
+          <p>선호 장르 (*총 3가지 장르를 선택해주세요)</p>
           <br />
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              disabled
-              value={birth}
-              onChange={(newValue) => setBirth(newValue)}
-            />
-          </LocalizationProvider>
-        </div>
-        <br />
-        <br />
-        <div>
-          <p>선호 장르</p>
+          <p className={styles["origin-genre"]}>
+            기존 선호 장르 : #{userInfo.userGenre1} #{userInfo.userGenre2} #
+            {userInfo.userGenre3}
+          </p>
           <br />
           <div className={styles["genre-box"]}>
             <div
               onClick={() => {
                 clickreason();
-                clickGenre("reason");
+                clickGenre("추리");
               }}
               className={
                 genreList.reason ? styles["active"] : styles["notActive"]
@@ -349,7 +372,7 @@ function UserInfoUpdatePage() {
             <div
               onClick={() => {
                 clickthril();
-                clickGenre("thril");
+                clickGenre("스릴러");
               }}
               className={
                 genreList.thril ? styles["active"] : styles["notActive"]
@@ -360,27 +383,27 @@ function UserInfoUpdatePage() {
             <div
               onClick={() => {
                 clickhorror();
-                clickGenre("horror");
+                clickGenre("호러");
               }}
               className={
                 genreList.horror ? styles["active"] : styles["notActive"]
               }
             >
-              #공포
+              #호러
             </div>
             <div
               onClick={() => {
                 clicksf();
-                clickGenre("sf");
+                clickGenre("SF");
               }}
               className={genreList.sf ? styles["active"] : styles["notActive"]}
             >
-              #과학
+              #SF
             </div>
             <div
               onClick={() => {
                 clickfantasy();
-                clickGenre("fantasy");
+                clickGenre("판타지");
               }}
               className={
                 genreList.fantasy ? styles["active"] : styles["notActive"]
@@ -390,47 +413,25 @@ function UserInfoUpdatePage() {
             </div>
             <div
               onClick={() => {
-                clickdrama();
-                clickGenre("drama");
-              }}
-              className={
-                genreList.drama ? styles["active"] : styles["notActive"]
-              }
-            >
-              #드라마
-            </div>
-            <div
-              onClick={() => {
                 clickgame();
-                clickGenre("game");
+                clickGenre("무협");
               }}
               className={
                 genreList.game ? styles["active"] : styles["notActive"]
               }
             >
-              #게임
+              #무협
             </div>
             <div
               onClick={() => {
                 clickromance();
-                clickGenre("romance");
+                clickGenre("로맨스");
               }}
               className={
                 genreList.romance ? styles["active"] : styles["notActive"]
               }
             >
               #로맨스
-            </div>
-            <div
-              onClick={() => {
-                clickanimation();
-                clickGenre("animation");
-              }}
-              className={
-                genreList.animation ? styles["active"] : styles["notActive"]
-              }
-            >
-              #만화
             </div>
           </div>
         </div>
@@ -442,24 +443,25 @@ function UserInfoUpdatePage() {
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
             name="row-radio-buttons-group"
+            defaultValue={userInfo.userOnoff}
           >
             <FormControlLabel
-              value="online"
+              value="ON"
               control={<Radio />}
               label="온라인"
-              onChange={(e) => setForm({ ...form, onoff: e.target.value })}
+              onChange={(e) => setForm({ ...form, userOnoff: e.target.value })}
             />
             <FormControlLabel
-              value="offline"
+              value="OFF"
               control={<Radio />}
               label="오프라인"
-              onChange={(e) => setForm({ ...form, onoff: e.target.value })}
+              onChange={(e) => setForm({ ...form, userOnoff: e.target.value })}
             />
             <FormControlLabel
-              value="onoff"
+              value="BOTH"
               control={<Radio />}
               label="병행"
-              onChange={(e) => setForm({ ...form, onoff: e.target.value })}
+              onChange={(e) => setForm({ ...form, userOnoff: e.target.value })}
             />
           </RadioGroup>
         </FormControl>
@@ -472,9 +474,10 @@ function UserInfoUpdatePage() {
             id="region"
             label="Required"
             placeholder="활동지역을 입력해주세요"
-            value={form.region}
+            // value={form.region}
+            defaultValue={userInfo.userRegion}
             variant="standard"
-            onChange={(e) => setForm({ ...form, region: e.target.value })}
+            onChange={(e) => setForm({ ...form, userRegion: e.target.value })}
           />
         </Grid>
         <br />
@@ -486,44 +489,74 @@ function UserInfoUpdatePage() {
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
             name="row-radio-buttons-group"
+            defaultValue={Frequency}
           >
             <FormControlLabel
-              value="underthril"
+              value="under2"
               control={<Radio />}
               label="2권 이하"
-              onChange={(e) => setForm({ ...form, frequency: 2 })}
+              onChange={(e) => setForm({ ...form, userFrequency: 2 })}
             />
             <FormControlLabel
-              value="horrorfantasy"
+              value="under5"
               control={<Radio />}
               label="3권 ~ 5권"
-              onChange={(e) => setForm({ ...form, frequency: 5 })}
+              onChange={(e) => setForm({ ...form, userFrequency: 5 })}
             />
             <FormControlLabel
               value="oversix"
               control={<Radio />}
               label="6권 이상"
-              onChange={(e) => setForm({ ...form, frequency: 6 })}
+              onChange={(e) => setForm({ ...form, userFrequency: 6 })}
             />
           </RadioGroup>
         </FormControl>
         <br />
         <br />
+        <br />
         <div className={styles["btns"]}>
-          <Button variant="contained" color="error" onClick={goMyPage}>
-            취소
+          <Button color="error" onClick={userDeleteModalOpen}>
+            회원 탈퇴
           </Button>
-          <div className={styles["btn-blank"]}></div>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              goMyPage();
-                userupdate();
-            }}
-          >
-            수정 완료
-          </Button>
+          <div>
+            <Button color="success" onClick={goMyPage}>
+              취소
+            </Button>
+            {/* <div className={styles["btn-blank"]}></div> */}
+            <Button
+              color="success"
+              onClick={() => {
+                userUpdate();
+                // goMyPage();
+              }}
+            >
+              수정 완료
+            </Button>
+            <Dialog
+              open={open}
+              onClose={userDeleteModalClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">{"Bye Bye!"}</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  회원탈퇴를 진행하시겠습니까?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={userDeleteModalClose}>아니오</Button>
+                <Button
+                  onClick={() => {
+                    userDeleteModalClose();
+                    userDelete();
+                  }}
+                >
+                  예
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </div>
         </div>
         <br />
         <br />
