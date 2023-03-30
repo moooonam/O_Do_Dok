@@ -6,10 +6,8 @@ import com.ssafy.ododok.db.model.Onoff;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class UserRegisterPostReq {
 
     @Getter

@@ -1,25 +1,21 @@
 package com.ssafy.ododok.db.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import net.bytebuddy.asm.Advice;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DynamicInsert
 public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int commentId;
+    private long commentId;
 
     @Column(nullable = false)
     private String commentContent;
@@ -30,4 +26,20 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name="board_id")
     private Board board;
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
+
+    public void changeComment(String commentContent){
+        this.commentContent = commentContent;
+    }
+
+    @Builder
+    public Comment(String commentContent, LocalDate commentDate, Board board, User user) {
+        this.commentContent = commentContent;
+        this.commentDate = commentDate;
+        this.board = board;
+        this.user = user;
+    }
 }

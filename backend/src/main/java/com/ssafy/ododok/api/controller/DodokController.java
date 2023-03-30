@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin(value = "*")
 @RestController
 @RequestMapping("/dodok")
 public class DodokController {
@@ -28,8 +29,7 @@ public class DodokController {
     //도독 생성 및 시작
     @PostMapping("/start")
     public ResponseEntity<String> startDodok(@RequestBody DodokCreateReq dodokCreateReq, Authentication auth) {
-        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
-        User user = principal.getUser();
+        User user = getUser(auth);
         String res = dodokService.startDodok(user, dodokCreateReq);
         return new ResponseEntity(res, HttpStatus.OK);
     }
@@ -49,14 +49,58 @@ public class DodokController {
         return new ResponseEntity<>("도독이 삭제됐습니다.",HttpStatus.OK);
     }
 
+    @GetMapping("/nowdodoks")
+    public ResponseEntity<?> nowDodokInfo(Authentication auth){
+        User user = getUser(auth);
+        Dodok dodok = dodokService.nowDodok(user);
+        if(dodok == null){
+            return new ResponseEntity<>("참여한 팀이 없거나 현재 진행중인 도독이 없습니다.",HttpStatus.OK);
+        } else{
+            return new ResponseEntity<>(dodok,HttpStatus.OK);
+        }
+    }
+
     // 지난 도독 리스트 가져오기 _ 해당 모임의 회원이 아니면 공개만 보일 수 있도록 처리해야함 !!!!
     @GetMapping("/lastdodoks/{teamId}")
-    public ResponseEntity<List<DodokInfoRes>>showLastAllDodokInfo(@PathVariable Long teamId, Authentication auth){
+    public ResponseEntity<?>showLastAllDodokInfo(@PathVariable Long teamId, Authentication auth){
+        User user = getUser(auth);
+        List<Dodok> dodokList= dodokService.showLastAllDodoks(user, teamId);
+        return dodokInfoResList(dodokList);
+    }
+
+    // 도독 공개 설정
+    @PutMapping("/dodokOpen/updateTrue/{dodokId}")
+    public ResponseEntity<String> updateDodokOpen(@PathVariable Long dodokId, Authentication auth){
+        User user = getUser(auth);
+        String res = dodokService.updateDodokOpen(user, dodokId);
+        return new ResponseEntity(res, HttpStatus.OK);
+    }
+
+    // 도독 비공개 설정
+    @PutMapping("/dodokOpen/updateFalse/{dodokId}")
+    public ResponseEntity<String> updateDodokClose(@PathVariable Long dodokId, Authentication auth){
+        User user = getUser(auth);
+        String res =  dodokService.updateDodokClose(user, dodokId);
+        return new ResponseEntity(res, HttpStatus.OK);
+    }
+
+    // 도독 검색
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<?> searchDodoks(@PathVariable String keyword){
+        List<Dodok> dodokList= dodokService.searchDodoks(keyword);
+        return dodokInfoResList(dodokList);
+    }
+
+
+    // 토큰으로 사용자 정보 가져오는 함수
+    public User getUser(Authentication auth){
         PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
         User user = principal.getUser();
+        return user;
+    }
 
-        List<Dodok> dodokList= dodokService.showLastAllDodoks(user, teamId);
-
+    // 지난 도독 (페이지별 리뷰 + 총리뷰 포함) 가져오는 함수
+    public ResponseEntity<?> dodokInfoResList(List<Dodok> dodokList){
         List<DodokInfoRes> dodokInfoResList = new ArrayList<>();
 
         for(Dodok dodok : dodokList){
@@ -66,25 +110,12 @@ public class DodokController {
             dodokInfoResList.add(dodokInfoRes);
         }
 
-        return new ResponseEntity(dodokInfoResList,HttpStatus.OK);
+        if(dodokInfoResList.size()==0){
+            return new ResponseEntity<>("검색 결과가 없습니다.",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(dodokInfoResList,HttpStatus.OK);
+        }
     }
 
-    // 도독 공개 설정
-    @PutMapping("/dodokOpen/updateTrue/{dodokId}")
-    public ResponseEntity<String> updateDodokOpen(@PathVariable Long dodokId, Authentication auth){
-        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
-        User user = principal.getUser();
-        String res = dodokService.updateDodokOpen(user, dodokId);
-        return new ResponseEntity(res, HttpStatus.OK);
-    }
-
-    // 도독 비공개 설정
-    @PutMapping("/dodokOpen/updateFalse/{dodokId}")
-    public ResponseEntity<String> updateDodokClose(@PathVariable Long dodokId, Authentication auth){
-        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
-        User user = principal.getUser();
-        String res =  dodokService.updateDodokClose(user, dodokId);
-        return new ResponseEntity(res, HttpStatus.OK);
-    }
 
 }

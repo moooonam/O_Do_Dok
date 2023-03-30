@@ -1,14 +1,16 @@
 package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.dto.UserDto;
+import com.ssafy.ododok.api.request.UserModifyPostReq;
 import com.ssafy.ododok.api.request.UserRegisterPostReq;
-import com.ssafy.ododok.db.model.User;
-import com.ssafy.ododok.db.model.UserSurvey;
-import com.ssafy.ododok.db.repository.UserRepository;
-import com.ssafy.ododok.db.repository.UserSurveyRepository;
+import com.ssafy.ododok.db.model.*;
+import com.ssafy.ododok.db.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -16,14 +18,29 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final UserSurveyRepository userSurveyRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TeamUserRepository teamUserRepository;
+    private final TeamService teamService;
+    private final CommentRepository commentRepository;
+    private final BoardRepository boardRepository;
+    private final BoardService boardService;
+    private final ReviewPageRepository reviewPageRepository;
+    private final ReviewEndRepository reviewEndRepository;
 
     @Autowired
     UserServiceImpl(UserRepository userRepository,
                     UserSurveyRepository userSurveyRepository,
-                    PasswordEncoder passwordEncoder){
+                    PasswordEncoder passwordEncoder,
+                    TeamUserRepository teamUserRepository, TeamService teamService, CommentRepository commentRepository, BoardRepository boardRepository, BoardService boardService, ReviewPageRepository reviewPageRepository, ReviewEndRepository reviewEndRepository){
         this.userRepository = userRepository;
         this.userSurveyRepository = userSurveyRepository;
         this.passwordEncoder = passwordEncoder;
+        this.teamUserRepository = teamUserRepository;
+        this.teamService = teamService;
+        this.commentRepository = commentRepository;
+        this.boardRepository = boardRepository;
+        this.boardService = boardService;
+        this.reviewPageRepository = reviewPageRepository;
+        this.reviewEndRepository = reviewEndRepository;
     }
 
     @Override
@@ -65,7 +82,6 @@ public class UserServiceImpl implements UserService{
 
         UserSurvey userSurvey = UserSurvey.builder()
                 .user(user)
-                .userSurveyId(registerDto.getId())
                 .userGender(registerDto.getGender())
                 .userAge(registerDto.getAge())
                 .userGenre1(registerDto.getGenre1())
@@ -112,10 +128,25 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public int updateUser(User user, UserDto.Basic userDto) {
-        user.changeNickName(userDto.getUserNickname());
-        user.changePassword(passwordEncoder.encode(userDto.getUserPassword()));
-        user.changeImg(userDto.getUserImage());
+    public int updateUserPassword(User user, String pwd, String modifyPassword) throws Exception {
+
+        if(passwordEncoder.matches(pwd, user.getUserPassword())){
+            try{
+                user.changePassword(passwordEncoder.encode(modifyPassword));
+                userRepository.save(user);
+                return 1;
+            }catch(Exception e){
+                return 0;
+            }
+        } else{
+            return -1;
+        }
+    }
+
+    @Override
+    public int updateUser(User user, UserModifyPostReq userModifyPostReq) {
+        user.changeNickName(userModifyPostReq.getUserNickname());
+        user.changeImg(userModifyPostReq.getUserImage());
 
         userRepository.save(user);
 
@@ -123,24 +154,38 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public int updateUserSurvey(UserSurvey userSurvey, UserDto.Basic userDto) {
-        userSurvey.changeUserGenre1(userDto.getUserGenre1());
-        userSurvey.changeUserGenre2(userDto.getUserGenre2());
-        userSurvey.changeUserGenre3(userDto.getUserGenre3());
-        userSurvey.changeUserRegion(userDto.getUserRegion());
-        userSurvey.changeUserOnoff(userDto.getUserOnoff());
-        userSurvey.changeUserFrequency(userDto.getUserFrequency());
+    public int updateUserSurvey(UserSurvey userSurvey, UserModifyPostReq userModifyPostReq) {
+        userSurvey.changeUserGenre1(userModifyPostReq.getUserGenre1());
+        userSurvey.changeUserGenre2(userModifyPostReq.getUserGenre2());
+        userSurvey.changeUserGenre3(userModifyPostReq.getUserGenre3());
+        userSurvey.changeUserRegion(userModifyPostReq.getUserRegion());
+        userSurvey.changeUserOnoff(userModifyPostReq.getUserOnoff());
+        userSurvey.changeUserFrequency(userModifyPostReq.getUserFrequency());
 
         userSurveyRepository.save(userSurvey);
 
         return 1;
     }
 
+    @Transactional
     @Override
     public boolean deleteUser(User user) {
         UserSurvey userSurvey = userSurveyRepository.findByUser(user);
         // 관련된 정보들 모두 삭제 (리뷰, 모임 등등)
          try{
+             // 팀에서 탈퇴처리
+             teamService.deleteMember(user.getUserId());
+             // 유저가 쓴 comment, 게시글, 책갈피, 총평 삭제
+             commentRepository.deleteAllByUser(user);
+
+             List<Board> list = boardRepository.findAllByUser(user);
+             for(Board board : list){
+                 boardService.deleteWriting(board.getBoardId(), user);
+             }
+
+             reviewPageRepository.deleteAllByUser(user);
+             reviewEndRepository.deleteAllByUser(user);
+
              userSurveyRepository.delete(userSurvey);
              userRepository.delete(user);
             return true;
@@ -175,5 +220,12 @@ public class UserServiceImpl implements UserService{
         } catch (Exception e){
             return false;
         }
+    }
+
+    @Override
+    public Team getUserTeam(User user) {
+        TeamUser teamUser = teamUserRepository.findByUser(user);
+        Team team = teamUser.getTeam();
+        return team;
     }
 }

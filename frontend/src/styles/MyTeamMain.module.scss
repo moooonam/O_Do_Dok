@@ -1,7 +1,17 @@
+.myteam-content-box {
+    margin-top: 50px;
+    margin-left:50px;
+
+    h4 {
+        cursor: pointer;
+    }
+
+}
+
 .teamImg {
-    width: 97%;
-    height: 32%;
-    margin-bottom: 10px;
+    width: 93%;
+    height: 400px;
+    margin-bottom: 30px;
 }
 
 .secondBox {
@@ -21,67 +31,75 @@
 
 .tagBox {
     border-top: 1px solid black;
-    width: 40%; 
+    width: 30%; 
     margin-right: 50px;
     padding-top: 15px;
 }
 
 .ruleBox {
     border-top: 1px solid black;
-    width: 25%;
+    width: 30%;
     padding-top: 15px; 
-    line-height: 23px;
+    line-height: 30px;
+    font-size: 20px;
 }
 
 .myteam-title {
     text-align: start;
-    line-height: 23px;
+    line-height: 30px;
+    font-size: 20px;
 }
 
 .myteam-content {
-    line-height: 23px;
+    line-height: 30px;
+    font-size: 20px;
     text-align: end;
 }
 
 .onoffRegionBox {
     display: flex;
+    font-size: 15px;
 }
 
 .genreBox {
     display: flex;
+    font-size:15px;
 }
 
 .myteam-oneGenre {
     border-radius: 15px;
     background-color: rgb(53, 68, 53);
-    width: 150px;
-    height: 35px;
+    width: 130px;
+    height: 30px;
     margin-right: 15px;
     margin-top: 10px;
     text-align: center;
     justify-content: center;
     color: white;
+    padding-top: 12px;
 }
 
 .myteam-onoff {
     border-radius: 15px;
     background-color: rgb(88, 201, 86);
-    width: 150px;
-    height: 35px;
+    width: 130px;
+    height: 30px;
     margin-right: 15px;
     text-align: center;
     justify-content: center;
     color: white;
+    padding-top: 15px;
 }
 
 .myteam-region {
     border-radius: 15px;
     background-color: rgb(88, 201, 86);
-    width: 150px;
-    height: 35px;
+    width: 130px;
+    height: 30px;
     margin-right: 15px;
     text-align: center;
     color: white;
+    padding-top: 15px;
 }
 
 .thirdBox {
@@ -90,12 +108,12 @@
 }
 
 .myteam-newuserBox {
-    width: 43%;
-    margin-right: 148px;
+    width: 40%;
+    margin-right: 100px;
 }
 
 .myteam-dodokBox {
-    width: 43%;
+    width: 45%;
 }
 
 .myteam-newuser {
@@ -106,14 +124,22 @@
 
 .myteam-newuser-content {
     text-align: start;
-    line-height: 28px;
+    line-height: 40px;
     padding-top: 15px; 
+    font-size: 20px;
 }
 
 .myteam-newuser-name {
     text-align: end;
-    line-height: 28px;
+    line-height: 40px;
     padding-top: 15px; 
+    font-size: 20px;
+}
+
+.myteam-nododok {
+    border-top: 1px solid black;
+    padding-top: 50px;
+    text-align: center;
 }
 
 .myteam-dodok {
@@ -132,7 +158,8 @@
     margin-top:20px;
     margin-left: 30px;
     width: 30%;
-    line-height: 28px;
+    line-height: 30px;
+    font-size: 20px;
 }
 
 .myteam-dodok-content {
@@ -140,5 +167,6 @@
     margin-top:20px;
     width: 30%;
     margin-left: 20px;
-    line-height: 28px;
+    line-height: 30px;
+    font-size: 20px;
 }

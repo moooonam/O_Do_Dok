@@ -25,11 +25,15 @@ public interface TeamService {
     void addAdmin(Long teamId, User user);
 
     // 멤버 초대할 시
-    void addMember(Long teamId, User user, String msg);
+//    void addMember(Long teamId, User user, String msg);
 
     List<TeamUser> getMemberByTeamId(Long teamId);
 
     void deleteMember(Long userId);
 
     int modifyGrade(Long userId);
+
+    Team getTeamByTeamName(String teamName);
+
+    Team getTeamInfoByTeamId(Long teamId);
 }

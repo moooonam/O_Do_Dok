@@ -5,6 +5,7 @@ import com.ssafy.ododok.api.request.EndReviewModifyPutReq;
 import com.ssafy.ododok.db.model.*;
 import com.ssafy.ododok.db.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,26 +17,23 @@ public class ReviewEndServiceImpl implements ReviewEndService {
 
     private final UserRepository userRepository;
     private final DodokRepository dodokRepository;
-    private final ReviewPageRepository reviewPageRepository;
     private final ReviewEndRepository reviewEndRepository;
-    private final TeamRepository teamRepository;
     private final TeamUserRepository teamUserRepository;
     private final BookRepository bookRepository;
+    private final GenreRepository genreRepository;
 
     public ReviewEndServiceImpl(UserRepository userRepository,
-                            DodokRepository dodokRepository,
-                            ReviewPageRepository reviewPageRepository,
-                            ReviewEndRepository reviewEndRepository,
-                            TeamRepository teamRepository,
-                            TeamUserRepository teamUserRepository,
-                            BookRepository bookRepository){
+                                DodokRepository dodokRepository,
+                                ReviewEndRepository reviewEndRepository,
+                                TeamUserRepository teamUserRepository,
+                                BookRepository bookRepository,
+                                GenreRepository genreRepository){
         this.userRepository = userRepository;
         this.dodokRepository=dodokRepository;
         this.reviewEndRepository=reviewEndRepository;
-        this.reviewPageRepository =reviewPageRepository;
-        this.teamRepository = teamRepository;
         this.teamUserRepository=teamUserRepository;
         this.bookRepository=bookRepository;
+        this.genreRepository = genreRepository;
     };
 
     // 총 리뷰 작성
@@ -44,36 +42,41 @@ public class ReviewEndServiceImpl implements ReviewEndService {
 
         TeamUser teamUser = teamUserRepository.findByUser(user);
         Team team = teamUser.getTeam();
-        ReviewEnd reviewEnd = reviewEndRepository.findByUser(user);
-        if(reviewEnd != null){
+        Dodok dodok = dodokRepository.findByTeamAndDodokComplete(team, false).get();
+
+        ReviewEnd reviewEnd = reviewEndRepository.findByUserAndDodok(user, dodok);
+        if(reviewEnd == null){
+            try{
+                reviewEnd = ReviewEnd.builder()
+                        .user(user)
+                        .dodok(dodok)
+                        .reviewEndContent(endReviewCreatePostReq.getContent())
+                        .reviewEndDate(now())
+                        .reviewEndBookrating(endReviewCreatePostReq.getBookRating())
+                        .reviewEndGenrerating(endReviewCreatePostReq.getGenreRating())
+                        .build();
+
+                reviewEndRepository.save(reviewEnd);
+
+                user.changeReviewcnt(user.getUserReviewcnt()+1);
+                userRepository.save(user);
+
+                Book book = dodok.getBook();
+                int memberCnt = book.getBookMembercnt();
+                double rating = book.getBookRating();
+                double rating_modify = ((double) memberCnt * rating) + endReviewCreatePostReq.getBookRating();
+
+                book.changeBookMembercnt(memberCnt+1);
+                book.changeBookRating(rating_modify/(double)(memberCnt+1));
+                bookRepository.save(book);
+
+                return "책갈피 입력이 완료되었습니다.";
+            } catch (Exception e1){
+                System.out.println(e1);
+                return "책갈피 입력에 문제가 생겼습니다.";
+            }
+        } else {
             return "이미 작성하셨습니다.";
-        }
-
-        try{
-            Dodok dodok = dodokRepository.findByTeamAndDodokComplete(team, false).get();
-            reviewEnd = ReviewEnd.builder()
-                    .user(user)
-                    .dodok(dodok)
-                    .reviewEndContent(endReviewCreatePostReq.getContent())
-                    .reviewEndDate(now())
-                    .reviewEndBookrating(endReviewCreatePostReq.getBookRating())
-                    .reviewEndGenrerating(endReviewCreatePostReq.getGenreRating())
-                    .build();
-
-            reviewEndRepository.save(reviewEnd);
-            user.changeReviewcnt(user.getUserReviewcnt()+1);
-            Book book = dodok.getBook();
-            book.changeBookMembercnt(book.getBookMembercnt()-1);
-            int membercnt = book.getBookMembercnt();
-            double rating = book.getBookRating();
-            double rating_modify = ((double) membercnt * rating) + endReviewCreatePostReq.getBookRating();
-            int membercnt_modify = book.getBookMembercnt() + 1;
-            book.changeBookRating(rating_modify/(double)membercnt_modify);
-            userRepository.save(user);
-            bookRepository.save(book);
-            return "책갈피 입력이 완료되었습니다.";
-        } catch (Exception e){
-            return "책갈피 입력에 문제가 생겼습니다.";
         }
 
     }
@@ -94,6 +97,7 @@ public class ReviewEndServiceImpl implements ReviewEndService {
     }
 
     // 총 리뷰 삭제
+    @Transactional
     @Override
     public boolean deleteEndReview(Long endReviewId, User user) {
         ReviewEnd reviewEnd = reviewEndRepository.findById(endReviewId).get();
@@ -133,6 +137,12 @@ public class ReviewEndServiceImpl implements ReviewEndService {
         } else{
             return null;
         }
+    }
+
+    @Override
+    public List<ReviewEnd> getReviewEndList(User user) {
+        List<ReviewEnd> reviewEndList= reviewEndRepository.findAllByUser(user);
+        return reviewEndList;
     }
 
 }

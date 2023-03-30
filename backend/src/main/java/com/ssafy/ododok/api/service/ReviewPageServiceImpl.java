@@ -5,6 +5,7 @@ import com.ssafy.ododok.api.request.PageReviewPutReq;
 import com.ssafy.ododok.db.model.*;
 import com.ssafy.ododok.db.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,6 +68,7 @@ public class ReviewPageServiceImpl implements ReviewPageService{
     }
 
     // 책갈피 삭제하기
+    @Transactional
     @Override
     public boolean deletePageReview(Long pageReviewId, User user) throws Exception {
         ReviewPage reviewPage= reviewPageRepository.findById(pageReviewId).get();
@@ -108,5 +110,10 @@ public class ReviewPageServiceImpl implements ReviewPageService{
 
     }
 
-
+    // 회원에 따른 페이지 리뷰 리스트
+    @Override
+    public List<ReviewPage> getReviewPageList(User user){
+        List<ReviewPage> reviewPageList= reviewPageRepository.findAllByUser(user);
+        return reviewPageList;
+    }
 }

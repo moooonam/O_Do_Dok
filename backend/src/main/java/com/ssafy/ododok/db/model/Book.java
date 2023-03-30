@@ -1,19 +1,14 @@
 package com.ssafy.ododok.db.model;
 
 import com.ssafy.ododok.api.request.BookAddPostReq;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-//@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DynamicInsert
 public class Book {
@@ -45,6 +40,9 @@ public class Book {
 
     @ColumnDefault("false")
     private boolean needCheck;
+
+    @ColumnDefault("0")
+    private double award;
 
     @Builder
     public Book(String bookTitle,String bookAuthor,String bookGenre,int bookPagecnt, boolean needCheck){

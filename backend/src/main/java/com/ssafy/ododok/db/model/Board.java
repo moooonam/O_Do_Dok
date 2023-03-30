@@ -1,18 +1,13 @@
 package com.ssafy.ododok.db.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DynamicInsert
 public class Board {
@@ -38,7 +33,25 @@ public class Board {
     @JoinColumn(name="user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name="board_type")
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private BoardType boardType;
+
+    public void changeTitle(String boardTitle){
+        this.boardTitle = boardTitle;
+    }
+    public void changeContent(String boardContent){
+        this.boardContent = boardContent;
+    }
+
+    @Builder
+    public Board(Team team, User user, String boardTitle, String boardContent, BoardType boardType, LocalDate boardDate) {
+        this.team = team;
+        this.user = user;
+        this.boardTitle = boardTitle;
+        this.boardContent = boardContent;
+        this.boardType = boardType;
+        this.boardDate = boardDate;
+    }
+
 }

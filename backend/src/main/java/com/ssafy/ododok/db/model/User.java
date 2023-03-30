@@ -1,18 +1,13 @@
 package com.ssafy.ododok.db.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @DynamicInsert
 public class User {
@@ -36,7 +31,7 @@ public class User {
     @Column(nullable = false)
     private String userPhone;
 
-    @Column
+    @ColumnDefault("'https://cdn-icons-png.flaticon.com/512/5264/5264565.png'")
     private String userImage;
 
     @ColumnDefault("0")
@@ -51,9 +46,17 @@ public class User {
     public void changeImg(String img){
         this.userImage=img;
     }
-
     public void changeReviewcnt(int userReviewcnt){
         this.userReviewcnt=userReviewcnt;
+    }
+
+    @Builder
+    public User(String userName, String userNickname, String userEmail, String userPassword, String userPhone) {
+        this.userName = userName;
+        this.userNickname = userNickname;
+        this.userEmail = userEmail;
+        this.userPassword = userPassword;
+        this.userPhone = userPhone;
     }
 
 }

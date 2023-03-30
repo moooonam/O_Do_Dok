@@ -3,33 +3,83 @@ import TextField from "@mui/material/TextField";
 import styles from "../../styles/Login.module.scss";
 import Grid from "@mui/material/Grid"; // Grid version 1
 import Button from "@mui/material/Button";
-import axios from 'axios';
-import { useNavigate } from "react-router-dom";
 
+import { useNavigate } from "react-router-dom";
+import { Api } from "../../Api";
+import { useDispatch } from "react-redux";
+import { login, getUserInfo, getTeamId } from "../../redux/slice/userSlice";
 function LoginPage() {
+  const dispatch = useDispatch();
   const movePage = useNavigate();
   const [form, setForm] = useState({
-    email: "",
+    userEmail: "",
     password: "",
   });
 
   const goSignup = () => {
     movePage("/signup");
-  }
-
+  };
+  const goMain = () => {
+    movePage("/");
+  };
   const userLogin = () => {
-    axios({
-      methods: 'post',
-      url: '#',
-      data: form,
-    })
+    // console.log(form)
+    Api.post("/login", form)
       .then((res) => {
-        console.log(res)
+        // console.log(res.data['refresh-token'])
+        localStorage.setItem("refresh-token", res.data["refresh-token"]);
+        localStorage.setItem("access-token", res.data["access-token"]);
+        dispatch(login());
+        Api.get("/user/me", {
+          headers: {
+            "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+            "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+          },
+        })
+          .then((res) => {
+            dispatch(
+              getUserInfo({
+                profileImg: res.data.userImage,
+                userEmail: res.data.userEmail,
+                userNickname: res.data.userNickname,
+                userGenre1: res.data.userGenre1,
+                userGenre2: res.data.userGenre2,
+                userGenre3: res.data.userGenre3,
+                userName: res.data.userName,
+                userGender: res.data.userGender,
+                userFrequency: res.data.userFrequency,
+                userOnoff: res.data.userOnoff,
+                userRegion: res.data.userRegion,
+                userAge: res.data.userAge,
+              })
+            );
+            // console.log(res.data)
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+          Api.get("/user/myTeam", {
+            headers: {
+              "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+              "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+            },
+          })
+          .then((res) => {
+            if (res.data) {
+              dispatch(getTeamId({ myTeamId:res.data.teamId}))
+              localStorage.setItem('myTeamId',res.data.teamId)
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+        goMain();
       })
       .catch((err) => {
-        console.log(err)
-      })
-  }
+        alert('이메일 혹은 비밀번호를 확인해주세요')
+        console.log(err);
+      });
+  };
   return (
     <Grid
       container
@@ -44,29 +94,33 @@ function LoginPage() {
           <p className={styles["login-blank"]}>이메일</p>
           <TextField
             required
-            id="email"
+            id="userEmail"
             label="Required"
             placeholder="이메일을 입력해주세요"
-            value={form.email}
+            value={form.userEmail}
             variant="standard"
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            onChange={(e) => setForm({ ...form, userEmail: e.target.value })}
           />
         </Grid>
         <Grid container direction="row" columnGap={8}>
           <p className={styles["login-blank"]}>비밀번호</p>
           <TextField
             required
+            type="password"
             id="password"
             label="Required"
             placeholder="비밀번호를 입력해주세요"
             value={form.password}
             variant="standard"
             onChange={(e) => setForm({ ...form, password: e.target.value })}
+            onKeyUp={(e) => {if (e.key === "Enter") {userLogin()}}}
           />
         </Grid>
         <Grid container direction="row" justifyContent={"space-between"}>
           <p className={styles["small"]}>아이디/비밀번호 찾기</p>
-          <p className={styles["small"]} onClick={goSignup}>가입하기</p>
+          <p className={styles["small"]} onClick={goSignup}>
+            가입하기
+          </p>
         </Grid>
         <hr />
         <br />

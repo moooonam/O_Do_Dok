@@ -1,45 +1,78 @@
-import React from 'react'
-import styles from '../../styles/Main.module.scss'
+import React, { useState, useEffect } from "react";
+import styles from "../../styles/Main.module.scss";
+import { Api } from "../../Api";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+// import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
 function RecomendBook() {
-  const books = [
-    {
-      id:1,
-      imgurl:'https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg'
-    },
-    {
-      id:2,
-      imgurl:'https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg'
-    },
-    {
-      id:3,
-      imgurl:'https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg'
-    },
-    {
-      id:4,
-      imgurl:'https://image.aladin.co.kr/product/31273/7/cover500/k542832564_1.jpg'
-    },
-    {
-      id:5,
-      imgurl:'https://image.aladin.co.kr/product/30876/42/cover500/k892831289_1.jpg'
-    },
-  ]
-  const renderRecomendBook = books.map(book => {
+  const [best5Book, setBest5Book] = useState([]);
+  useEffect(() => {
+    Api.get("/book/bestBook").then((res) => {
+      console.log(res);
+      const recomendBook = [...res.data];
+      let newBook = [];
+      while (recomendBook.length > 15) {
+        let movenum = recomendBook.splice(
+          Math.floor(Math.random() * recomendBook.length),
+          1
+        )[0];
+        newBook.push(movenum);
+      }
+      setBest5Book([...newBook]);
+      console.log(best5Book);
+    });
+  }, []);
+  const [open, setOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState({});
+  const handleClickOpen = (book) => {
+    // console.log("왔냐", book);
+    setSelectedBook({ ...book });
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  }
+
+  const renderRecomendBook = best5Book.map((book) => {
     return (
-      <div key={book.id}>
-        <img src={book.imgurl} alt="책" />
+      <div key={book.bookId}>
+        <img src={book.bookImg} alt="책" onClick={() =>handleClickOpen(book)}/>
       </div>
-    )
-  })
+    );
+  });
   return (
-    <div className={styles['wrap-recomendbook']}>
-      <div className={styles['recomendbook-title']}>
-      오늘의 추천 도서
-      </div>
-      <div className={styles['wrap-bookimg'] }>
-        {renderRecomendBook}
-      </div>
+    <div className={styles["wrap-recomendbook"]}>
+      <div className={styles["recomendbook-title"]}>오늘의 추천 도서</div>
+      <div className={styles["wrap-bookimg"]}>{renderRecomendBook}</div>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"선택된 책"}</DialogTitle>
+        <DialogContent>
+          <div>
+            {selectedBook ? (
+              <div>
+                <p>제목: {selectedBook.bookTitle}</p>
+                <br />
+                <p>작가: {selectedBook.bookAuthor}</p>
+              </div>
+            ) : null}
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>닫기</Button>
+        </DialogActions>
+      </Dialog>
     </div>
-  )
+  );
 }
 
-export default RecomendBook
+export default RecomendBook;

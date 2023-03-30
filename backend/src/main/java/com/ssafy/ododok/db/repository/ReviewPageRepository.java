@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface ReviewPageRepository  extends JpaRepository<ReviewPage,Long> {
     List<ReviewPage> findAllByDodok(Dodok dodok);
+    List<ReviewPage> findAllByUser(User user);
 
     @Transactional
     @Modifying
@@ -18,4 +19,5 @@ public interface ReviewPageRepository  extends JpaRepository<ReviewPage,Long> {
 
     ReviewPage findByReviewPageId(Long reviewPageId);
 
+    void deleteAllByUser(User user);
 }
