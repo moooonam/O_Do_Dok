@@ -94,7 +94,8 @@ public class ApplyServiceImpl implements ApplyService {
         teamUserRepository.save(teamUser);
 
         Team updateTeam = teamRepository.findByTeamId(team.getTeamId()).get();
-        updateTeam.setTeamMemberCnt(updateTeam.getTeamMemberCnt()+1);
+        updateTeam.changeTeamAge(updateTeam.getTeamMemberCnt()+1);
+//        updateTeam.setTeamMemberCnt(updateTeam.getTeamMemberCnt()+1);
         teamRepository.save(updateTeam);
 
         double x = team.getTeamAge();
@@ -103,14 +104,15 @@ public class ApplyServiceImpl implements ApplyService {
         System.out.println("y ? : "+y);
         double z = ((x * y) + (double) userSurveyRepository.findByUser(user).getUserAge()) / (y+1);
         System.out.println("z ? : "+z);
-        updateTeam.setTeamAge(z);
+        updateTeam.changeTeamAge(z);
+//        updateTeam.setTeamAge(z);
         teamRepository.save(updateTeam);
 
 //        int age = 0;
 //        Long teamId = updateTeam.getTeamId();
 //        List<TeamUser> teamUserList = teamUserRepository.findTeamUsersByTeam_TeamId(teamId);
 //        for(int i=0; i<teamUserList.size(); i++){
-//            System.out.println("¾ß..?");
+//            System.out.println("ï¿½ï¿½..?");
 //            TeamUser tu = teamUserList.get(i);
 //            User u = tu.getUser();
 //            UserSurvey us = userSurveyRepository.findByUser(u);

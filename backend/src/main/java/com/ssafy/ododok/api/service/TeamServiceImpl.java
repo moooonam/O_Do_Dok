@@ -205,7 +205,8 @@ public class TeamServiceImpl implements TeamService{
 
         // 삭제되면 팀 인원 -1
         Team updateTeam = teamRepository.findByTeamId(team.getTeamId()).get();
-        updateTeam.setTeamMemberCnt(updateTeam.getTeamMemberCnt()-1);
+        updateTeam.changeTeamAge(updateTeam.getTeamMemberCnt()+1);
+//        updateTeam.setTeamMemberCnt(updateTeam.getTeamMemberCnt()-1);
 
         // 테이블에서 멤버 삭제
         teamUserRepository.deleteByUser_UserId(userId);
@@ -220,7 +221,8 @@ public class TeamServiceImpl implements TeamService{
         System.out.println("y : "+y);
         double z = ((x * y) - (double) userSurveyRepository.findByUser(user).getUserAge()) / (y-1);
         System.out.println("z : "+z);
-        updateTeam.setTeamAge(z);
+        updateTeam.changeTeamAge(z);
+//        updateTeam.setTeamAge(z);
         teamRepository.save(updateTeam);
     }
 

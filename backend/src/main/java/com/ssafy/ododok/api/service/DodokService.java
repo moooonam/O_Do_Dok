@@ -12,7 +12,8 @@ public interface DodokService {
     void timeEndDodok() throws Exception;
     int endDodok(Long dodokId) throws Exception;
     void deleteDodok(Authentication authentication, Long dodokId) throws Exception;
-    List<Dodok> showLastAllDodoks(User user, Long teamId);
+    List<Dodok> showLastTeamAllDodoks(User user, Long teamId);
+    List<Dodok> showLastAllDodoks();
 
     List<ReviewPage> getReviewPageList(Dodok dodok);
     List<ReviewEnd> getRivewEndList(Dodok dodok);
