@@ -20,4 +20,7 @@ public interface TeamUserRepository extends JpaRepository<TeamUser,Long> {
 
     @Transactional
     void deleteByUser_UserId(Long userId);
+
+    @Transactional
+    void deleteByTeam_TeamId(Long teamId);
 }

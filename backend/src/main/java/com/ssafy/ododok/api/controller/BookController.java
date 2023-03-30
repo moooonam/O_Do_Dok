@@ -3,6 +3,7 @@ package com.ssafy.ododok.api.controller;
 import com.ssafy.ododok.api.request.BookAddPostReq;
 import com.ssafy.ododok.api.service.BookService;
 import com.ssafy.ododok.db.model.Book;
+import com.ssafy.ododok.db.model.Team;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,12 +53,21 @@ public class BookController {
         }
     }
 
-    // 임시 책 조회
-    @GetMapping("/zzz")
-    public ResponseEntity<?> zzz(){
+    // 책 추천
+    @GetMapping("/recommend/{teamId}")
+    public ResponseEntity<?> recommendBooks(@PathVariable Long teamId){
 
-        knn.knn();
-        return null;
+        List<Book> list = bookService.recommendBooks(teamId);
+
+        // 추천된 책 리스트 반환
+        return ResponseEntity.status(200).body(list);
+    }
+
+    // 베스트 셀러 책 조회
+    @GetMapping("/bestBook")
+    public ResponseEntity<?> bestBook(){
+        List<Book> bookList = bookService.listBestBooks();
+        return new ResponseEntity(bookList,HttpStatus.OK);
     }
 
 }

@@ -49,6 +49,17 @@ public class DodokController {
         return new ResponseEntity<>("도독이 삭제됐습니다.",HttpStatus.OK);
     }
 
+    @GetMapping("/nowdodoks")
+    public ResponseEntity<?> nowDodokInfo(Authentication auth){
+        User user = getUser(auth);
+        Dodok dodok = dodokService.nowDodok(user);
+        if(dodok == null){
+            return new ResponseEntity<>("참여한 팀이 없거나 현재 진행중인 도독이 없습니다.",HttpStatus.OK);
+        } else{
+            return new ResponseEntity<>(dodok,HttpStatus.OK);
+        }
+    }
+
     // 지난 도독 리스트 가져오기 _ 해당 모임의 회원이 아니면 공개만 보일 수 있도록 처리해야함 !!!!
     @GetMapping("/lastdodoks/{teamId}")
     public ResponseEntity<?>showLastAllDodokInfo(@PathVariable Long teamId, Authentication auth){

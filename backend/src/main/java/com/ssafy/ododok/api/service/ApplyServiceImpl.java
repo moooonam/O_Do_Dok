@@ -2,13 +2,11 @@ package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.request.UserApplyPostReq;
 import com.ssafy.ododok.api.response.ApplyRes;
-import com.ssafy.ododok.db.model.Apply;
-import com.ssafy.ododok.db.model.Team;
-import com.ssafy.ododok.db.model.TeamUser;
-import com.ssafy.ododok.db.model.User;
+import com.ssafy.ododok.db.model.*;
 import com.ssafy.ododok.db.repository.ApplyRepository;
 import com.ssafy.ododok.db.repository.TeamRepository;
 import com.ssafy.ododok.db.repository.TeamUserRepository;
+import com.ssafy.ododok.db.repository.UserSurveyRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,11 +22,13 @@ public class ApplyServiceImpl implements ApplyService {
     private final ApplyRepository applyRepository;
     private final TeamRepository teamRepository;
     private final TeamUserRepository teamUserRepository;
+    private final UserSurveyRepository userSurveyRepository;
 
-    public ApplyServiceImpl(ApplyRepository applyRepository, TeamRepository teamRepository, TeamUserRepository teamUserRepository) {
+    public ApplyServiceImpl(ApplyRepository applyRepository, TeamRepository teamRepository, TeamUserRepository teamUserRepository, UserSurveyRepository userSurveyRepository) {
         this.applyRepository = applyRepository;
         this.teamRepository = teamRepository;
         this.teamUserRepository = teamUserRepository;
+        this.userSurveyRepository = userSurveyRepository;
     }
 
     @Override
@@ -92,13 +92,34 @@ public class ApplyServiceImpl implements ApplyService {
                 .build();
 
         teamUserRepository.save(teamUser);
-//public void changeNickName(String nickname){
-//        this.userNickname = nickname;
-//    }
 
         Team updateTeam = teamRepository.findByTeamId(team.getTeamId()).get();
         updateTeam.setTeamMemberCnt(updateTeam.getTeamMemberCnt()+1);
         teamRepository.save(updateTeam);
+
+        double x = team.getTeamAge();
+        System.out.println("x ? : "+x);
+        double y = team.getTeamMemberCnt()-1;
+        System.out.println("y ? : "+y);
+        double z = ((x * y) + (double) userSurveyRepository.findByUser(user).getUserAge()) / (y+1);
+        System.out.println("z ? : "+z);
+        updateTeam.setTeamAge(z);
+        teamRepository.save(updateTeam);
+
+//        int age = 0;
+//        Long teamId = updateTeam.getTeamId();
+//        List<TeamUser> teamUserList = teamUserRepository.findTeamUsersByTeam_TeamId(teamId);
+//        for(int i=0; i<teamUserList.size(); i++){
+//            System.out.println("¾ß..?");
+//            TeamUser tu = teamUserList.get(i);
+//            User u = tu.getUser();
+//            UserSurvey us = userSurveyRepository.findByUser(u);
+//            age += us.getUserAge();
+//        }
+//        double avg = age / updateTeam.getTeamMemberCnt();
+//        System.out.println("avg : " + avg);
+//        updateTeam.setTeamAge(avg);
+//        teamRepository.save(updateTeam);
     }
 
     @Override

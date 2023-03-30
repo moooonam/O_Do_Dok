@@ -6,6 +6,7 @@ import com.ssafy.ododok.db.repository.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -146,11 +147,13 @@ public class DodokServiceImpl implements DodokService {
     }
 
     // 도독 삭제하기
+    @Transactional
     @Override
     public void deleteDodok(Authentication authentication, Long dodokId) throws Exception {
         Dodok dodok = dodokRepository.findById(dodokId).get();
         Team team = dodok.getTeam();
 
+        // 페이지별 리뷰, 총평 삭제
         List<ReviewPage> pageReviewList =reviewPageRepository.findAllByDodok(dodok);
         for(ReviewPage reviewPage: pageReviewList){
             User user = reviewPage.getUser();
@@ -257,6 +260,19 @@ public class DodokServiceImpl implements DodokService {
             }
         }
         return dodokResult;
+    }
+
+    @Override
+    public Dodok nowDodok(User user) {
+        try{
+            TeamUser teamUser = teamUserRepository.findByUser(user);
+            Team team = teamUser.getTeam();
+            Dodok dodok = dodokRepository.findByTeamAndDodokComplete(team, false).get();
+            return dodok;
+        } catch (Exception e){
+            return null;
+        }
+
     }
 
     // 도독이 종료되었을 때 장르 평점 추가하기
