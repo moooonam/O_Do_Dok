@@ -38,7 +38,7 @@ public class KNN {
             String genre = list.get(i);
 
             switch (genre) {
-                case "추리/미스터리":
+                case "추리":
                     numList.add(1);
                     break;
                 case "판타지":
