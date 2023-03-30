@@ -60,11 +60,18 @@ public class DodokController {
         }
     }
 
-    // 지난 도독 리스트 가져오기 _ 해당 모임의 회원이 아니면 공개만 보일 수 있도록 처리해야함 !!!!
+    // 특정 팀에 대한 지난 도독 리스트 가져오기 _ 해당 모임의 회원이 아니면 공개만 보일 수 있도록 처리해야함 !!!
     @GetMapping("/lastdodoks/{teamId}")
-    public ResponseEntity<?>showLastAllDodokInfo(@PathVariable Long teamId, Authentication auth){
+    public ResponseEntity<?> showTeamLastAllDodokInfo(@PathVariable Long teamId, Authentication auth){
         User user = getUser(auth);
-        List<Dodok> dodokList= dodokService.showLastAllDodoks(user, teamId);
+        List<Dodok> dodokList= dodokService.showLastTeamAllDodoks(user, teamId);
+        return dodokInfoResList(dodokList);
+    }
+
+    // 모든 지난 도독 리스트 가져오기 _ 공개만
+    @GetMapping("/lastdodoks")
+    public ResponseEntity<?> showLastAllDodokInfo(){
+        List<Dodok> dodokList= dodokService.showLastAllDodoks();
         return dodokInfoResList(dodokList);
     }
 
@@ -102,14 +109,16 @@ public class DodokController {
     // 지난 도독 (페이지별 리뷰 + 총리뷰 포함) 가져오는 함수
     public ResponseEntity<?> dodokInfoResList(List<Dodok> dodokList){
         List<DodokInfoRes> dodokInfoResList = new ArrayList<>();
-
+        System.out.println(dodokInfoResList);
+        System.out.println("here"+dodokList.size());
         for(Dodok dodok : dodokList){
+            System.out.println(dodok.getDodokId());
             List<ReviewPage> reviewPageList = dodokService.getReviewPageList(dodok);
             List<ReviewEnd> reviewEndList = dodokService.getRivewEndList(dodok);
             DodokInfoRes dodokInfoRes =new DodokInfoRes(dodok,reviewPageList,reviewEndList);
             dodokInfoResList.add(dodokInfoRes);
         }
-
+        System.out.println(dodokInfoResList);
         if(dodokInfoResList.size()==0){
             return new ResponseEntity<>("검색 결과가 없습니다.",HttpStatus.OK);
         }else{

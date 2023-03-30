@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Setter
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -94,6 +93,9 @@ public class Team {
     }
     public void changeTeamTopGenre(String teamTopGenre){
         this.teamTopGenre = teamTopGenre;
+    }
+    public void changeTeamAge(double teamAge){
+        this.teamAge = teamAge;
     }
 
     @Builder
