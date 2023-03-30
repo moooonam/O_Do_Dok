@@ -2,6 +2,7 @@ package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.request.BoardCreatePostReq;
 import com.ssafy.ododok.api.request.CommentCreatePostReq;
+import com.ssafy.ododok.api.request.CommentModifyPostReq;
 import com.ssafy.ododok.api.response.BoardRes;
 import com.ssafy.ododok.db.model.*;
 import com.ssafy.ododok.db.repository.BoardRepository;
@@ -120,12 +121,12 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public String modifyComment(CommentCreatePostReq commentCreatePostReq, User user) {
+    public String modifyComment(CommentModifyPostReq commentModifyPostReq, User user) {
 
-        Comment comment = commentRepository.findById(commentCreatePostReq.getBoardId()).get();
+        Comment comment = commentRepository.findById(commentModifyPostReq.getCommentId()).get();
 
         if(comment.getUser().getUserId() == user.getUserId()){
-            comment.changeComment(commentCreatePostReq.getComment());
+            comment.changeComment(commentModifyPostReq.getComment());
             commentRepository.save(comment);
             return "수정 되었습니다.";
         } else {
