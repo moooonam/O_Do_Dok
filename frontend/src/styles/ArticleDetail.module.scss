@@ -59,6 +59,11 @@
     border-bottom: 1px solid lightgray;
     margin-bottom: 20px;
 }
+
+.wrap-user-update {
+    display: flex;
+    justify-content: space-between;
+}
 .wrap-user-info {
     display: flex;
     p {
@@ -80,6 +85,29 @@
         }
     }
 }
+
+.comment-update-delete {
+    display: flex;
+    p {
+        margin-right: 1px;
+        margin-left: 8px;
+        margin-top: 7px;
+        cursor: pointer;
+    }
+}
 .comment-content {
     margin-top: 10px;
+}
+
+.update-box {
+    display: flex;
+    
+    div {
+        display: flex;
+        
+        p {
+            width: 40px;
+            cursor: pointer;
+        }
+    }
 }

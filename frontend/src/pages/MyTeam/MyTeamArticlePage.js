@@ -10,7 +10,7 @@ function MyTeamArticlePage() {
   const myTeamId = useSelector((state) => state.user.myTeamId)
   const movePage = useNavigate();
   function goArticleCreate() {
-    movePage("/myteam/:teamId/article/create");
+    movePage(`/myteam/${myTeamId}/article/create`);
   }
   const [articles, setArticles] = useState([]);
   const [form, setForm] = useState({
