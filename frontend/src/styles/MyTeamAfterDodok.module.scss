@@ -29,6 +29,7 @@
     border: 1px solid black;
     border-radius: 3px;
     // height: 20px;
+    cursor: pointer;
     margin-right: 10px;
     padding: 5px;
     float: right;
@@ -91,7 +92,7 @@
 .small-standing-line {
     width: 0.2vw;
     height: 4vh;
-    background-color: red;
+    background-color: black;
     margin: 0 auto;
 
     :hover {

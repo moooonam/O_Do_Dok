@@ -4,7 +4,11 @@ import sidestyles from "../../styles/Sidebar.module.scss";
 import dodokstyles from "../../styles/MyTeamBeforeDodok.module.scss";
 import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
-
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 // datepicker
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -24,6 +28,21 @@ function BeforeDodok() {
   const myTeamId = localStorage.getItem('myTeamId')
   const [teamName, setTeamName] = useState('')
   const [recommandBook, setRecommandBook] = useState([])
+  const [selectedBook, setSelectedBook] = useState({});
+  const [open, setOpen] = useState(false);
+  const handleClickOpen = (book) => {
+    // console.log("왔냐", book);
+    setSelectedBook({ ...book });
+    setOpen(true);
+
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const insertBookData = (()=> {
+    hendelCallback(selectedBook)
+    setOpen(false)
+  })
   useEffect(()=> {
     Api.get("/user/myTeam", {
       headers: {
@@ -33,18 +52,28 @@ function BeforeDodok() {
     })
     .then((res) => {
       setTeamName(res.data.teamName)
-      console.log('여기저기', res)
-    })
-    .catch((err) => {
+    }) 
+    .catch((err) => { 
       console.log(err)
-    })
+    }) 
     Api.get(`book/recommend/${myTeamId}`)
     .then((res) => {
-      console.log('모임추천도서', res)
+      const recomendBook = [...res.data];
+      let newBook = [];
+      while (recomendBook.length > 6) {
+        let movenum = recomendBook.splice(
+          Math.floor(Math.random() * recomendBook.length),
+          1
+        )[0];
+        newBook.push(movenum);
+      }
+      setRecommandBook([...newBook]);
+      // console.log('모임추천도서', res)
+      // console.log(recommandBook)
     })
-  }
-  ,[])
-  const [form, setForm] = useState({
+  } 
+  ,[]) 
+  const [form, setForm] = useState({ 
     bookTitle: "",
     author: "",
     genre: "",
@@ -83,37 +112,16 @@ function BeforeDodok() {
     }
   })
 
-
-  // 도독 시작일
-  // const [startDate, setStartDate] = React.useState(dayjs());
-  // const dateFormat1 = dayjs(startDate.$d).format("YYYY-MM-DD");
-
-  // 도독 종료일
   const [endDate, setEndDate] = React.useState(dayjs());
   const dateFormat2 = dayjs(endDate.$d).format("YYYY-MM-DD");
 
-  const books = [
-    {
-      id: 1,
-      imgurl:
-        "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
-    },
-    {
-      id: 2,
-      imgurl:
-        "https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg",
-    },
-    {
-      id: 3,
-      imgurl:
-        "https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg",
-    },
-  ];
-  const renderTeamRecomendBook = books.map((book) => {
+  const renderTeamRecomendBook = recommandBook.map((book) => {
     return (
-      <div key={book.id}>
-        <img src={book.imgurl} alt="책" />
-        <p>{book.id}</p>
+      <div key={book.bookId}>
+        <img src={book.bookImg} alt="책" onClick={() => {
+              handleClickOpen(book);
+            }}/>
+        <div className={dodokstyles.booktitle}>{book.bookTitle}</div>
       </div>
     );
   });
@@ -152,6 +160,31 @@ function BeforeDodok() {
           <div className={dodokstyles["myteam-wrap-bookimg"]}>
             {renderTeamRecomendBook}
           </div>
+          <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"선택된 책"}</DialogTitle>
+        <DialogContent>
+          <div>
+            {selectedBook ? (
+              <div>
+                <p>제목: {selectedBook.bookTitle}</p>
+                <br />
+                <p>작가: {selectedBook.bookAuthor}</p>
+              </div>
+            ) : null}
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>닫기</Button>
+          <Button onClick={insertBookData} autoFocus>
+            도독에 책정보 넣기
+          </Button>
+        </DialogActions>
+      </Dialog>
           <h3 className={dodokstyles["recommend-reason"]}>
           '{teamName}' 모임의 78%가 추리소설을 좋아합니다
           </h3>

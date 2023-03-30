@@ -3,16 +3,33 @@ import styles from "../../styles/MyTeamAfterDodok.module.scss";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-const DodokBar = ({propPageReviews}) => {
-  useEffect(() => {
-  }, []);
+import { Api } from "../../Api";
+const DodokBar = () => {
+  const [pageReviews, setPageReviews] = useState([])
+  const [bookPage, setBookPage] = useState('')
   const [pageReviewInfo, setpageReviewInfo] = useState({
+    pageReviewId: "",
+    userProfilImg: "",
     page: "",
     userName: "",
     content: "",
   });
-  const bookPage = 300;
-  const pageReviews = propPageReviews 
+  useEffect(() => {
+  Api.get('/dodok/pageReview/list', {
+    headers: {
+      "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+      "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+    },
+  })
+  .then((res) => {
+    if (res.data.length !== 0) {
+      // console.log('들어와?')
+      setPageReviews([...res.data])
+      setBookPage(res.data[0].dodok.book.bookPagecnt)
+    }
+      // console.log('리뷰조회', res)
+  })
+  }, []);
   // 동기 비동기가 필요할거같아
   const [pageReviewModal, setpageReviewModal] = React.useState(false);
   const pageReviewModalOpen = () => {
@@ -24,26 +41,26 @@ const DodokBar = ({propPageReviews}) => {
   const clickPage = (pageReview) =>
     setpageReviewInfo({
       ...pageReviewInfo,
-      page: pageReview.page,
-      userName: pageReview.userName,
-      content: pageReview.content,
+      page: pageReview.reviewPagePage,
+      userName: pageReview.user.userNickname,
+      content: pageReview.reviewPageContent,
     });
   let barLength = window.innerWidth * 0.84 - 150 + 2;
   let reviewBarWidth = window.innerWidth * 0.025;
   const renderPageReview = pageReviews.map((pageReview) => {
-    const position = (pageReview.page * barLength) / bookPage;
+    const position = (pageReview.reviewPagePage * barLength) / bookPage;
 
     const style = {
       marginLeft: `${position - reviewBarWidth}px`,
       position: "absolute",
-      zIndex: `${pageReview.page}`,
+      zIndex: `${pageReview.reviewPagePage}`,
       width: "5%",
     };
     return (
-      <div key={pageReview.id} style={style}>
+      <div key={pageReview.reviewPageId} style={style}>
         <div className={styles["userImg-div"]}>
           <img
-            src={pageReview.userProfilImg}
+            src={pageReview.user.userImage}
             alt="프로필이미지"
             onClick={() => {
               pageReviewModalOpen();
@@ -80,7 +97,7 @@ const DodokBar = ({propPageReviews}) => {
   return (
     <div className={styles["wrap-bar"]}>
       <div className={styles["standing-line"]}></div>
-      <div>{renderPageReview}</div>
+      <div>{pageReviews ? renderPageReview : null}</div>
       <div className={styles["lying-line"]}></div>
       <div className={styles["standing-line"]}></div>
     </div>
