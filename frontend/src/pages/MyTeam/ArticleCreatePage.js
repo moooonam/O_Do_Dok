@@ -72,7 +72,7 @@ function ArticleCreatePage() {
 
     if (menu.choice === '분류') {
       alert('게시글의 분류를 선택해주세요')
-    } else if (myRole === 'USER' ) {
+    } else if (myRole === 'USER' && menu.choice == '공지') {
       alert('일반 유저는 공지를 작성할 수 없습니다. 자유 게시글로 전환해주세요!')
     } else { 
       if (article.title && article.content) {
