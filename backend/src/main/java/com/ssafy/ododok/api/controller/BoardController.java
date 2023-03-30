@@ -2,6 +2,7 @@ package com.ssafy.ododok.api.controller;
 
 import com.ssafy.ododok.api.request.BoardCreatePostReq;
 import com.ssafy.ododok.api.request.CommentCreatePostReq;
+import com.ssafy.ododok.api.request.CommentModifyPostReq;
 import com.ssafy.ododok.api.response.BoardRes;
 import com.ssafy.ododok.api.service.BoardService;
 import com.ssafy.ododok.common.auth.PrincipalDetails;
@@ -98,11 +99,11 @@ public class BoardController {
 
     // 게시판 답글 수정
     @PutMapping("/comment")
-    public ResponseEntity<?> modifyComment(@RequestBody CommentCreatePostReq commentCreatePostReq,
+    public ResponseEntity<?> modifyComment(@RequestBody CommentModifyPostReq commentModifyPostReq,
                                            Authentication auth){
         PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
         User user = principal.getUser();
-        String res = boardService.modifyComment(commentCreatePostReq, user);
+        String res = boardService.modifyComment(commentModifyPostReq, user);
         return ResponseEntity.status(200).body(res);
     }
 
