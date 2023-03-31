@@ -7,6 +7,7 @@ import { Api } from "../../../Api";
 export default function AllPageReviewModal() {
   const [open, setOpen] = React.useState(false);
   const [pageReviews, setPageReviews] = React.useState([])
+  const [myId, setMyId] = React.useState('')
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -14,6 +15,19 @@ export default function AllPageReviewModal() {
   const handleClose = () => {
     setOpen(false);
   };
+  const deletePageReview = ((pageReviewId) => {
+    Api.delete(`/dodok/pageReview/${pageReviewId}`, {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+    .then((res) => {
+      alert('페이지 리뷰를 삭제했습니다.')
+      window.location.reload()
+    })
+
+  })
   React.useEffect(() => {
     Api.get('/dodok/pageReview/list', {
       headers: {
@@ -25,12 +39,21 @@ export default function AllPageReviewModal() {
       if (res.data.length !== 0) {
         setPageReviews([...res.data])
       }
-        console.log('리뷰조회', res)
+    })
+    Api.get('/user/me',  {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+    .then((res) => {
+      setMyId(res.data.id)
     })
     }, []);
   const sortedPageReviews = pageReviews.sort((a,b) => a.reviewPagePage - b.reviewPagePage)
   // console.log('정렬됨?' ,sortedPageReviews)
   const renderPageReviews = sortedPageReviews.map((pageReview) => {
+    // console.log('여기여기', pageReview)
     return (
       <div key={pageReview.reviewPageId} className={styles["wrap-allpage-review"]}>
         <div className={styles["wrap-profile"]}>
@@ -40,7 +63,14 @@ export default function AllPageReviewModal() {
           <div className={styles["wrap-review-content"]}>
             <div className={styles["wrap-flex-div"]}>
               <div>{pageReview.user.userNickname}</div>
-              <div> {pageReview.reviewPagePage} 페이지</div>
+              <div className={styles['flex-bok']}> 
+                <div>
+                {pageReview.reviewPagePage} 페이지
+                </div>
+                {myId === pageReview.user.userId ? <p onClick={()=> {deletePageReview(pageReview.reviewPageId)
+                }}>삭제</p> : null}
+                
+              </div>
             </div>
             <div>{pageReview.reviewPageContent}</div>
           </div>

@@ -89,7 +89,7 @@ function MyTeamMemberManagePage() {
 
         <div className={memberstyles["name-container"]}>
           {member.role === "ADMIN" ? <div>🍀</div> : null}
-          {member.role === "MANAGER" ? <div>☘</div> : null}
+          {member.role === "MANAGER" ? <div>☘️</div> : null}
           {member.role === "USER" ? <div>🌱</div> : null}
           
           <div className={memberstyles["username"]}>

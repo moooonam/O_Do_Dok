@@ -153,9 +153,9 @@ function MyTeamMainPage() {
               <h3>최신 게시글</h3>
               <div className={mainstyles["myteam-newuser"]}>
                 <div className={mainstyles["myteam-newuser-content"]}>
-                  <p>{teamArticle.article1.boardTitle}</p>
+                  {/* <p>{teamArticle.article1.boardTitle}</p>
                   <p>{teamArticle.article2.boardTitle}</p>
-                  <p>{teamArticle.article3.boardTitle}</p>
+                  <p>{teamArticle.article3.boardTitle}</p> */}
                 </div>
                 <div className={mainstyles["myteam-newuser-name"]}>
                   {/* <p>{teamArticle.article1.user.userNickname}</p>
