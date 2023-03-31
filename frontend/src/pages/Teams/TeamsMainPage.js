@@ -127,8 +127,8 @@ function TeamsMainPage() {
   // 유저 정보에 선호 장르 담기
   const clickGenre = (choice) => {
     if (teamGenre.includes(choice)) {
-      // console.log(2222222222);
-      setTeamGenre(teamGenre.filter((genre) => genre !== choice));
+      let newGenres = teamGenre.filter((genre) => genre !==choice)
+      setTeamGenre(newGenres);
     } else {
       setTeamGenre([...teamGenre, choice]);
     }
@@ -162,32 +162,32 @@ function TeamsMainPage() {
   const teamCreate = () => {
     const access_token = localStorage.getItem("access-token");
     const refresh_token = localStorage.getItem("refresh-token");
-    // console.log(access_token)
-    // console.log(refresh_token)
-
-    teamInfo.teamName = form.team_name;
-    teamInfo.teamGenre1 = teamGenre[0];
-    teamInfo.teamGenre2 = teamGenre[1];
-    teamInfo.teamGenre3 = teamGenre[2];
-    teamInfo.teamRegion = form.team_region;
-    teamInfo.teamOnoff = form.team_onoff;
-    teamInfo.teamMemberCntMax = form.team_membercnt_max;
-    if (form.team_name_check) {
-      if (
-        teamInfo.teamName &&
-        teamInfo.teamMemberCntMax &&
-        teamInfo.teamOnoff &&
-        teamInfo.teamRegion &&
-        teamInfo.teamGenre1 &&
-        teamInfo.teamGenre2 &&
-        teamInfo.teamGenre3
-      ) {
-        Api.post("/teams", teamInfo, {
-          headers: {
-            "access-token": `Bearer ${access_token}`,
-            "refresh-token": `Bearer ${refresh_token}`,
-          },
-        })
+    if (teamGenre.length !== 3) {
+      alert('장르를 3가지 선택해주세요')
+    } else {  
+      teamInfo.teamName = form.team_name;
+      teamInfo.teamGenre1 = teamGenre[0];
+      teamInfo.teamGenre2 = teamGenre[1];
+      teamInfo.teamGenre3 = teamGenre[2];
+      teamInfo.teamRegion = form.team_region;
+      teamInfo.teamOnoff = form.team_onoff;
+      teamInfo.teamMemberCntMax = form.team_membercnt_max;
+      if (form.team_name_check) {
+        if (
+          teamInfo.teamName &&
+          teamInfo.teamMemberCntMax &&
+          teamInfo.teamOnoff &&
+          teamInfo.teamRegion &&
+          teamInfo.teamGenre1 &&
+          teamInfo.teamGenre2 &&
+          teamInfo.teamGenre3
+          ) {
+            Api.post("/teams", teamInfo, {
+              headers: {
+                "access-token": `Bearer ${access_token}`,
+                "refresh-token": `Bearer ${refresh_token}`,
+              },
+            })
           .then((res) => {
             // console.log(res);
             alert("모임 생성이 완료되었습니다");
@@ -197,24 +197,25 @@ function TeamsMainPage() {
           .catch((err) => {
             console.log(err);
           });
+        } else {
+          alert("모든 항목에 대해 답변해주세요");
+        }
       } else {
-        alert("모든 항목에 대해 답변해주세요");
+        alert("중복 검사를 진행해주세요");
       }
-    } else {
-      alert("중복 검사를 진행해주세요");
-    }
-  };
-
-  const teamName_validation = () => {
-    let check = /^[가-힣a-zA-Z].{1,11}$/;
-    // let check = /[~!@#$%^&*()_+|<>?:{}.,/;='"]/;
-    return check.test(form.team_name);
-  };
-
-  // 팀 이름 중복검사
-  const teamNameDupli = () => {
-    if (form.team_name) {
-      Api.get(`teams/check/${form.team_name}`)
+    };
+  }
+    
+    const teamName_validation = () => {
+      let check = /^[가-힣a-zA-Z].{1,11}$/;
+      // let check = /[~!@#$%^&*()_+|<>?:{}.,/;='"]/;
+      return check.test(form.team_name);
+    };
+    
+    // 팀 이름 중복검사
+    const teamNameDupli = () => {
+      if (form.team_name) {
+        Api.get(`teams/check/${form.team_name}`)
         .then((res) => {
           console.log(res);
           if (res.data) {
@@ -433,7 +434,7 @@ function TeamsMainPage() {
                     genreList.horror ? styles["active"] : styles["notActive"]
                   }
                 >
-                  #공포
+                  #호러
                 </div>
                 <div
                   onClick={() => {
