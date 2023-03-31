@@ -12,11 +12,13 @@ import { Api } from "../../Api";
 import { useSelector } from "react-redux";
 
 function AfterDodok() {
+  
   const [bookDetail, setBookDetail] = useState({
     bookImg : "",
     bookTitle: "",
     dodokStartdate: "",
     dodokEnddate: "",
+    bookAuthor:"",
     dday:'',
   })
   
@@ -29,6 +31,7 @@ function AfterDodok() {
       },
     })
     .then((res) => {
+      console.log(res)
       localStorage.setItem('dodokId', res.data.dodokId)
       const today = new Date();
       const dday = new Date(`${Number(res.data.dodokEnddate.split('-')[0])}-${Number(res.data.dodokEnddate.split('-')[1])}-${Number(res.data.dodokEnddate.split('-')[2])}`);
@@ -41,6 +44,7 @@ function AfterDodok() {
         bookTitle: res.data.book.bookTitle,
         dodokStartdate : res.data.dodokStartdate,
         dodokEnddate : res.data.dodokEnddate,
+        bookAuthor: res.data.book.bookAuthor,
         dday: result,
       })
     })
@@ -64,6 +68,8 @@ function AfterDodok() {
         console.log('총리뷰', res)
       }
     })
+    //3.31여기부터
+    // Api.get
   }, [])
 
   //권한
@@ -111,6 +117,10 @@ function AfterDodok() {
                 <p>{bookDetail.bookTitle}</p>
               </div>
               <div className={dodokstyles["book-info"]}>
+                <p>저자</p>
+                <p>{bookDetail.bookAuthor}</p>
+              </div>
+              <div className={dodokstyles["book-info"]}>
                 <p>도독기간</p>
                 <p>
                   {bookDetail.dodokStartdate} ~ {bookDetail.dodokEnddate}
@@ -119,6 +129,7 @@ function AfterDodok() {
             </div>
             <div className={dodokstyles.dday}>D-{bookDetail.dday}</div>
           </div>
+          <h3 className={dodokstyles['pagereview-title']}>페이지 리뷰</h3>
           <WritePageReviewModal />
           <AllPageReviewModal/>
           <DodokBar />

@@ -10,6 +10,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+
 // onClick={() => {
 //     addComment();
 //     count();
@@ -87,8 +88,10 @@ function MyTeamMemberManagePage() {
         </div>
 
         <div className={memberstyles["name-container"]}>
-          {member.role === "ADMIN" ? <div>👑</div> : null}
-          {member.role === "MANAGER" ? <div>👒</div> : null}
+          {member.role === "ADMIN" ? <div>🍀</div> : null}
+          {member.role === "MANAGER" ? <div>☘</div> : null}
+          {member.role === "USER" ? <div>🌱</div> : null}
+          
           <div className={memberstyles["username"]}>
             {member.user.userNickname}
           </div>

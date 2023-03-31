@@ -1,61 +1,32 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import SideBar from '../../components/SideBar'
 import sidestyles from '../../styles/Sidebar.module.scss'
 import recordstyles from '../../styles/MyTeamRecord.module.scss'
-
+import { Api } from '../../Api'
 function MyTeamRecordPage() {
-  const books = [
-    {
-      id: 1,
-      imgurl:
-        "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
-    },
-    {
-      id: 2,
-      imgurl:
-        "https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg",
-    },
-    {
-      id: 3,
-      imgurl:
-        "https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg",
-    },
-    {
-      id: 4,
-      imgurl:
-        "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
-    },
-    {
-      id: 5,
-      imgurl:
-        "https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg",
-    },
-    {
-      id: 6,
-      imgurl:
-        "https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg",
-    },
-    {
-      id: 7,
-      imgurl:
-        "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
-    },
-    {
-      id: 8,
-      imgurl:
-        "https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg",
-    },
-    {
-      id: 9,
-      imgurl:
-        "https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg",
-    },
-  ];
-  const renderTeamRecomendBook = books.map((book) => {
+  const [lastDodoks,setLastDodoks] = useState([])
+  const myTeamId = localStorage.getItem('myTeamId')
+  
+  useEffect(() => {
+    Api.get(`/dodok/lastdodoks/${myTeamId}`, {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      }
+    })
+    .then((res) => {
+      if (res.data.lenght !== 0 ){
+        setLastDodoks([...res.data])
+        console.log('지난도독', res)
+      }
+    })
+    
+  }, [])
+  const renderTeamRecomendBook =  lastDodoks.map((dodok) => {
     return (
-      <div key={book.id}>
-        <img src={book.imgurl} alt="책" />
-        <p>{book.id}</p>
+      <div key={dodok.dodok.dodokId}>
+        <img src={dodok.dodok.book.bookImg} alt="책" />
+        <div className={recordstyles.booktitle}>{dodok.dodok.book.bookTitle}</div>
       </div>
     );
   });

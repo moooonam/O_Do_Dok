@@ -24,7 +24,10 @@ import Select from "@mui/material/Select";
 import { Api } from "../../Api";
 import BookSearchList from "./BookSearchList";
 
+import { useSelector } from "react-redux";
+
 function BeforeDodok() {
+  const myRole = useSelector((state) => state.user.myRole)
   const myTeamId = localStorage.getItem('myTeamId')
   const [teamName, setTeamName] = useState('')
   const [recommandBook, setRecommandBook] = useState([])
@@ -58,6 +61,7 @@ function BeforeDodok() {
     }) 
     Api.get(`book/recommend/${myTeamId}`)
     .then((res) => {
+      console.log('추천도서', res)
       const recomendBook = [...res.data];
       let newBook = [];
       while (recomendBook.length > 6) {
@@ -158,7 +162,7 @@ function BeforeDodok() {
         <div className={dodokstyles["firstBox"]}>
           <h2>'{teamName}' 모임을 위한 추천 도서</h2>
           <div className={dodokstyles["myteam-wrap-bookimg"]}>
-            {renderTeamRecomendBook}
+            {/* {renderTeamRecomendBook} */}
           </div>
           <Dialog
         open={open}
@@ -192,7 +196,7 @@ function BeforeDodok() {
         <div className={dodokstyles["secondBox"]}>
           <div className={dodokstyles["dodokInfo-header"]}>
             <h2 className={dodokstyles["dodokInfo-headerLeft"]}>도독</h2>
-            <div className={dodokstyles["startDodokBtn"]} onClick={startDodok}>도독 시작</div>
+            {myRole !== 'USER' ? <div className={dodokstyles["startDodokBtn"]} onClick={startDodok}>도독 시작</div> : null}
           </div>
           <hr />
           <div className={dodokstyles["dodokInfo-content"]}>

@@ -3,6 +3,7 @@ import styles from "../../styles/MyTeamAfterDodok.module.scss";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useSelector } from "react-redux";
 import { Api } from "../../Api";
 const DodokBar = () => {
   const [pageReviews, setPageReviews] = useState([])
@@ -13,6 +14,7 @@ const DodokBar = () => {
     page: "",
     userName: "",
     content: "",
+    pageReviewUserId: "",
   });
   useEffect(() => {
   Api.get('/dodok/pageReview/list', {
@@ -38,13 +40,18 @@ const DodokBar = () => {
   const pageReviewModalClose = () => {
     setpageReviewModal(false);
   };
-  const clickPage = (pageReview) =>
+  const clickPage = (pageReview) =>{
+
+    console.log(pageReview)
     setpageReviewInfo({
       ...pageReviewInfo,
+      pageReviewId: pageReview.reviewPageId,
       page: pageReview.reviewPagePage,
       userName: pageReview.user.userNickname,
       content: pageReview.reviewPageContent,
+      pageReviewUserId: pageReview.user.userId,
     });
+  }
   let barLength = window.innerWidth * 0.84 - 150 + 2;
   let reviewBarWidth = window.innerWidth * 0.025;
   const renderPageReview = pageReviews.map((pageReview) => {
@@ -79,6 +86,9 @@ const DodokBar = () => {
             <DialogContent>
               <div>{pageReviewInfo.content}</div>
               <div className={styles["wrap-modal-btn"]}>
+                <div className={styles["cancle-btn"]}>
+                  
+                </div>
                 <div
                   className={styles["cancle-btn"]}
                   onClick={pageReviewModalClose}
@@ -91,6 +101,7 @@ const DodokBar = () => {
         </div>
         {/* <div>{pageReview.userName}</div> */}
         <div className={styles["small-standing-line"]}></div>
+        {/* <div className={styles["page-div"]}>{pageReviewInfo.page}</div> */}
       </div>
     );
   });
