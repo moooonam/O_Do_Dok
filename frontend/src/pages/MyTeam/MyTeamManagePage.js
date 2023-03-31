@@ -82,6 +82,7 @@ function MyTeamManagePage() {
         setForm({
           ...form,
           team_onoff: res.data.teamOnoff,
+          team_image: res.data.teamImage,
           team_region: res.data.teamMemberCnt,
           team_membercnt_max: res.data.teamMemberCntMax,
           team_recruit: res.data.teamRecruit,
@@ -101,6 +102,7 @@ function MyTeamManagePage() {
   const [form, setForm] = useState({
     team_onoff: "",
     team_region: "",
+    team_image: "",
     team_membercnt_max: "",
     team_recruit: null,
     team_recruit_text: "",
@@ -177,7 +179,7 @@ function MyTeamManagePage() {
   // 유저 정보에 선호 장르 담기
   const clickGenre = (choice) => {
     if (teamGenre.includes(choice)) {
-      let newGenres = teamGenre.filter((genre) => genre !==choice)
+      let newGenres = teamGenre.filter((genre) => genre !== choice);
       setTeamGenre(newGenres);
     } else {
       setTeamGenre([...teamGenre, choice]);
@@ -188,6 +190,7 @@ function MyTeamManagePage() {
   const teamInfo = {
     teamOnoff: "",
     teamRegion: "",
+    teamImage: "",
     teamMembercntMax: null,
     teamRecruit: null,
     teamRecruitText: "",
@@ -203,11 +206,11 @@ function MyTeamManagePage() {
   const teamInfoUpdate = () => {
     console.log(teamGenre);
     if (teamGenre.length !== 3) {
-      alert('장르를 3가지 선택해주세요')
+      alert("장르를 3가지 선택해주세요");
     } else {
-
       teamInfo.teamOnoff = form.team_onoff;
       teamInfo.teamRegion = form.team_region;
+      teamInfo.teamImage = form.team_image;
       teamInfo.teamMembercntMax = form.team_membercnt_max;
       teamInfo.teamRecruit = form.team_recruit;
       teamInfo.teamRecruitText = form.team_recruit_text;
@@ -217,18 +220,18 @@ function MyTeamManagePage() {
       teamInfo.teamGenre1 = teamGenre[0];
       teamInfo.teamGenre2 = teamGenre[1];
       teamInfo.teamGenre3 = teamGenre[2];
-      
+
       // 선호 장르를 선택하지 않았다면 기존의 정보로 다시 전송
       Api.patch(`/teams/${teamDetail.teamId}`, teamInfo)
-      .then((res) => {
-        console.log(res);
-        alert("모임 정보 수정이 완료되었습니다.");
-        teamInfoModalClose()
-        window.location.reload();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        .then((res) => {
+          console.log(res);
+          alert("모임 정보 수정이 완료되었습니다.");
+          teamInfoModalClose();
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 
@@ -250,7 +253,7 @@ function MyTeamManagePage() {
         console.log(res);
         alert("모임이 삭제되었습니다.");
         movePage("/");
-        window.location.reload()
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
@@ -258,13 +261,41 @@ function MyTeamManagePage() {
   };
 
   // 모임 이미지 수정
-  const [files, setFiles] = useState('')
-  const onLoadFile = (e) => {
-    const file = e.target.files;
-    console.log(file)
-    setFiles(file);
-  }
+  const images = [
+    "https://cdn.pixabay.com/photo/2017/08/30/01/05/milky-way-2695569__340.jpg",
+    "https://cdn.pixabay.com/photo/2018/04/28/22/03/tree-3358468__340.jpg",
+    "https://cdn.pixabay.com/photo/2016/05/05/02/37/sunset-1373171__340.jpg",
+    "https://cdn.pixabay.com/photo/2017/03/25/03/18/white-2172682__340.jpg",
+    "https://cdn.pixabay.com/photo/2018/11/03/21/42/sunflowers-3792914__340.jpg",
+    "https://cdn.pixabay.com/photo/2017/08/05/10/44/sunset-2582691__340.jpg",
+  ];
 
+  const clickImage = (image) => {
+    setForm({ ...form, team_image: image });
+    console.log(form.team_image);
+    console.log(image);
+  };
+
+  const renderImage = images.map((image) => {
+    return (
+      <div>
+        <div className={teamstyles["image"]}>
+          <img
+            src={image}
+            alt=""
+            onClick={() => {
+              clickImage(image);
+            }}
+          />
+        </div>
+        {image === form.team_image ? (
+          <p className={teamstyles["teamImg-check"]}>✔</p>
+        ) : (
+          <p></p>
+        )}
+      </div>
+    );
+  });
 
   return (
     <div className={sidestyles["myteam-container"]}>
@@ -331,33 +362,24 @@ function MyTeamManagePage() {
               {teamDetail.teamRecruitText}
             </div>
           </div>
-
           {/* 모임 정보 수정 모달 */}
           <Dialog
             open={teamInfoModal}
             onClose={teamInfoModalClose}
-            fullWidth
+            fullScreen
             scroll={"paper"}
           >
             <DialogTitle>{"모임 정보 수정"}</DialogTitle>
             <DialogContent>
               <DialogContentText>
                 <FormControl>
+                  <br />
                   <div className={teamstyles["teamImg-box"]}>
-                    <p>모임 대표 이미지</p>
-                    <Button
-                      variant="outlined"
-                      component="label"
-                      color="success"
-                    >
-                      Upload
-                      <input hidden accept="image/*" multiple type="file" onChange={onLoadFile}/>
-                    </Button>
+                    <p>모임 대표 이미지 선택</p>
                   </div>
-                  <div className={teamstyles["teamImg-div"]}>
-                    <img src={teamDetail.teamImage} alt="" />
+                  <div className={teamstyles["teammanage-images"]}>
+                    {renderImage}
                   </div>
-                  
                   <br />
                   <br />
                   <FormLabel id="demo-controlled-radio-buttons-group">
