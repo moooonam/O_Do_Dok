@@ -106,6 +106,9 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDto.Basic getUserInfo(User user) {
         UserSurvey userSurvey = userSurveyRepository.findByUser(user);
+
+        long cnt = boardRepository.countByUser(user);
+
         UserDto.Basic ud = UserDto.Basic.builder()
                 .id(user.getUserId())
                 .userName(user.getUserName())
@@ -122,6 +125,9 @@ public class UserServiceImpl implements UserService{
                 .userRegion(userSurvey.getUserRegion())
                 .userOnoff(userSurvey.getUserOnoff())
                 .userFrequency(userSurvey.getUserFrequency())
+                .userReviewcnt(user.getUserReviewcnt())
+                .completeDodokCnt(user.getUserDodokcnt())
+                .boardcnt(cnt)
                 .build();
 
         return ud;
