@@ -73,9 +73,9 @@ function MyTeamMainPage() {
       },
     })
       .then((res) => {
-        console.log("최신 게시글 불러오기 완료----------");
+        // console.log("최신 게시글 불러오기 완료----------");
         const cnt = res.data.length;
-        console.log(res);
+        // console.log(res);
         setTeamArticle({
           ...teamArticle,
           article1: res.data[cnt - 1],
