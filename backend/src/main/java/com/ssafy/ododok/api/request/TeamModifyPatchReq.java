@@ -16,4 +16,5 @@ public class TeamModifyPatchReq {
     private String teamRule1;
     private String teamRule2;
     private String teamRule3;
+    private String teamImage;
 }

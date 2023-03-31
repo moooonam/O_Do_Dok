@@ -86,6 +86,7 @@ public class Team {
         this.teamRule1 = teamModifyPatchReq.getTeamRule1();
         this.teamRule2 = teamModifyPatchReq.getTeamRule2();
         this.teamRule3 = teamModifyPatchReq.getTeamRule3();
+        this.teamImage = teamModifyPatchReq.getTeamImage();
     }
 
     public void changeIsOngoingDodok(boolean isOngoingDodok){
