@@ -2,6 +2,7 @@ package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.request.PageReviewCreatePostReq;
 import com.ssafy.ododok.api.request.PageReviewPutReq;
+import com.ssafy.ododok.api.response.ReviewPageRes;
 import com.ssafy.ododok.db.model.*;
 import com.ssafy.ododok.db.repository.*;
 import org.springframework.stereotype.Service;
@@ -84,14 +85,18 @@ public class ReviewPageServiceImpl implements ReviewPageService{
 
     // 책갈피 상세보기 -> 현재는 같은 팀인지만 확인하고 있음. 비공개 공개 넣으면 또 달라져야함.
     @Override
-    public ReviewPage getReviewPage(Long pageReviewId, User user) {
+    public ReviewPageRes getReviewPage(Long pageReviewId) {
         ReviewPage reviewPage = reviewPageRepository.findByReviewPageId(pageReviewId);
-        Team team = teamUserRepository.findByUser(user).getTeam();
-        if(reviewPage.getDodok().getTeam().getTeamId() == team.getTeamId()){
-            return reviewPage;
-        } else{
-            return null;
-        }
+
+        ReviewPageRes reviewPageRes = ReviewPageRes.builder()
+                .reviewPageId(reviewPage.getReviewPageId())
+                .user(reviewPage.getUser())
+                .reviewPagePage(reviewPage.getReviewPagePage())
+                .reviewPageContent(reviewPage.getReviewPageContent())
+                .reviewPageDate(reviewPage.getReviewPageDate())
+                .build();
+
+        return reviewPageRes;
     }
 
     // 해당 도독에 대한 페이지별 리뷰 리스트
@@ -107,7 +112,6 @@ public class ReviewPageServiceImpl implements ReviewPageService{
         } else{
             return null;
         }
-
     }
 
     // 회원에 따른 페이지 리뷰 리스트
