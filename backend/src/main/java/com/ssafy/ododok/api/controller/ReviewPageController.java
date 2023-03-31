@@ -2,6 +2,7 @@ package com.ssafy.ododok.api.controller;
 
 import com.ssafy.ododok.api.request.PageReviewCreatePostReq;
 import com.ssafy.ododok.api.request.PageReviewPutReq;
+import com.ssafy.ododok.api.response.ReviewPageRes;
 import com.ssafy.ododok.api.service.ReviewPageService;
 import com.ssafy.ododok.common.auth.PrincipalDetails;
 import com.ssafy.ododok.db.model.ReviewPage;
@@ -68,13 +69,8 @@ public class ReviewPageController {
     public ResponseEntity<?> showPageReviews(@PathVariable Long pageReviewId, Authentication authentication){
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
-        ReviewPage reviewPage = reviewPageService.getReviewPage(pageReviewId, user);
-
-        if(reviewPage==null){
-            return new ResponseEntity("볼 수 있는 권한이 없습니다.",HttpStatus.OK);
-        }else{
-            return new ResponseEntity(reviewPage, HttpStatus.OK);
-        }
+        ReviewPageRes reviewPage = reviewPageService.getReviewPage(pageReviewId);
+        return new ResponseEntity(reviewPage, HttpStatus.OK);
     }
 
     //책갈피 조회 _ 사용자 기준 현재 진행 중인 도독 기준 책갈피 총 목록

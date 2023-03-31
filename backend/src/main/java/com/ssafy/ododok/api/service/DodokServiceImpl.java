@@ -1,6 +1,8 @@
 package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.request.*;
+import com.ssafy.ododok.api.response.ReviewEndRes;
+import com.ssafy.ododok.api.response.ReviewPageRes;
 import com.ssafy.ododok.db.model.*;
 import com.ssafy.ododok.db.repository.*;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -229,6 +231,40 @@ public class DodokServiceImpl implements DodokService {
         return reviewEndList;
     }
 
+    @Override
+    public List<ReviewPageRes> getReviewPageList2(Dodok dodok) {
+        List<ReviewPage> reviewPageList = reviewPageRepository.findAllByDodok(dodok);
+        List<ReviewPageRes> res = new ArrayList<>();
+        for(ReviewPage reviewPage:reviewPageList){
+            ReviewPageRes reviewPageRes = ReviewPageRes.builder()
+                    .reviewPageId(reviewPage.getReviewPageId())
+                    .user(reviewPage.getUser())
+                    .reviewPagePage(reviewPage.getReviewPagePage())
+                    .reviewPageContent(reviewPage.getReviewPageContent())
+                    .reviewPageDate(reviewPage.getReviewPageDate())
+                    .build();
+            res.add(reviewPageRes);
+        }
+        return res;
+    }
+
+    @Override
+    public List<ReviewEndRes> getRivewEndList2(Dodok dodok) {
+        List<ReviewEnd> reviewEndList = reviewEndRepository.findAllByDodok(dodok);
+        List<ReviewEndRes> res = new ArrayList<>();
+        for(ReviewEnd reviewEnd:reviewEndList){
+            ReviewEndRes reviewEndRes = ReviewEndRes.builder()
+                    .reviewEndId(reviewEnd.getReviewEndId())
+                    .user(reviewEnd.getUser())
+                    .reviewEndContent(reviewEnd.getReviewEndContent())
+                    .reviewEndDate(reviewEnd.getReviewEndDate())
+                    .build();
+
+            res.add(reviewEndRes);
+        }
+        return res;
+    }
+
     // 도독을 공개로 설정
     @Override
     public String updateDodokOpen(User user, Long dodokId) {
@@ -288,6 +324,12 @@ public class DodokServiceImpl implements DodokService {
             return null;
         }
 
+    }
+
+    @Override
+    public Dodok detailDodok(Long dodokId) {
+        Dodok dodok = dodokRepository.findById(dodokId).get();
+        return dodok;
     }
 
     // 도독이 종료되었을 때 장르 평점 추가하기
