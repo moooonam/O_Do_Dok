@@ -35,6 +35,10 @@ public class UserRegisterPostReq {
         String region;
         Onoff onoff;
         int frequency;
+
+        public Basic(){
+
+        }
     }
 
 }

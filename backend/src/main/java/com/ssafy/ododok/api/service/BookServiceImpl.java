@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookServiceImpl implements BookService{
@@ -58,12 +59,24 @@ public class BookServiceImpl implements BookService{
         // 추천된 책 리스트 -> books
         List<String> books = knn.knn(team);
         System.out.println("books : " + books);
+        System.out.println(books.size());
+        System.out.println("--------");
 
         // Book객체 리스트로 보내줌
-        List<Book> recomBookList = new ArrayList<Book>();
+        List<Book> recomBookList = new ArrayList<>();
         for (int i = 0; i < books.size(); i++) {
-            recomBookList.add(bookRepository.findByBookTitle(books.get(i)));
+//            recomBookList.add(bookRepository.findByBookTitle(books.get(i)));
+//            Long num = bookRepository.findAllByBookTitle(books.get(i));
+            Optional<Book> optionalBook = bookRepository.findByBookTitle(books.get(i));
+            if(optionalBook.isEmpty()){
+                continue;
+            }
+            recomBookList.add(optionalBook.get());
         }
+//
+//        for(int i=0; i<recomBookList.size(); i++){
+//            System.out.println(recomBookList.get(i).getBookTitle());
+//        }
 
         return recomBookList;
     }
