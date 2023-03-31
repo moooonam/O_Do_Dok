@@ -71,6 +71,7 @@ function BeforeDodok() {
         )[0];
         newBook.push(movenum);
       }
+      console.log('뉴북', newBook)
       setRecommandBook([...newBook]);
       // console.log('모임추천도서', res)
       // console.log(recommandBook)
@@ -162,7 +163,7 @@ function BeforeDodok() {
         <div className={dodokstyles["firstBox"]}>
           <h2>'{teamName}' 모임을 위한 추천 도서</h2>
           <div className={dodokstyles["myteam-wrap-bookimg"]}>
-            {/* {renderTeamRecomendBook} */}
+            {renderTeamRecomendBook}
           </div>
           <Dialog
         open={open}

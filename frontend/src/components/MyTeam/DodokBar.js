@@ -8,6 +8,7 @@ import { Api } from "../../Api";
 const DodokBar = () => {
   const [pageReviews, setPageReviews] = useState([])
   const [bookPage, setBookPage] = useState('')
+  const [myId, setMyId] = useState('')
   const [pageReviewInfo, setpageReviewInfo] = useState({
     pageReviewId: "",
     userProfilImg: "",
@@ -31,6 +32,17 @@ const DodokBar = () => {
     }
       // console.log('리뷰조회', res)
   })
+  Api.get('/user/me',  {
+    headers: {
+      "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+      "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+    },
+  })
+  .then((res) => {
+    // console.log('나의정보', res)
+    setMyId(res.data.id)
+    // console.log(myId) 
+  })
   }, []);
   // 동기 비동기가 필요할거같아
   const [pageReviewModal, setpageReviewModal] = React.useState(false);
@@ -52,6 +64,20 @@ const DodokBar = () => {
       pageReviewUserId: pageReview.user.userId,
     });
   }
+  const deletePageReview = ((pageReviewId) => {
+    Api.delete(`/dodok/pageReview/${pageReviewId}`, {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+    .then((res) => {
+      console.log('삭제',res)
+      alert('페이지 리뷰를 삭제했습니다.')
+      window.location.reload()
+    })
+
+  })
   let barLength = window.innerWidth * 0.84 - 150 + 2;
   let reviewBarWidth = window.innerWidth * 0.025;
   const renderPageReview = pageReviews.map((pageReview) => {
@@ -86,9 +112,11 @@ const DodokBar = () => {
             <DialogContent>
               <div>{pageReviewInfo.content}</div>
               <div className={styles["wrap-modal-btn"]}>
-                <div className={styles["cancle-btn"]}>
-                  
-                </div>
+                {myId === pageReviewInfo.pageReviewUserId ? 
+                <div className={styles["cancle-btn"]} onClick={() => {deletePageReview(pageReviewInfo.pageReviewId)}}>
+                  삭제
+                </div> : null
+                }
                 <div
                   className={styles["cancle-btn"]}
                   onClick={pageReviewModalClose}

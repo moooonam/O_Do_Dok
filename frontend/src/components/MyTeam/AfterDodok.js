@@ -12,7 +12,7 @@ import { Api } from "../../Api";
 import { useSelector } from "react-redux";
 
 function AfterDodok() {
-  
+  const [myId, setMyId] = useState('')
   const [bookDetail, setBookDetail] = useState({
     bookImg : "",
     bookTitle: "",
@@ -31,7 +31,6 @@ function AfterDodok() {
       },
     })
     .then((res) => {
-      console.log(res)
       localStorage.setItem('dodokId', res.data.dodokId)
       const today = new Date();
       const dday = new Date(`${Number(res.data.dodokEnddate.split('-')[0])}-${Number(res.data.dodokEnddate.split('-')[1])}-${Number(res.data.dodokEnddate.split('-')[2])}`);
@@ -65,16 +64,35 @@ function AfterDodok() {
     .then((res) => {
       if (res.data.length !== 0) {
         setAllReviews([...res.data])
-        console.log('총리뷰', res)
       }
     })
-    //3.31여기부터
-    // Api.get
+    Api.get('/user/me',  {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+    .then((res) => {
+      setMyId(res.data.id)
+    })
   }, [])
 
   //권한
   const myRole = useSelector((state) => state.user.myRole)
-  console.log('롤', myRole)
+  // 총평 삭제
+  const deleteReview = ((reviewEndId) => {
+    Api.delete(`/dodok/endReview/${reviewEndId}`, {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+    .then((res) => {
+      alert('총평을 삭제했습니다')
+      window.location.reload()
+    })
+    
+  })
 
   const renderReview = allReviews.map((review) => {
     return (
@@ -91,6 +109,7 @@ function AfterDodok() {
             precision={0.5}
             readOnly
           />
+          {myId === review.user.userId ? <div className={dodokstyles['delete-review-btn']} onClick={() => {deleteReview(review.reviewEndId)}}>삭제</div> : null}
         </div>
         <div className={dodokstyles['review-content']}>{review.reviewEndContent}</div>
       </div>
@@ -139,6 +158,8 @@ function AfterDodok() {
           </div>
           {allReviews.length !== 0 ? renderReview : null}
         </div>
+        <br />
+        <br />
       </div>
     </div>
   );

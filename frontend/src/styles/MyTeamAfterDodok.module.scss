@@ -2,7 +2,7 @@
     margin-left: 50px;
     margin-top: 50px;
     margin-right: 100px;
-    min-width: 100vh;
+    min-height: 100vh;
 }
 
 .wrap-title {
@@ -68,7 +68,7 @@
     // margin-left: 5vw;
 }
 .pagereview-title {
-    margin-top: 30px;
+    margin-top: 80px;
 }
 
 
@@ -153,6 +153,11 @@
             object-fit: cover;
         }
     }
+    .delete-review-btn{
+        margin-left:auto;
+        color: red;
+        cursor: pointer;
+    }
 }
 .review-content {
     margin-top: 10px;
@@ -222,4 +227,12 @@
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid;
+}
+.flex-bok {
+    display: flex;
+    p {
+        color: red;
+        margin-left: 15px;
+        cursor: pointer;
+    }
 }
