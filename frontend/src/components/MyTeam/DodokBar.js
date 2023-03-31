@@ -26,6 +26,7 @@ const DodokBar = () => {
   .then((res) => {
     if (res.data.length !== 0) {
       // console.log('들어와?')
+      console.log(res)
       setPageReviews([...res.data])
       setBookPage(res.data[0].dodok.book.bookPagecnt)
     }

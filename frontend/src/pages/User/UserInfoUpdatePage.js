@@ -258,7 +258,7 @@ function UserInfoUpdatePage() {
   const renderImage = images.map((image) => {
     return (
       <div>
-        <div className={styles["userImg-div"]}>
+        <div key={image.id} className={styles["userImg-div"]}>
           <img
             src={image}
             alt=""
