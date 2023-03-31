@@ -118,6 +118,13 @@ public class DodokServiceImpl implements DodokService {
                 // 해당 도독의 팀 아이디를 가져오기, 해당 팀의 도독 활성화 여부를 false처리.
                 Team team = dodok.getTeam();
                 team.changeIsOngoingDodok(false);
+
+                List<TeamUser> teamUserlist = teamUserRepository.findTeamUsersByTeam_TeamId(team.getTeamId());
+                for(TeamUser teamUser : teamUserlist){
+                    teamUser.getUser().changeUserDodokcnt(teamUser.getUser().getUserDodokcnt()+1);
+                    userRepository.save(teamUser.getUser());
+                }
+
                 updateGenre(dodok);
                 String top = showFirst(team);
                 if(top != null){
@@ -142,6 +149,12 @@ public class DodokServiceImpl implements DodokService {
 
             Team team = dodok.getTeam();
             team.changeIsOngoingDodok(false);
+
+            List<TeamUser> teamUserlist = teamUserRepository.findTeamUsersByTeam_TeamId(team.getTeamId());
+            for(TeamUser teamUser : teamUserlist){
+                teamUser.getUser().changeUserDodokcnt(teamUser.getUser().getUserDodokcnt()+1);
+                userRepository.save(teamUser.getUser());
+            }
 
             updateGenre(dodok);
             String top = showFirst(team);

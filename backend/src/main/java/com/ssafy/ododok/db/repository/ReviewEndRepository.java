@@ -14,4 +14,6 @@ public interface ReviewEndRepository extends JpaRepository<ReviewEnd,Long> {
 
 
     void deleteAllByUser(User user);
+
+    Long countByUser(User user);
 }

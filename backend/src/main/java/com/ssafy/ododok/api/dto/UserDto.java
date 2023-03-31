@@ -26,6 +26,8 @@ public class UserDto {
         String userPhone;
         String userImage;
         int userReviewcnt;
+        int completeDodokCnt;
+        long boardcnt;
         Gender userGender;
         int userAge;
         String userGenre1;
