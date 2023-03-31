@@ -160,13 +160,6 @@ function MyTeamManagePage() {
       setGenreList({ ...genreList, fantasy: true });
     }
   };
-  const clickdrama = () => {
-    if (genreList.drama) {
-      setGenreList({ ...genreList, drama: false });
-    } else {
-      setGenreList({ ...genreList, drama: true });
-    }
-  };
   const clickgame = () => {
     if (genreList.game) {
       setGenreList({ ...genreList, game: false });
@@ -181,18 +174,11 @@ function MyTeamManagePage() {
       setGenreList({ ...genreList, romance: true });
     }
   };
-  const clickanimation = () => {
-    if (genreList.animation) {
-      setGenreList({ ...genreList, animation: false });
-    } else {
-      setGenreList({ ...genreList, animation: true });
-    }
-  };
   // 유저 정보에 선호 장르 담기
   const clickGenre = (choice) => {
     if (teamGenre.includes(choice)) {
-      console.log(2222222222);
-      setTeamGenre(teamGenre.filter((genre) => genre !== choice));
+      let newGenres = teamGenre.filter((genre) => genre !==choice)
+      setTeamGenre(newGenres);
     } else {
       setTeamGenre([...teamGenre, choice]);
     }
@@ -216,33 +202,34 @@ function MyTeamManagePage() {
   // 모임 정보 수정
   const teamInfoUpdate = () => {
     console.log(teamGenre);
-    teamInfo.teamOnoff = form.team_onoff;
-    teamInfo.teamRegion = form.team_region;
-    teamInfo.teamMembercntMax = form.team_membercnt_max;
-    teamInfo.teamRecruit = form.team_recruit;
-    teamInfo.teamRecruitText = form.team_recruit_text;
-    teamInfo.teamRule1 = form.team_rule1;
-    teamInfo.teamRule2 = form.team_rule2;
-    teamInfo.teamRule3 = form.team_rule3;
-    teamInfo.teamGenre1 = teamGenre[0];
-    teamInfo.teamGenre2 = teamGenre[1];
-    teamInfo.teamGenre3 = teamGenre[2];
+    if (teamGenre.length !== 3) {
+      alert('장르를 3가지 선택해주세요')
+    } else {
 
-    // 선호 장르를 선택하지 않았다면 기존의 정보로 다시 전송
-    if (teamGenre.length === 0) {
-      teamInfo.teamGenre1 = teamDetail.teamGenre1;
-      teamInfo.teamGenre2 = teamDetail.teamGenre2;
-      teamInfo.teamGenre3 = teamDetail.teamGenre3;
-    }
-    Api.patch(`/teams/${teamDetail.teamId}`, teamInfo)
+      teamInfo.teamOnoff = form.team_onoff;
+      teamInfo.teamRegion = form.team_region;
+      teamInfo.teamMembercntMax = form.team_membercnt_max;
+      teamInfo.teamRecruit = form.team_recruit;
+      teamInfo.teamRecruitText = form.team_recruit_text;
+      teamInfo.teamRule1 = form.team_rule1;
+      teamInfo.teamRule2 = form.team_rule2;
+      teamInfo.teamRule3 = form.team_rule3;
+      teamInfo.teamGenre1 = teamGenre[0];
+      teamInfo.teamGenre2 = teamGenre[1];
+      teamInfo.teamGenre3 = teamGenre[2];
+      
+      // 선호 장르를 선택하지 않았다면 기존의 정보로 다시 전송
+      Api.patch(`/teams/${teamDetail.teamId}`, teamInfo)
       .then((res) => {
         console.log(res);
         alert("모임 정보 수정이 완료되었습니다.");
+        teamInfoModalClose()
         window.location.reload();
       })
       .catch((err) => {
         console.log(err);
       });
+    }
   };
 
   // 모임 삭제 모달
@@ -425,7 +412,7 @@ function MyTeamManagePage() {
                   <div
                     onClick={() => {
                       clickreason();
-                      clickGenre("reason");
+                      clickGenre("추리");
                     }}
                     className={
                       genreList.reason
@@ -438,7 +425,7 @@ function MyTeamManagePage() {
                   <div
                     onClick={() => {
                       clickthril();
-                      clickGenre("thril");
+                      clickGenre("스릴러");
                     }}
                     className={
                       genreList.thril
@@ -459,12 +446,12 @@ function MyTeamManagePage() {
                         : teamstyles["notActive"]
                     }
                   >
-                    #공포
+                    #호러
                   </div>
                   <div
                     onClick={() => {
                       clicksf();
-                      clickGenre("sf");
+                      clickGenre("SF");
                     }}
                     className={
                       genreList.sf
@@ -472,12 +459,12 @@ function MyTeamManagePage() {
                         : teamstyles["notActive"]
                     }
                   >
-                    #과학
+                    #SF
                   </div>
                   <div
                     onClick={() => {
                       clickfantasy();
-                      clickGenre("fantasy");
+                      clickGenre("판타지");
                     }}
                     className={
                       genreList.fantasy
@@ -489,21 +476,8 @@ function MyTeamManagePage() {
                   </div>
                   <div
                     onClick={() => {
-                      clickdrama();
-                      clickGenre("drama");
-                    }}
-                    className={
-                      genreList.drama
-                        ? teamstyles["active"]
-                        : teamstyles["notActive"]
-                    }
-                  >
-                    #드라마
-                  </div>
-                  <div
-                    onClick={() => {
                       clickgame();
-                      clickGenre("game");
+                      clickGenre("무협");
                     }}
                     className={
                       genreList.game
@@ -511,12 +485,12 @@ function MyTeamManagePage() {
                         : teamstyles["notActive"]
                     }
                   >
-                    #게임
+                    #무협
                   </div>
                   <div
                     onClick={() => {
                       clickromance();
-                      clickGenre("romance");
+                      clickGenre("로맨스");
                     }}
                     className={
                       genreList.romance
@@ -525,19 +499,6 @@ function MyTeamManagePage() {
                     }
                   >
                     #로맨스
-                  </div>
-                  <div
-                    onClick={() => {
-                      clickanimation();
-                      clickGenre("animation");
-                    }}
-                    className={
-                      genreList.animation
-                        ? teamstyles["active"]
-                        : teamstyles["notActive"]
-                    }
-                  >
-                    #만화
                   </div>
                 </div>
                 <br />
@@ -648,7 +609,7 @@ function MyTeamManagePage() {
                   <Button onClick={teamInfoModalClose}>취소</Button>
                   <Button
                     onClick={() => {
-                      teamInfoModalClose();
+                      // teamInfoModalClose();
                       teamInfoUpdate();
                     }}
                   >

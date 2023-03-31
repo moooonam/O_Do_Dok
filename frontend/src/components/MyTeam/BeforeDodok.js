@@ -61,16 +61,9 @@ function BeforeDodok() {
     }) 
     Api.get(`book/recommend/${myTeamId}`)
     .then((res) => {
-      console.log('추천도서', res)
+      // console.log('추천도서', res)
       const recomendBook = [...res.data];
-      let newBook = [];
-      while (recomendBook.length > 6) {
-        let movenum = recomendBook.splice(
-          Math.floor(Math.random() * recomendBook.length),
-          1
-        )[0];
-        newBook.push(movenum);
-      }
+      let newBook = recomendBook.splice(0,3);
       console.log('뉴북', newBook)
       setRecommandBook([...newBook]);
       // console.log('모임추천도서', res)
