@@ -136,7 +136,7 @@ function Header() {
   return (
     <div className={styles["wrap-header"]}>
       <div className={styles["header-logo-btn"]} onClick={goMain}>
-        Oh Do Dok!
+        O Do Dok!
       </div>
       <div className={styles["wrap-content"]}>
         <div className={styles["header-btn"]} onClick={goAboutUs}>

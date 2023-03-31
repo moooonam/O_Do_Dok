@@ -7,6 +7,7 @@ import Rating from "@mui/material/Rating";
 
 
 function MyTeamRecordDetail() {
+
   const testDodokBook = {
     img: "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
     bookName: "춥다",
