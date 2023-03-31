@@ -36,7 +36,7 @@ function AfterDodok() {
       const dday = new Date(`${Number(res.data.dodokEnddate.split('-')[0])}-${Number(res.data.dodokEnddate.split('-')[1])}-${Number(res.data.dodokEnddate.split('-')[2])}`);
       const gap = dday.getTime() - today.getTime();
       const result = Math.ceil(gap/(1000*60*60*24));
-
+      console.log(res)
       setBookDetail({
         ...bookDetail,
         bookImg: res.data.book.bookImg,
@@ -128,7 +128,8 @@ function AfterDodok() {
           </div>
           <div className={dodokstyles["wrap-book"]}>
             <div>
-              <img src={bookDetail.bookImg} alt="책" />
+              {bookDetail.bookImg !== "tmp" ?<img src={bookDetail.bookImg} alt="책" /> : <img src="https://cdn.pixabay.com/photo/2018/01/17/18/43/book-3088777__340.png" alt="책" />}
+              
             </div>
             <div className={dodokstyles["wrap-bookinfo"]}>
               <div className={dodokstyles["book-info"]}>
