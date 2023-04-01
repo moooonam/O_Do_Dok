@@ -3,7 +3,7 @@ import styles from "../../styles/MyTeamAfterDodok.module.scss";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { Api } from "../../Api";
 const DodokBar = () => {
   const [pageReviews, setPageReviews] = useState([])
@@ -25,13 +25,20 @@ const DodokBar = () => {
     },
   })
   .then((res) => {
-    if (res.data.length !== 0) {
+    if (res.data !== "진행 중인 도독이 없거나, 현재 작성된 리뷰가 없습니다.") {
       // console.log('들어와?')
-      console.log(res)
+      // console.log(res)
       setPageReviews([...res.data])
       setBookPage(res.data[0].dodok.book.bookPagecnt)
+    } else {
+      const dodokRecordId = localStorage.getItem("dodokRecordId");
+      Api.get(`/dodok/details/${dodokRecordId}`)
+      .then((res) => {
+        // console.log("지난활동 도독", res.data)
+        setPageReviews([...res.data.reviewPageList])
+        setBookPage(res.data.dodok.book.bookPagecnt)
+      })
     }
-      // console.log('리뷰조회', res)
   })
   Api.get('/user/me',  {
     headers: {
@@ -44,7 +51,9 @@ const DodokBar = () => {
     setMyId(res.data.id)
     // console.log(myId) 
   })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   // 동기 비동기가 필요할거같아
   const [pageReviewModal, setpageReviewModal] = React.useState(false);
   const pageReviewModalOpen = () => {
