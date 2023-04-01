@@ -4,6 +4,7 @@ import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import { lightGreen } from "@mui/material/colors";
+import { useNavigate } from "react-router-dom";
 
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -12,6 +13,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { Api } from "../Api";
 
 function OpenReviewsPage() {
+  const movePage = useNavigate();
   const [form, setForm] = useState({
     search: "",
   });
@@ -59,20 +61,27 @@ function OpenReviewsPage() {
   // 장르별로 책 보여주기
   const renderBooksByGenre = genreBooks.map((genrebook) => {
     return (
-      <div key={genrebook.dodok.dodokId}>
-        <img src={genrebook.dodok.book.bookImg} alt="책" />
-        <p>{genrebook.dodok.team.teamName}</p>
+      <div key={genrebook.dodok.dodokId} onClick={() => {goOpenReview(genrebook.dodok.dodokId)}}>
+        <p className={openstyles["team-name"]}>"{genrebook.dodok.team.teamName}" 모임</p>
+        {genrebook.dodok.book.bookImg !== 'tmp' ? <img src={genrebook.dodok.book.bookImg} alt="책" /> : <img src="https://cdn.pixabay.com/photo/2018/01/17/18/43/book-3088777__340.png" alt="책" />}
+        <p className={openstyles["book-title"]}>{genrebook.dodok.book.bookTitle}</p>
       </div>
     );
   }); 
+
+  const goOpenReview = (dodokId) => {
+    localStorage.setItem("dodokRecordId", dodokId)
+    movePage(`/openreviews/${dodokId}`)
+  }
 
   // 전체 장르 책 보여주기
   
   const renderBooks =  openDodok.map((book) => {
     return (
-      <div key={book.dodok.dodokId}>
-        <img src={book.dodok.book.bookImg} alt="책" />
-        <p>{book.dodok.team.teamName} 모임</p>
+      <div key={book.dodok.dodokId} onClick={() => {goOpenReview(book.dodok.dodokId)}}>
+        <p className={openstyles["team-name"]}>"{book.dodok.team.teamName}" 모임</p>
+        { book.dodok.book.bookImg !== 'tmp' ? <img src={book.dodok.book.bookImg} alt="책" /> : <img src="https://cdn.pixabay.com/photo/2018/01/17/18/43/book-3088777__340.png" alt="책" />}
+        <p className={openstyles["book-title"]}>{book.dodok.book.bookTitle}</p>
       </div>
     );
   });

@@ -70,6 +70,7 @@ function BeforeDodok() {
       // console.log(recommandBook)
     })
   } 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   ,[]) 
   const [form, setForm] = useState({ 
     bookTitle: "",
@@ -128,22 +129,26 @@ function BeforeDodok() {
     const requestForm = {...form,
     endDate: dateFormat2,
     }
-    Api.post('/dodok/start', requestForm, {
-      headers: {
-        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
-        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
-      },
-    })
-    .then((res) => {
-      console.log('도독시작', res)
-      alert('도독을 시작합니다!')
-      window.location.reload()
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-   
+    if ( requestForm.bookTitle && requestForm.author && requestForm.genre && requestForm.page && requestForm.endDate) {
+      Api.post('/dodok/start', requestForm, {
+        headers: {
+          "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+          "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+        },
+      })
+      .then((res) => {
+        console.log('도독시작', res)
+        alert('도독을 시작합니다!')
+        window.location.reload()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    } else {
+      alert('모든 정보를 입력해야 도독을 시작할 수 있습니다.')
+    }
   }
+
   const handleKeyPress = e => {
     if(e.key === 'Enter') {
       searchBook()

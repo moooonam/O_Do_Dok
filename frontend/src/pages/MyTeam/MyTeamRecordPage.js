@@ -24,6 +24,7 @@ function MyTeamRecordPage() {
         console.log(lastDodoks)
       } 
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const goRecordDetail = (dodok) => {

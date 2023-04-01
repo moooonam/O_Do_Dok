@@ -19,11 +19,24 @@ function MyPage() {
   const [myTeamImg, setMyTeamImg] = useState("")
   const [myPageReviews, setMyPageReviews] = useState([])
   const [myData, setMyData] = useState({
-    pageReviewCnt: 0,
-    endReviewCnt: 0,
+    reviewCnt: 0,
+    articleCnt: 0,
+    dodokCnt: 0,
   })
 
   useEffect(() => {
+    Api.get("/user/me",{
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },})
+      .then((res) => {
+        // console.log('나의정보', res)
+        setMyData({ ...myData, reviewCnt : res.data.userReviewcnt, articleCnt : res.data.boardcnt, dodokCnt: res.data.completeDodokCnt})
+      })
+    .catch((err) => {
+      console.log(err)
+    })
     Api.get("/user/myTeam",{
       headers: {
         "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
@@ -42,13 +55,13 @@ function MyPage() {
         "access-token": `Bearer ${localStorage.getItem("access-token")}`,
       },})
       .then((res) => {
-        console.log(res.data)
+        // console.log(res.data)
         setMyPageReviews(res.data.reviewPageList)
-        setMyData({...myData, pageReviewCnt: res.data.reviewPageList.length, endReviewCnt: res.data.reviewEndList.length})
       })
     .catch((err) => {
       console.log(err)
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
     const userInfo = useSelector((state) => state.user);
 
@@ -106,16 +119,16 @@ function MyPage() {
           <div className={styles["center-activity"]}>
             <p>활동 현황</p>
             <div className={styles["activity-box"]}>
-              <div className={styles["box-left"]}>3</div>
+              <div className={styles["box-left"]}>{myData.dodokCnt}</div>
               <div className={styles["line"]}></div>
-              <div className={styles["box-center"]}>{myData.pageReviewCnt}</div>
+              <div className={styles["box-center"]}>{myData.reviewCnt}</div>
               <div className={styles["line"]}></div>
-              <div className={styles["box-right"]}>{myData.endReviewCnt}</div>
+              <div className={styles["box-right"]}>{myData.articleCnt}</div>
             </div>
             <div className={styles["activity-title"]}>
               <p>완료한 도독</p>
-              <p>작성한 페이지 리뷰</p>
-              <p>작성한 도서 총평</p>
+              <p>작성한 리뷰</p>
+              <p>작성한 게시글</p>
             </div>
           </div>
         </div>
