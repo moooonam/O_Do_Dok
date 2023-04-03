@@ -20,7 +20,6 @@ export default function EndDodokModal() {
     const dodokId = localStorage.getItem('dodokId')
     Api.put(`/dodok/end/${dodokId}`)
     .then((res) => {
-      console.log('도독종료', res)
       alert('도독이 종료되었습니다.')
       window.location.reload()
     })

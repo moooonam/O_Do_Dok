@@ -12,7 +12,6 @@ function RecomendBook() {
   const [best5Book, setBest5Book] = useState([]);
   useEffect(() => {
     Api.get("/book/bestBook").then((res) => {
-      console.log("추천도서", res);
       const recomendBook = [...res.data];
       let newBook = [];
       while (recomendBook.length > 15) {
@@ -23,7 +22,6 @@ function RecomendBook() {
         newBook.push(movenum);
       }
       setBest5Book([...newBook]);
-      console.log(best5Book);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -31,7 +29,6 @@ function RecomendBook() {
   const [open, setOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState({});
   const handleClickOpen = (book) => {
-    // console.log("왔냐", book);
     setSelectedBook({ ...book });
     setOpen(true);
   };

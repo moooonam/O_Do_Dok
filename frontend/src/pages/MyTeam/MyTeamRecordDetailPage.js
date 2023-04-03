@@ -24,7 +24,6 @@ function MyTeamRecordDetail() {
   useEffect(() => {
     const dodokRecordId = localStorage.getItem("dodokRecordId");
     Api.get(`/dodok/details/${dodokRecordId}`).then((res) => {
-      // console.log("도독 상세조회", res.data);
       setDodokRecord({
         ...dodokRecord,
         bookTitle: res.data.dodok.book.bookTitle,
@@ -36,7 +35,6 @@ function MyTeamRecordDetail() {
         endReviews: res.data.reviewEndList,
         dodokOpen: res.data.dodok.dodokOpen,
       });
-      // console.log(dodokRecord);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -45,28 +43,24 @@ function MyTeamRecordDetail() {
   
   // 공개로 변경
   const trueDodok = () => {
-    // console.log(dodokRecordId)
     Api.put(`/dodok/dodokOpen/updateTrue/${dodokRecordId}`, {}, {
       headers: {
         "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
         "access-token": `Bearer ${localStorage.getItem("access-token")}`,
       },
     }).then((res) => {
-      // console.log("공개로 변경 성공", res.data);
       window.location.reload()
     });
   }
 
   // 비공개로 변경
   const falseDodok = () => {
-    // console.log(dodokRecordId)
     Api.put(`/dodok/dodokOpen/updateFalse/${dodokRecordId}`, {}, {
       headers: {
         "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
         "access-token": `Bearer ${localStorage.getItem("access-token")}`,
       },
     }).then((res) => {
-      // console.log("비공개로 변경", res.data);
       window.location.reload() 
     });
   }
@@ -75,7 +69,6 @@ function MyTeamRecordDetail() {
   const deleteDodok = () => {
     Api.delete(`/dodok/${dodokRecordId}`)
     .then((res) => {
-      // console.log(res);
       alert('도독이 삭제되었습니다')
       movePage(`/myteam/${myTeamId}/record`)
     });

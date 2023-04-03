@@ -17,18 +17,14 @@ function MyTeamRecordPage() {
         "access-token": `Bearer ${localStorage.getItem("access-token")}`,
       },
     }).then((res) => {
-      console.log(res.data)
       if (res.data !== "검색 결과가 없습니다.") {
         setLastDodoks([...res.data]);
-        console.log("지난도독", res.data);
-        console.log(lastDodoks)
       } 
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const goRecordDetail = (dodok) => {
-    // console.log("여기");
     localStorage.setItem("dodokRecordId", dodok.dodok.dodokId);
     movePage(`/myteam/${myTeamId}/record/${dodok.dodok.dodokId}`);
   };

@@ -10,7 +10,6 @@ function BestReview() {
   useEffect(() => {
     Api.get('/dodok/lastdodoks')
     .then((res) => {
-      console.log('dd',res)
       if (res.data !== '검색 결과가 없습니다.') {
         if (res.data.length >= 6) {
           setOpenDodok([...openDodok, res.data[0], res.data[1], res.data[2],res.data[3], res.data[4]])
@@ -23,7 +22,6 @@ function BestReview() {
   }, [])
 
   const goOpenReview = (dodokId) => {
-    console.log(dodokId)
     localStorage.setItem("dodokRecordId", dodokId)
     movePage(`/openreviews/${dodokId}`)
   }

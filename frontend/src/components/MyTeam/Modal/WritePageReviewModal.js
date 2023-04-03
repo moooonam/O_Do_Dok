@@ -21,7 +21,6 @@ export default function WritePageReviewModal() {
         "access-token": `Bearer ${localStorage.getItem("access-token")}`,
       },})
       .then((res) => {
-        console.log('도독정보', res.data.book.bookPagecnt)
         setBookPage(res.data.book.bookPagecnt)
       })
     .catch((err) => {
@@ -41,7 +40,6 @@ export default function WritePageReviewModal() {
     });
   };
   const allow = () => {
-    console.log('여기', form);
     if (bookPage < form.page || form.page <= 0) {
       alert('페이지를 다시 확인해주십시오.')
     } else {
@@ -52,7 +50,6 @@ export default function WritePageReviewModal() {
         },
       })
       .then((res) =>{
-        console.log(res)
         alert('페이지리뷰 작성 성공!')
         window.location.reload()
       })

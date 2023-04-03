@@ -23,10 +23,8 @@ function LoginPage() {
     movePage("/");
   };
   const userLogin = () => {
-    // console.log(form)
     Api.post("/login", form)
       .then((res) => {
-        // console.log(res.data['refresh-token'])
         localStorage.setItem("refresh-token", res.data["refresh-token"]);
         localStorage.setItem("access-token", res.data["access-token"]);
         dispatch(login());
@@ -53,7 +51,6 @@ function LoginPage() {
                 userAge: res.data.userAge,
               })
             );
-            // console.log(res.data)
           })
           .catch((err) => {
             console.log(err);

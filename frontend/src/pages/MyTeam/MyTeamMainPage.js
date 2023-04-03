@@ -3,13 +3,12 @@ import SideBar from "../../components/SideBar";
 import sidestyles from "../../styles/Sidebar.module.scss";
 import mainstyles from "../../styles/MyTeamMain.module.scss";
 import { Api } from "../../Api";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import PanToolAltIcon from "@mui/icons-material/PanToolAlt";
+// import { useNavigate } from "react-router-dom";
+// import { useSelector } from "react-redux";
 
 function MyTeamMainPage() {
-  const movePage = useNavigate();
-  const myTeamId = useSelector((state) => state.user.myTeamId);
+  // const movePage = useNavigate();
+  // const myTeamId = useSelector((state) => state.user.myTeamId);
   const access_token = localStorage.getItem("access-token");
   const refresh_token = localStorage.getItem("refresh-token");
 
@@ -44,7 +43,6 @@ function MyTeamMainPage() {
       },
     })
       .then((res) => {
-        // console.log(res.data);
         setTeamDetail({
           ...teamDetail,
           teamName: res.data.teamName,
@@ -73,9 +71,7 @@ function MyTeamMainPage() {
       },
     })
       .then((res) => {
-        // console.log("최신 게시글 불러오기 완료----------");
         const cnt = res.data.length;
-        // console.log(res);
         setTeamArticle({
           ...teamArticle,
           article1: res.data[cnt - 1],

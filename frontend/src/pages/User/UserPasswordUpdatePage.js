@@ -43,7 +43,6 @@ function UserPasswordUpdatePage() {
     .catch((err) => {
       console.log(err)
     })
-    console.log(form)
   })
   const password_validation = () => {
     let check = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;

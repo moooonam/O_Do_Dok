@@ -30,7 +30,6 @@ function ArticleUpdatePage() {
     const articleId = localStorage.getItem("articleId");
     Api.get(`/board/details/${articleId}`, articleId)
       .then((res) => {
-        console.log(res.data);
         setArticleDetail({
           ...articleDetail,
           boardType: res.data.boardType,
@@ -62,13 +61,11 @@ function ArticleUpdatePage() {
     if (article.boardType === "분류") {
       alert('분류를 선택해주세요')
     } else {
-      console.log(article)
       Api.put(`/board/${articleId}`, article, {headers: {
         "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
         "access-token": `Bearer ${localStorage.getItem("access-token")}`,
       }})
       .then((res) => {
-        console.log(res)
         alert('수정이 완료되었습니다')
         movePage(`/myTeam/${myTeamId}/article/${articleId}`)
 

@@ -47,7 +47,6 @@ function ArticleCreatePage() {
   };
 
   const clickOption = (option) => {
-    // console.log(option)
     setMenu({ ...menu, choice: option})
   }
 
@@ -61,7 +60,6 @@ function ArticleCreatePage() {
 
   const myRole = useSelector((state) => state.user.myRole);
   const createArticle = () => {
-    console.log(myRole)
     article.title = form.title
     article.content = form.context
     if (menu.choice === '공지') {
@@ -72,7 +70,7 @@ function ArticleCreatePage() {
 
     if (menu.choice === '분류') {
       alert('게시글의 분류를 선택해주세요')
-    } else if (myRole === 'USER' && menu.choice == '공지') {
+    } else if (myRole === 'USER' && menu.choice === '공지') {
       alert('일반 유저는 공지를 작성할 수 없습니다. 자유 게시글로 전환해주세요!')
     } else { 
       if (article.title && article.content) {
@@ -81,7 +79,6 @@ function ArticleCreatePage() {
           "access-token": `Bearer ${localStorage.getItem("access-token")}`,
         }})
         .then((res) => {
-          console.log(res)
           alert('게시글 작성이 완료되었습니다.')
           movePage(`/myteam/${myTeamId}/article`)
         })

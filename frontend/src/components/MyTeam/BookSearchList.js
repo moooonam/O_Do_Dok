@@ -1,16 +1,14 @@
-import React, { useState,useEffect } from "react";
+import React, { useState } from "react";
 import styles from "../../styles/MyTeamBeforeDodok.module.scss";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 function BookSearchList({ searchBookData, parentCallback}) {
   const [open, setOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState({});
   const handleClickOpen = (book) => {
-    // console.log("왔냐", book);
     setSelectedBook({ ...book });
     setOpen(true);
   };
@@ -19,12 +17,10 @@ function BookSearchList({ searchBookData, parentCallback}) {
     parentCallback(selectedBook)
     setOpen(false)
   })
-  // console.log('들어온책',selectedBook)
   const handleClose = () => {
     setOpen(false);
   };
   const renderResult = searchBookData.map((book) => {
-    // console.log("책", book);
     return (
       <div key={book.bookId} className={styles["book-container"]}>
         <div className={styles["wrap-img"]}>

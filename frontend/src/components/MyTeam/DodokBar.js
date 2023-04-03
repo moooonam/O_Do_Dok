@@ -26,8 +26,6 @@ const DodokBar = () => {
   })
   .then((res) => {
     if (res.data.length !== 0) {
-      // console.log('들어와?')
-      console.log(res)
       setPageReviews([...res.data])
       setBookPage(res.data[0].dodok.book.bookPagecnt)
     }
@@ -40,9 +38,7 @@ const DodokBar = () => {
     },
   })
   .then((res) => {
-    // console.log('나의정보', res)
     setMyId(res.data.id)
-    // console.log(myId) 
   })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -56,8 +52,6 @@ const DodokBar = () => {
     setpageReviewModal(false);
   };
   const clickPage = (pageReview) =>{
-
-    console.log(pageReview)
     setpageReviewInfo({
       ...pageReviewInfo,
       pageReviewId: pageReview.reviewPageId,
@@ -75,7 +69,6 @@ const DodokBar = () => {
       },
     })
     .then((res) => {
-      console.log('삭제',res)
       alert('페이지 리뷰를 삭제했습니다.')
       window.location.reload()
     })

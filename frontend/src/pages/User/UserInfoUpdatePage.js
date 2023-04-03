@@ -152,7 +152,6 @@ function UserInfoUpdatePage() {
       form.userGenre3 = userGenre[2];
       if (form.nickCheck) {
         //axios 들어갈 자리
-        // console.log(form);
         Api.put("/user", form, {
           headers: {
             "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
@@ -160,7 +159,6 @@ function UserInfoUpdatePage() {
           },
         })
           .then((res) => {
-            // console.log(res);
             dispatch(
               getUserInfo({
                 userName: form.userName,
@@ -226,7 +224,6 @@ function UserInfoUpdatePage() {
       },
     })
       .then((res) => {
-        console.log(res);
         if (res.data === "삭제 완료") {
           alert("회원 탈퇴가 완료되었습니다.");
           dispatch(logout());
@@ -252,7 +249,6 @@ function UserInfoUpdatePage() {
 
   const clickImage = (image) => {
     setForm({ ...form, userImage: image });
-    console.log(form.userImage);
   };
 
   const renderImage = images.map((image) => {

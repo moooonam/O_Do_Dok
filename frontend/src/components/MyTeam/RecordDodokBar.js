@@ -21,7 +21,6 @@ function RecordDodokBar() {
   useEffect(() => {
     const dodokRecordId = localStorage.getItem("dodokRecordId");
     Api.get(`/dodok/details/${dodokRecordId}`).then((res) => {
-      // console.log("지난활동 도독", res.data)
       setPageReviews([...res.data.reviewPageList]);
       setBookPage(res.data.dodok.book.bookPagecnt);
     });
@@ -31,9 +30,7 @@ function RecordDodokBar() {
         "access-token": `Bearer ${localStorage.getItem("access-token")}`,
       },
     }).then((res) => {
-      // console.log('나의정보', res)
       setMyId(res.data.id);
-      // console.log(myId)
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -47,7 +44,6 @@ function RecordDodokBar() {
     setpageReviewModal(false);
   };
   const clickPage = (pageReview) => {
-    console.log(pageReview);
     setpageReviewInfo({
       ...pageReviewInfo,
       pageReviewId: pageReview.reviewPageId,
@@ -64,7 +60,6 @@ function RecordDodokBar() {
         "access-token": `Bearer ${localStorage.getItem("access-token")}`,
       },
     }).then((res) => {
-      console.log("삭제", res);
       alert("페이지 리뷰를 삭제했습니다.");
       window.location.reload();
     });
