@@ -20,6 +20,7 @@ const RecordSideBar = () => {
         genre3: res.data.dodok.team.teamGenre3,
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

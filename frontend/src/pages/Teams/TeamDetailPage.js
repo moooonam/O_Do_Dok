@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import styles from "../../styles/TeamDetail.module.scss";
 import JoinTeamModal from "../../components/Teams/Modal/JoinTeamModal";
 import { Api } from "../../Api";
+import { useNavigate } from "react-router-dom";
 // import { useSelector } from "react-redux";
 // import { useLocation } from "react-router-dom";
 
 function TeamDetailPage() {
   // const location = useLocation();
-  
+  const movePage = useNavigate();
 
   const [teamDetail, setTeamDetail] = useState({
     teamName: "",
@@ -52,6 +53,11 @@ function TeamDetailPage() {
       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const goMoreInfo = () => {
+    let Id = localStorage.getItem("nowTeam");
+    movePage(`/teams/${Id}/moreinfo`)
+  }
+
   return (
     <div className={styles["wrap-all"]}>
       <div className={styles.teamname}>{teamDetail.teamName}</div>
@@ -81,7 +87,7 @@ function TeamDetailPage() {
         </div>
       </div>
       <div className={styles["wrap-btn"]}>
-        <div className={styles["godetail-btn"]}>더 알아보기</div>
+        <div className={styles["godetail-btn"]} onClick={() => {goMoreInfo()}}>더 알아보기</div>
         <JoinTeamModal teamName={teamDetail.teamName} />
       </div>
     </div>

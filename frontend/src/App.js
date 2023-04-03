@@ -25,11 +25,11 @@ import ArticleUpdatePage from "./pages/MyTeam/ArticleUpdatePage";
 import AboutUsPage from "./pages/AboutUsPage";
 
 // 모임신청 관련
-
 import TeamsMainPage from "./pages/Teams/TeamsMainPage";
 import TeamDetailPage from "./pages/Teams/TeamDetailPage";
-//오도독 책장
+import TeamMoreInfo from "./pages/Teams/TeamMoreInfo";
 
+//오도독 책장
 import OpenReviewsPage from "./pages/OpenReviewsPage"; 
 import OpenReviewDetailPage from "./pages/OpenReviewDetailPage"; 
 
@@ -61,6 +61,7 @@ function App() {
         <Route exact path="/about-us" element={<AboutUsPage/>}/>
         <Route exact path="/teams" element={<TeamsMainPage/>}/>
         <Route exact path="/teams/:teamId" element={<TeamDetailPage/>}/>
+        <Route exact path="/teams/:teamId/moreinfo" element={<TeamMoreInfo/>}/>
         <Route exact path="/openreviews" element={<OpenReviewsPage/>}/>
         <Route exact path="/openreviews/:recordId" element={<OpenReviewDetailPage/>}/>
       </Routes>
