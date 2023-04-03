@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import SideBar from "../../components/SideBar";
 import sidestyles from "../../styles/Sidebar.module.scss";
 import dodokstyles from "../../styles/MyTeamRecordDetail.module.scss";
-import DodokBar from "../../components/MyTeam/DodokBar";
+import RecordDodokBar from "../../components/MyTeam/RecordDodokBar";
 import Rating from "@mui/material/Rating";
 import { Api } from "../../Api";
 import { useNavigate } from "react-router-dom";
@@ -132,7 +132,7 @@ function MyTeamRecordDetail() {
               </div>
             </div>
           </div>
-          <DodokBar propPageReviews={dodokRecord.pageReviews} />
+          <RecordDodokBar propPageReviews={dodokRecord.pageReviews} />
           <div className={dodokstyles["wrap-reviews-title"]}>
             <h3>총평</h3>
           </div>
