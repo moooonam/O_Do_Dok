@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import sidestyles from "../styles/Sidebar.module.scss";
 import openreviewtyles from "../styles/OpenReviewDetail.module.scss";
-import DodokBar from "../components/MyTeam/DodokBar";
+import RecordDodokBar from "../components/MyTeam/RecordDodokBar";
 import Rating from "@mui/material/Rating";
 import RecordSideBar from "../components/RecordSideBar";
+import RecordAllPageReviewModal from "../components/MyTeam/Modal/RecordAllPageReviewModal";
 import { Api } from "../Api";
 
 function OpenReviewDetailPage() {
   const [dodokRecord, setDodokRecord] = useState({
     bookTitle: "",
     bookImg: "",
+    bookAuthor: "",
     dodokStartdate: "",
     dodokEnddate: "",
     pageReviews: [],
@@ -25,13 +27,14 @@ function OpenReviewDetailPage() {
         ...dodokRecord,
         bookTitle: res.data.dodok.book.bookTitle,
         bookImg: res.data.dodok.book.bookImg,
+        bookAuthor : res.data.dodok.book.bookAuthor,
         dodokStartdate: res.data.dodok.dodokStartdate,
         dodokEnddate: res.data.dodok.dodokEnddate,
         pageReviews: res.data.reviewPageList,
         endReviews: res.data.reviewEndList,
         dodokOpen: res.data.dodok.dodokOpen,
       });
-      console.log(dodokRecord);
+      // console.log(dodokRecord);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -46,7 +49,7 @@ function OpenReviewDetailPage() {
           <p>{review.user.userNickname}</p>
           <Rating
             name="read-only"
-            value={review.rating}
+            value={review.reviewEndBookrating}
             className={openreviewtyles.rating}
             readOnly
           />
@@ -80,6 +83,10 @@ function OpenReviewDetailPage() {
                 <p>{dodokRecord.bookTitle}</p>
               </div>
               <div className={openreviewtyles["book-info"]}>
+                <p>저자</p>
+                <p>{dodokRecord.bookAuthor}</p>
+              </div>
+              <div className={openreviewtyles["book-info"]}>
                 <p>도독기간</p>
                 <p>
                   {dodokRecord.dodokStartdate} ~ {dodokRecord.dodokEnddate}
@@ -87,7 +94,8 @@ function OpenReviewDetailPage() {
               </div>
             </div>
           </div>
-          <DodokBar propPageReviews={dodokRecord.pageReviews} />
+          <RecordAllPageReviewModal/>
+          <RecordDodokBar propPageReviews={dodokRecord.pageReviews} />
           <div className={openreviewtyles["wrap-reviews-title"]}>
             <h3>총평</h3>
           </div>

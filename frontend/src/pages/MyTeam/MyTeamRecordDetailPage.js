@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import SideBar from "../../components/SideBar";
 import sidestyles from "../../styles/Sidebar.module.scss";
 import dodokstyles from "../../styles/MyTeamRecordDetail.module.scss";
-import DodokBar from "../../components/MyTeam/DodokBar";
+import RecordDodokBar from "../../components/MyTeam/RecordDodokBar";
 import Rating from "@mui/material/Rating";
+import RecordAllPageReviewModal from "../../components/MyTeam/Modal/RecordAllPageReviewModal";
 import { Api } from "../../Api";
 import { useNavigate } from "react-router-dom";
 
@@ -12,6 +13,7 @@ function MyTeamRecordDetail() {
   const [dodokRecord, setDodokRecord] = useState({
     bookTitle: "",
     bookImg: "",
+    bookAuthor: "",
     dodokStartdate:"",
     dodokEnddate:"",
     pageReviews: [],
@@ -27,13 +29,14 @@ function MyTeamRecordDetail() {
         ...dodokRecord,
         bookTitle: res.data.dodok.book.bookTitle,
         bookImg: res.data.dodok.book.bookImg,
+        bookAuthor: res.data.dodok.book.bookAuthor,
         dodokStartdate: res.data.dodok.dodokStartdate,
         dodokEnddate: res.data.dodok.dodokEnddate,
         pageReviews: res.data.reviewPageList,
         endReviews: res.data.reviewEndList,
         dodokOpen: res.data.dodok.dodokOpen,
       });
-      console.log(dodokRecord);
+      // console.log(dodokRecord);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -42,7 +45,7 @@ function MyTeamRecordDetail() {
   
   // 공개로 변경
   const trueDodok = () => {
-    console.log(dodokRecordId)
+    // console.log(dodokRecordId)
     Api.put(`/dodok/dodokOpen/updateTrue/${dodokRecordId}`, {}, {
       headers: {
         "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
@@ -56,14 +59,14 @@ function MyTeamRecordDetail() {
 
   // 비공개로 변경
   const falseDodok = () => {
-    console.log(dodokRecordId)
+    // console.log(dodokRecordId)
     Api.put(`/dodok/dodokOpen/updateFalse/${dodokRecordId}`, {}, {
       headers: {
         "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
         "access-token": `Bearer ${localStorage.getItem("access-token")}`,
       },
     }).then((res) => {
-      console.log("비공개로 변경", res.data);
+      // console.log("비공개로 변경", res.data);
       window.location.reload() 
     });
   }
@@ -72,7 +75,7 @@ function MyTeamRecordDetail() {
   const deleteDodok = () => {
     Api.delete(`/dodok/${dodokRecordId}`)
     .then((res) => {
-      console.log(res);
+      // console.log(res);
       alert('도독이 삭제되었습니다')
       movePage(`/myteam/${myTeamId}/record`)
     });
@@ -88,7 +91,7 @@ function MyTeamRecordDetail() {
           <p>{review.user.userNickname}</p>
           <Rating
             name="read-only"
-            value={review.rating}
+            value={review.reviewEndBookrating}
             className={dodokstyles.rating}
             readOnly
           />
@@ -124,6 +127,10 @@ function MyTeamRecordDetail() {
                 <p>{dodokRecord.bookTitle}</p>
               </div>
               <div className={dodokstyles["book-info"]}>
+                <p>저자</p>
+                <p>{dodokRecord.bookAuthor}</p>
+              </div>
+              <div className={dodokstyles["book-info"]}>
                 <p>도독기간</p>
                 <p>
                   {dodokRecord.dodokStartdate} ~{" "}
@@ -132,7 +139,8 @@ function MyTeamRecordDetail() {
               </div>
             </div>
           </div>
-          <DodokBar propPageReviews={dodokRecord.pageReviews} />
+          <RecordAllPageReviewModal/>
+          <RecordDodokBar propPageReviews={dodokRecord.pageReviews} />
           <div className={dodokstyles["wrap-reviews-title"]}>
             <h3>총평</h3>
           </div>
