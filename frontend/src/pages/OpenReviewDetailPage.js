@@ -3,6 +3,7 @@ import sidestyles from "../styles/Sidebar.module.scss";
 import openreviewtyles from "../styles/OpenReviewDetail.module.scss";
 import RecordDodokBar from "../components/MyTeam/RecordDodokBar";
 import Rating from "@mui/material/Rating";
+import RecordAllPageReviewModal from "../components/MyTeam/Modal/RecordAllPageReviewModal";
 import { Api } from "../Api";
 
 function OpenReviewDetailPage() {
@@ -20,7 +21,7 @@ function OpenReviewDetailPage() {
   useEffect(() => {
     const dodokRecordId = localStorage.getItem("dodokRecordId");
     Api.get(`/dodok/details/${dodokRecordId}`).then((res) => {
-      console.log("도독 상세조회", res.data);
+      // console.log("도독 상세조회", res.data);
       setDodokRecord({
         ...dodokRecord,
         bookTitle: res.data.dodok.book.bookTitle,
@@ -32,7 +33,7 @@ function OpenReviewDetailPage() {
         endReviews: res.data.reviewEndList,
         dodokOpen: res.data.dodok.dodokOpen,
       });
-      console.log(dodokRecord);
+      // console.log(dodokRecord);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -47,7 +48,7 @@ function OpenReviewDetailPage() {
           <p>{review.user.userNickname}</p>
           <Rating
             name="read-only"
-            value={review.rating}
+            value={review.reviewEndBookrating}
             className={openreviewtyles.rating}
             readOnly
           />
@@ -91,6 +92,7 @@ function OpenReviewDetailPage() {
               </div>
             </div>
           </div>
+          <RecordAllPageReviewModal/>
           <RecordDodokBar propPageReviews={dodokRecord.pageReviews} />
           <div className={openreviewtyles["wrap-reviews-title"]}>
             <h3>총평</h3>

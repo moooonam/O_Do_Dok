@@ -149,9 +149,9 @@ function TeamsMainPage() {
   // 검색
   const searchTeam = () => {
     if (searchKeyword) {
-      console.log(searchKeyword);
+      // console.log(searchKeyword);
       Api.get(`/teams/${searchKeyword}`).then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setSearchedTeamData(...searchedTeamData, res.data);
         setIsSearched(true);
       });
@@ -217,7 +217,7 @@ function TeamsMainPage() {
       if (form.team_name) {
         Api.get(`teams/check/${form.team_name}`)
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           if (res.data) {
             alert("사용 가능한 모임 이름 입니다");
             form.team_name_check = true;

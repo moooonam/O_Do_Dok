@@ -39,7 +39,7 @@ function OpenReviewsPage() {
   useEffect(() => {
     Api.get('/dodok/lastdodoks')
     .then((res) => {
-      console.log('dd',res)
+      // console.log('dd',res)
       if (res.data !== '검색 결과가 없습니다.') {
         setOpenDodok([...res.data])
       }

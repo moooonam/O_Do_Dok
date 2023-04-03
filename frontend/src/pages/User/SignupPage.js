@@ -3,7 +3,6 @@ import TextField from "@mui/material/TextField";
 import styles from "../../styles/Signup.module.scss";
 import Grid from "@mui/material/Grid"; // Grid version 1
 import Button from "@mui/material/Button";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 // radio
@@ -138,14 +137,9 @@ function SignupPage() {
 
   const emailDuplication = () => {
     if (form.email) {
-      axios({
-        methods: "get",
-        url: `http://localhost:8080/api/v1/user/checkEmail/${form.email}`,
-        // headers: { "withCredentials": true},
-        //false가 이미 있는 이메일
-      })
+      Api.get(`/user/checkEmail/${form.email}`)
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           if (res.data) {
             form.emailCheck = true;
             alert("사용 가능한 이메일입니다.");
@@ -157,17 +151,11 @@ function SignupPage() {
           console.log(err);
         });
     }
-    // else {
-    //   alert("이메일을 입력해주세요")
-    // }
   };
 
   const nickDuplication = () => {
     if (form.nickname) {
-      axios({
-        methods: "get",
-        url: `http://localhost:8080/api/v1/user/checkNickname/${form.nickname}`,
-      })
+      Api.get(`/user/checkNickname/${form.nickname}`)
         .then((res) => {
           // console.log(res);
           if (res.data) {
@@ -181,9 +169,6 @@ function SignupPage() {
           console.log(err);
         });
     }
-    // else {
-    //   alert("닉네임을 입력해주세요.")
-    // }
   };
 
   // 가입하기 함수
@@ -223,7 +208,7 @@ function SignupPage() {
         ) {
           Api.post("/user", userInfo)
             .then((res) => {
-              console.log(res);
+              // console.log(res);
               alert("회원가입 성공!");
               movePage("/login");
             })
@@ -238,7 +223,7 @@ function SignupPage() {
       }
     }
 
-    console.log(userInfo);
+    // console.log(userInfo);
   };
 
   // 유효성 검사
@@ -567,10 +552,13 @@ function SignupPage() {
         <Grid container direction="row" columnGap={8}>
           <p className={styles["signup-blank"]}>활동지역</p>
           <TextField
+            sx={{
+              width: { md: 310 },
+            }}
             required
             id="region"
             label="Required"
-            placeholder="활동지역을 입력해주세요"
+            placeholder="온라인의 경우 '전지역'으로 입력해주세요"
             value={form.region}
             variant="standard"
             onChange={(e) => setForm({ ...form, region: e.target.value })}
