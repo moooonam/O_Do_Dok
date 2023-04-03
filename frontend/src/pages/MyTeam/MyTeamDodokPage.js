@@ -13,8 +13,7 @@ function MyTeamDodokPage() {
       "access-token": `Bearer ${localStorage.getItem("access-token")}`,
     }})
       .then((res) => {
-        console.log('여기')
-        console.log(res);
+        console.log('마이팅정보',res)
         setDodokCheck({ ...dodokCheck, ongoingDodok: res.data.ongoingDodok})
       })
       .catch((err) => {

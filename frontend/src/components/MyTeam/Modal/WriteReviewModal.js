@@ -7,13 +7,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import styles from "../../../styles/MyTeamAfterDodok.module.scss";
 // import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
-
+import { Api } from "../../../Api";
 export default function WriteReviewModal() {
   const [open, setOpen] = React.useState(false);
 
   const [form, setForm] = React.useState({
-    rating: 2.5,
-    review: "",
+    bookRating: 2.5,
+    content: "",
+    genreRating: 5,
   });
   const handleClickOpen = () => {
     setOpen(true);
@@ -22,11 +23,30 @@ export default function WriteReviewModal() {
   const handleClose = () => {
     setOpen(false);
     setForm({
-      rating: 2.5,
-      review: "",
+      bookRating: 2.5,
+      content: "",
+      genreRating: 5,
     });
   };
   const allow = () => {
+    Api.post('/dodok/endReview/add',form, {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+    .then((res) => {
+      if (res.data === "이미 작성하셨습니다."){
+        alert('이미 총평을 작성하셨습니다')
+        handleClose()
+      }
+      else{
+        alert('총평 작성이 완료되었습니다!')
+        window.location.reload()
+      }
+      console.log('총평 고고', res)
+    })
+
     console.log(form)
   };
 
@@ -48,9 +68,9 @@ export default function WriteReviewModal() {
             <Rating
               name="simple-controlled"
               precision={0.5}
-              value={Number(form.rating)}
+              value={Number(form.bookRating)}
               onChange={(event) => {
-                setForm({ ...form, rating: Number(event.target.value) })
+                setForm({ ...form, bookRating: Number(event.target.value) })
               }}
             />
           </div>
@@ -58,7 +78,7 @@ export default function WriteReviewModal() {
           <textarea
             type="textfield"
             className={styles["review-input"]}
-            onChange={(e) => setForm({ ...form, review: e.target.value })}
+            onChange={(e) => setForm({ ...form, content: e.target.value })}
           />
           <div className={styles["wrap-modal-btn"]}>
             <div className={styles["cancle-btn"]} onClick={handleClose}>

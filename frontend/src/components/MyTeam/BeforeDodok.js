@@ -4,7 +4,11 @@ import sidestyles from "../../styles/Sidebar.module.scss";
 import dodokstyles from "../../styles/MyTeamBeforeDodok.module.scss";
 import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
-
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 // datepicker
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -20,10 +24,28 @@ import Select from "@mui/material/Select";
 import { Api } from "../../Api";
 import BookSearchList from "./BookSearchList";
 
+import { useSelector } from "react-redux";
+
 function BeforeDodok() {
+  const myRole = useSelector((state) => state.user.myRole)
   const myTeamId = localStorage.getItem('myTeamId')
   const [teamName, setTeamName] = useState('')
   const [recommandBook, setRecommandBook] = useState([])
+  const [selectedBook, setSelectedBook] = useState({});
+  const [open, setOpen] = useState(false);
+  const handleClickOpen = (book) => {
+    // console.log("왔냐", book);
+    setSelectedBook({ ...book });
+    setOpen(true);
+
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const insertBookData = (()=> {
+    hendelCallback(selectedBook)
+    setOpen(false)
+  })
   useEffect(()=> {
     Api.get("/user/myTeam", {
       headers: {
@@ -33,18 +55,24 @@ function BeforeDodok() {
     })
     .then((res) => {
       setTeamName(res.data.teamName)
-      console.log('여기저기', res)
-    })
-    .catch((err) => {
+    }) 
+    .catch((err) => { 
       console.log(err)
-    })
+    }) 
     Api.get(`book/recommend/${myTeamId}`)
     .then((res) => {
-      console.log('모임추천도서', res)
+      // console.log('추천도서', res)
+      const recomendBook = [...res.data];
+      let newBook = recomendBook.splice(0,3);
+      console.log('뉴북', newBook)
+      setRecommandBook([...newBook]);
+      // console.log('모임추천도서', res)
+      // console.log(recommandBook)
     })
-  }
-  ,[])
-  const [form, setForm] = useState({
+  } 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ,[]) 
+  const [form, setForm] = useState({ 
     bookTitle: "",
     author: "",
     genre: "",
@@ -83,37 +111,16 @@ function BeforeDodok() {
     }
   })
 
-
-  // 도독 시작일
-  // const [startDate, setStartDate] = React.useState(dayjs());
-  // const dateFormat1 = dayjs(startDate.$d).format("YYYY-MM-DD");
-
-  // 도독 종료일
   const [endDate, setEndDate] = React.useState(dayjs());
   const dateFormat2 = dayjs(endDate.$d).format("YYYY-MM-DD");
 
-  const books = [
-    {
-      id: 1,
-      imgurl:
-        "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
-    },
-    {
-      id: 2,
-      imgurl:
-        "https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg",
-    },
-    {
-      id: 3,
-      imgurl:
-        "https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg",
-    },
-  ];
-  const renderTeamRecomendBook = books.map((book) => {
+  const renderTeamRecomendBook = recommandBook.map((book) => {
     return (
-      <div key={book.id}>
-        <img src={book.imgurl} alt="책" />
-        <p>{book.id}</p>
+      <div key={book.bookId}>
+        <img src={book.bookImg} alt="책" onClick={() => {
+              handleClickOpen(book);
+            }}/>
+        <div className={dodokstyles.booktitle}>{book.bookTitle}</div>
       </div>
     );
   });
@@ -122,22 +129,26 @@ function BeforeDodok() {
     const requestForm = {...form,
     endDate: dateFormat2,
     }
-    Api.post('/dodok/start', requestForm, {
-      headers: {
-        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
-        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
-      },
-    })
-    .then((res) => {
-      console.log('도독시작', res)
-      alert('도독을 시작합니다!')
-      window.location.reload()
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-   
+    if ( requestForm.bookTitle && requestForm.author && requestForm.genre && requestForm.page && requestForm.endDate) {
+      Api.post('/dodok/start', requestForm, {
+        headers: {
+          "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+          "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+        },
+      })
+      .then((res) => {
+        console.log('도독시작', res)
+        alert('도독을 시작합니다!')
+        window.location.reload()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    } else {
+      alert('모든 정보를 입력해야 도독을 시작할 수 있습니다.')
+    }
   }
+
   const handleKeyPress = e => {
     if(e.key === 'Enter') {
       searchBook()
@@ -152,6 +163,31 @@ function BeforeDodok() {
           <div className={dodokstyles["myteam-wrap-bookimg"]}>
             {renderTeamRecomendBook}
           </div>
+          <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"선택된 책"}</DialogTitle>
+        <DialogContent>
+          <div>
+            {selectedBook ? (
+              <div>
+                <p>제목: {selectedBook.bookTitle}</p>
+                <br />
+                <p>작가: {selectedBook.bookAuthor}</p>
+              </div>
+            ) : null}
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>닫기</Button>
+          <Button onClick={insertBookData} autoFocus>
+            도독에 책정보 넣기
+          </Button>
+        </DialogActions>
+      </Dialog>
           <h3 className={dodokstyles["recommend-reason"]}>
           '{teamName}' 모임의 78%가 추리소설을 좋아합니다
           </h3>
@@ -159,7 +195,7 @@ function BeforeDodok() {
         <div className={dodokstyles["secondBox"]}>
           <div className={dodokstyles["dodokInfo-header"]}>
             <h2 className={dodokstyles["dodokInfo-headerLeft"]}>도독</h2>
-            <div className={dodokstyles["startDodokBtn"]} onClick={startDodok}>도독 시작</div>
+            {myRole !== 'USER' ? <div className={dodokstyles["startDodokBtn"]} onClick={startDodok}>도독 시작</div> : null}
           </div>
           <hr />
           <div className={dodokstyles["dodokInfo-content"]}>

@@ -5,7 +5,7 @@ import DialogContent from '@mui/material/DialogContent';
 // import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import styles from '../../../styles/MyTeamAfterDodok.module.scss'
-
+import { Api } from '../../../Api';
 export default function EndDodokModal() {
   const [open, setOpen] = React.useState(false);
 
@@ -16,7 +16,15 @@ export default function EndDodokModal() {
   const handleClose = () => {
     setOpen(false);
   };
-
+  const endDodok = (() => {
+    const dodokId = localStorage.getItem('dodokId')
+    Api.put(`/dodok/end/${dodokId}`)
+    .then((res) => {
+      console.log('도독종료', res)
+      alert('도독이 종료되었습니다.')
+      window.location.reload()
+    })
+  })
   return (
     <div>
       <div className={styles['default-btn']} onClick={handleClickOpen}>
@@ -33,8 +41,8 @@ export default function EndDodokModal() {
         </DialogTitle>
         <DialogContent>
           <div className={styles['wrap-modal-btn']}>
-            <div className={styles['cancle-btn']}>아니요</div>
-            <div className={styles['allow-btn']}>네</div>
+            <div className={styles['cancle-btn']} onClick={handleClose}>아니요</div>
+            <div className={styles['allow-btn']} onClick={endDodok}>네</div>
           </div>
         </DialogContent>
       </Dialog>

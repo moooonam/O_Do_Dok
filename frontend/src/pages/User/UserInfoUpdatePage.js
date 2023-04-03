@@ -120,8 +120,7 @@ function UserInfoUpdatePage() {
     }
   };
 
-  // axios 보낼 데이
-
+  // 닉네임 중복체크
   const nickDuplication = () => {
     if (form.userNickname) {
       Api.get(`/user/checkNickname/${form.userNickname}`)
@@ -241,6 +240,38 @@ function UserInfoUpdatePage() {
       });
   };
 
+  // 유저 이미지 변경
+  const images = [
+    "https://cdn.pixabay.com/photo/2023/01/11/17/29/bird-7712374__340.jpg",
+    "https://cdn.pixabay.com/photo/2012/04/02/14/24/bee-24633__340.png",
+    "https://cdn.pixabay.com/photo/2020/10/23/17/52/fox-5679446__340.png",
+    "https://cdn.pixabay.com/photo/2018/05/26/18/06/dog-3431913__340.jpg",
+    "https://cdn.pixabay.com/photo/2022/09/04/21/05/seal-7432797__340.png",
+    "https://cdn.pixabay.com/photo/2020/11/24/18/19/cat-5773481__340.jpg",
+  ];
+
+  const clickImage = (image) => {
+    setForm({ ...form, userImage: image });
+    console.log(form.userImage);
+  };
+
+  const renderImage = images.map((image) => {
+    return (
+      <div>
+        <div key={image.id} className={styles["userImg-div"]}>
+          <img
+            src={image}
+            alt=""
+            onClick={() => {
+              clickImage(image);
+            }}
+          />
+        </div>
+        {image === form.userImage ? <p className={styles["userImg-check"]}>✔</p> : <p></p>}
+      </div>
+    );
+  });
+
   return (
     <Grid
       container
@@ -253,16 +284,8 @@ function UserInfoUpdatePage() {
         <h3 className={styles["title"]}>회원 정보 수정</h3>
         <br />
         <br />
-        <div className={styles["userImg-box"]}>
-          <p>프로필 사진</p>
-          <Button variant="outlined" component="label" color="success">
-            Upload
-            <input hidden accept="image/*" multiple type="file" />
-          </Button>
-        </div>
-        <div className={styles["userImg-div"]}>
-          <img src={userInfo.profileImg} alt="" />
-        </div>
+        <p>프로필 사진 수정</p>
+        <div className={styles["images-div"]}>{renderImage}</div>
         <br />
         <br />
         <Grid container direction="row" columnGap={10}>
