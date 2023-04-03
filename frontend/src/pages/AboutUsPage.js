@@ -54,7 +54,7 @@ function AboutUsPage() {
               </p>
             </div>
             <img
-              src="https://media.istockphoto.com/id/1402835350/ko/%EC%82%AC%EC%A7%84/%ED%8E%9C%EC%8B%9C%EB%B8%8C-%ED%8E%B8%EC%95%88%ED%95%9C-%EC%95%84%ED%94%84%EB%A6%AC%EC%B9%B4-%EA%B3%84-%EB%AF%B8%EA%B5%AD%EC%9D%B8-%EC%97%AC%EC%84%B1%EC%9D%B4-%EC%A7%91%EC%97%90%EC%84%9C-%EC%B1%85%EC%9D%84-%EC%9D%BD%EA%B3%A0-%EC%86%8C%ED%8C%8C%EC%97%90-%EC%95%89%EC%95%84-%EC%BB%A4%ED%94%BC%EB%A5%BC-%EB%A7%88%EC%85%A8%EB%8B%A4-%EA%B3%B5%EA%B0%84%EC%9D%84-%EB%B3%B5%EC%82%AC%ED%95%A9%EB%8B%88%EB%8B%A4.jpg?b=1&s=170667a&w=0&k=20&c=JtuCF4YbT551YPanWg6kSlNhSXrMt0v4z46LlJXGXtk="
+              src="https://cdn.pixabay.com/photo/2016/02/11/20/21/books-1194457__340.jpg"
               alt=""
             />
           </div>
