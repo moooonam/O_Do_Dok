@@ -271,6 +271,8 @@ public class DodokServiceImpl implements DodokService {
                     .user(reviewEnd.getUser())
                     .reviewEndContent(reviewEnd.getReviewEndContent())
                     .reviewEndDate(reviewEnd.getReviewEndDate())
+                    .reviewEndGenrerating(reviewEnd.getReviewEndGenrerating())
+                    .reviewEndBookrating(reviewEnd.getReviewEndBookrating())
                     .build();
 
             res.add(reviewEndRes);
