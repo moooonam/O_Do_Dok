@@ -275,7 +275,7 @@ function UserInfoUpdatePage() {
       justifyContent="center"
       alignItems="center"
     >
-      <h2>Oh Do Dok!</h2>
+      <h2>O Do Dok!</h2>
       <div className={styles["updateBox"]}>
         <h3 className={styles["title"]}>회원 정보 수정</h3>
         <br />

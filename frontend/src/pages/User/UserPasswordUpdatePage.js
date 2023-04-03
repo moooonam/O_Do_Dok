@@ -50,7 +50,7 @@ function UserPasswordUpdatePage() {
   };
   return (
     <div className={styles["passwordupdate-container"]}>
-      <h2>Oh Do Dok!</h2>
+      <h2>O Do Dok!</h2>
       <div className={styles["contents-container"]}>
         <h3>비밀번호 변경</h3>
         <div className={styles["contents"]}>

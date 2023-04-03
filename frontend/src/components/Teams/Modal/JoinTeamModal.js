@@ -71,7 +71,7 @@ export default function JoinTeamModal({ teamName }) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Oh Do Dok</DialogTitle>
+        <DialogTitle id="alert-dialog-title">O Do Dok</DialogTitle>
         <DialogContent>
           <div>하고 싶은 말</div>
           <textarea

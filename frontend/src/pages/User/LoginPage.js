@@ -84,7 +84,7 @@ function LoginPage() {
       justifyContent="center"
       alignItems="center"
     >
-      <h2>Oh Do Dok!</h2>
+      <h2>O Do Dok!</h2>
       <div className={styles["loginBox"]}>
         <h3 className={styles["title"]}>로그인</h3>
         <Grid container direction="row" columnGap={10}>

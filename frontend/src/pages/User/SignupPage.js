@@ -252,7 +252,7 @@ function SignupPage() {
       justifyContent="center"
       alignItems="center"
     >
-      <h2>Oh Do Dok!</h2>
+      <h2>O Do Dok!</h2>
       <div className={styles["signupBox"]}>
         <h3 className={styles["title"]}>회원가입</h3>
         <Grid container direction="row" columnGap={10}>
