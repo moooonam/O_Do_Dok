@@ -72,11 +72,11 @@ public class KNN {
         System.out.println("나이? : " + age);
 
         Point testPoint1 = new Point(numList.get(0),age, null);
-        int K1 = 50;
+        int K1 = 10;
         Point testPoint2 = new Point(numList.get(1),age, null);
-        int K2 = 50;
+        int K2 = 10;
         Point testPoint3 = new Point(numList.get(2),age, null);
-        int K3 = 50;
+        int K3 = 10;
 
         List<Point> neighbors1 = findNearestNeighbors(dataset, testPoint1, K1);
         List<Point> neighbors2 = findNearestNeighbors(dataset, testPoint2, K2);
@@ -108,7 +108,7 @@ public class KNN {
 
         Random random = new Random();
 
-        for(int i = 0 ; i < 3 ; i++) {
+        for(int i = 0 ; i < 2 ; i++) {
             if(booknames1.size() > 0) {
                 String randomString1 = booknames1.remove(random.nextInt(booknames1.size()));
                 ans1.add(randomString1);

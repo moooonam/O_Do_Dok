@@ -2,7 +2,12 @@ package com.ssafy.ododok.api.controller;
 
 import com.ssafy.ododok.api.request.*;
 import com.ssafy.ododok.api.response.DodokInfoRes;
+import com.ssafy.ododok.api.response.DodokInfoRes2;
+import com.ssafy.ododok.api.response.ReviewEndRes;
+import com.ssafy.ododok.api.response.ReviewPageRes;
 import com.ssafy.ododok.api.service.DodokService;
+import com.ssafy.ododok.api.service.ReviewEndService;
+import com.ssafy.ododok.api.service.ReviewPageService;
 import com.ssafy.ododok.common.auth.PrincipalDetails;
 import com.ssafy.ododok.db.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +54,16 @@ public class DodokController {
         return new ResponseEntity<>("도독이 삭제됐습니다.",HttpStatus.OK);
     }
 
+    //도독 상세보기
+    @GetMapping("/details/{dodokId}")
+    public ResponseEntity<?> detailDodok(@PathVariable Long dodokId) throws Exception {
+        Dodok dodok = dodokService.detailDodok(dodokId);
+        List<ReviewPageRes> reviewPageList = dodokService.getReviewPageList2(dodok);
+        List<ReviewEndRes> reviewEndList = dodokService.getRivewEndList2(dodok);
+        DodokInfoRes2 dodokInfoRes2 =new DodokInfoRes2(dodok,reviewPageList,reviewEndList);
+        return new ResponseEntity<>(dodokInfoRes2,HttpStatus.OK);
+    }
+
     @GetMapping("/nowdodoks")
     public ResponseEntity<?> nowDodokInfo(Authentication auth){
         User user = getUser(auth);
@@ -60,11 +75,18 @@ public class DodokController {
         }
     }
 
-    // 지난 도독 리스트 가져오기 _ 해당 모임의 회원이 아니면 공개만 보일 수 있도록 처리해야함 !!!!
+    // 특정 팀에 대한 지난 도독 리스트 가져오기 _ 해당 모임의 회원이 아니면 공개만 보일 수 있도록 처리해야함 !!!
     @GetMapping("/lastdodoks/{teamId}")
-    public ResponseEntity<?>showLastAllDodokInfo(@PathVariable Long teamId, Authentication auth){
+    public ResponseEntity<?> showTeamLastAllDodokInfo(@PathVariable Long teamId, Authentication auth){
         User user = getUser(auth);
-        List<Dodok> dodokList= dodokService.showLastAllDodoks(user, teamId);
+        List<Dodok> dodokList= dodokService.showLastTeamAllDodoks(user, teamId);
+        return dodokInfoResList(dodokList);
+    }
+
+    // 모든 지난 도독 리스트 가져오기 _ 공개만
+    @GetMapping("/lastdodoks")
+    public ResponseEntity<?> showLastAllDodokInfo(){
+        List<Dodok> dodokList= dodokService.showLastAllDodoks();
         return dodokInfoResList(dodokList);
     }
 
@@ -102,14 +124,16 @@ public class DodokController {
     // 지난 도독 (페이지별 리뷰 + 총리뷰 포함) 가져오는 함수
     public ResponseEntity<?> dodokInfoResList(List<Dodok> dodokList){
         List<DodokInfoRes> dodokInfoResList = new ArrayList<>();
-
+        System.out.println(dodokInfoResList);
+        System.out.println("here"+dodokList.size());
         for(Dodok dodok : dodokList){
+            System.out.println(dodok.getDodokId());
             List<ReviewPage> reviewPageList = dodokService.getReviewPageList(dodok);
             List<ReviewEnd> reviewEndList = dodokService.getRivewEndList(dodok);
             DodokInfoRes dodokInfoRes =new DodokInfoRes(dodok,reviewPageList,reviewEndList);
             dodokInfoResList.add(dodokInfoRes);
         }
-
+        System.out.println(dodokInfoResList);
         if(dodokInfoResList.size()==0){
             return new ResponseEntity<>("검색 결과가 없습니다.",HttpStatus.OK);
         }else{

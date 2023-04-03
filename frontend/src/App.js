@@ -31,6 +31,7 @@ import TeamDetailPage from "./pages/Teams/TeamDetailPage";
 //오도독 책장
 
 import OpenReviewsPage from "./pages/OpenReviewsPage"; 
+import OpenReviewDetailPage from "./pages/OpenReviewDetailPage"; 
 
 // css
 import styles from './styles/App.module.scss'
@@ -61,6 +62,7 @@ function App() {
         <Route exact path="/teams" element={<TeamsMainPage/>}/>
         <Route exact path="/teams/:teamId" element={<TeamDetailPage/>}/>
         <Route exact path="/openreviews" element={<OpenReviewsPage/>}/>
+        <Route exact path="/openreviews/:recordId" element={<OpenReviewDetailPage/>}/>
       </Routes>
     </BrowserRouter>
     </div>

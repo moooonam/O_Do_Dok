@@ -1,77 +1,74 @@
-import React from 'react'
-import SideBar from '../../components/SideBar'
-import sidestyles from '../../styles/Sidebar.module.scss'
-import recordstyles from '../../styles/MyTeamRecord.module.scss'
+import React, { useEffect, useState } from "react";
+import SideBar from "../../components/SideBar";
+import sidestyles from "../../styles/Sidebar.module.scss";
+import recordstyles from "../../styles/MyTeamRecord.module.scss";
+import { Api } from "../../Api";
+import { useNavigate } from "react-router-dom";
 
 function MyTeamRecordPage() {
-  const books = [
-    {
-      id: 1,
-      imgurl:
-        "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
-    },
-    {
-      id: 2,
-      imgurl:
-        "https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg",
-    },
-    {
-      id: 3,
-      imgurl:
-        "https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg",
-    },
-    {
-      id: 4,
-      imgurl:
-        "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
-    },
-    {
-      id: 5,
-      imgurl:
-        "https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg",
-    },
-    {
-      id: 6,
-      imgurl:
-        "https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg",
-    },
-    {
-      id: 7,
-      imgurl:
-        "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
-    },
-    {
-      id: 8,
-      imgurl:
-        "https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg",
-    },
-    {
-      id: 9,
-      imgurl:
-        "https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg",
-    },
-  ];
-  const renderTeamRecomendBook = books.map((book) => {
-    return (
-      <div key={book.id}>
-        <img src={book.imgurl} alt="책" />
-        <p>{book.id}</p>
-      </div>
-    );
+  const movePage = useNavigate();
+  const [lastDodoks, setLastDodoks] = useState([]);
+  const myTeamId = localStorage.getItem("myTeamId");
+
+  useEffect(() => {
+    Api.get(`/dodok/lastdodoks/${myTeamId}`, {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    }).then((res) => {
+      console.log(res.data)
+      if (res.data !== "검색 결과가 없습니다.") {
+        setLastDodoks([...res.data]);
+        console.log("지난도독", res.data);
+        console.log(lastDodoks)
+      } 
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const goRecordDetail = (dodok) => {
+    // console.log("여기");
+    localStorage.setItem("dodokRecordId", dodok.dodok.dodokId);
+    movePage(`/myteam/${myTeamId}/record/${dodok.dodok.dodokId}`);
+  };
+
+  const renderLastDodoks = lastDodoks.map((dodok) => {
+      return (
+        <div
+          key={dodok.dodok.dodokId}
+          onClick={() => {
+            goRecordDetail(dodok);
+          }}
+        >
+          {dodok.dodok.book.bookImg !== "tmp" ? (
+            <img src={dodok.dodok.book.bookImg} alt="책" />
+          ) : (
+            <img
+              src="https://cdn.pixabay.com/photo/2018/01/17/18/43/book-3088777__340.png"
+              alt="책"
+            />
+          )}
+          <div className={recordstyles.booktitle}>
+            {dodok.dodok.book.bookTitle}
+          </div>
+        </div>
+      );
   });
   return (
-    <div className={sidestyles['myteam-container']}> 
-        <SideBar location={"record"}/>
-        <div className={sidestyles.others}>
-            <div className={recordstyles['records-container']}>
-              <h2>오도독의 지난활동</h2>
-                <div className={recordstyles['record-wrap-bookimg']}>
-                  {renderTeamRecomendBook}
-                </div>
-            </div>
+    <div className={sidestyles["myteam-container"]}>
+      <SideBar location={"record"} />
+      <div className={sidestyles.others}>
+        <div className={recordstyles["records-container"]}>
+          <h2>오도독의 지난활동</h2>
+          <div className={recordstyles["record-wrap-bookimg"]}>
+            {/* {lastDodoks.length === 0 ? <div></div> : {renderLastDodoks}} */}
+            {renderLastDodoks}
+          </div>
         </div>
+      </div>
     </div>
-  )
+  );
 }
 
-export default MyTeamRecordPage
+export default MyTeamRecordPage;
