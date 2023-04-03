@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import sidestyles from "../styles/Sidebar.module.scss";
 import openreviewtyles from "../styles/OpenReviewDetail.module.scss";
-import DodokBar from "../components/MyTeam/DodokBar";
+import RecordDodokBar from "../components/MyTeam/RecordDodokBar";
 import Rating from "@mui/material/Rating";
 import { Api } from "../Api";
 
@@ -9,6 +9,7 @@ function OpenReviewDetailPage() {
   const [dodokRecord, setDodokRecord] = useState({
     bookTitle: "",
     bookImg: "",
+    bookAuthor: "",
     dodokStartdate: "",
     dodokEnddate: "",
     pageReviews: [],
@@ -19,11 +20,12 @@ function OpenReviewDetailPage() {
   useEffect(() => {
     const dodokRecordId = localStorage.getItem("dodokRecordId");
     Api.get(`/dodok/details/${dodokRecordId}`).then((res) => {
-      // console.log("도독 상세조회", res.data);
+      console.log("도독 상세조회", res.data);
       setDodokRecord({
         ...dodokRecord,
         bookTitle: res.data.dodok.book.bookTitle,
         bookImg: res.data.dodok.book.bookImg,
+        bookAuthor : res.data.dodok.book.bookAuthor,
         dodokStartdate: res.data.dodok.dodokStartdate,
         dodokEnddate: res.data.dodok.dodokEnddate,
         pageReviews: res.data.reviewPageList,
@@ -78,6 +80,10 @@ function OpenReviewDetailPage() {
                 <p>{dodokRecord.bookTitle}</p>
               </div>
               <div className={openreviewtyles["book-info"]}>
+                <p>저자</p>
+                <p>{dodokRecord.bookAuthor}</p>
+              </div>
+              <div className={openreviewtyles["book-info"]}>
                 <p>도독기간</p>
                 <p>
                   {dodokRecord.dodokStartdate} ~ {dodokRecord.dodokEnddate}
@@ -85,7 +91,7 @@ function OpenReviewDetailPage() {
               </div>
             </div>
           </div>
-          <DodokBar propPageReviews={dodokRecord.pageReviews} />
+          <RecordDodokBar propPageReviews={dodokRecord.pageReviews} />
           <div className={openreviewtyles["wrap-reviews-title"]}>
             <h3>총평</h3>
           </div>
