@@ -3,6 +3,7 @@ import sidestyles from "../styles/Sidebar.module.scss";
 import openreviewtyles from "../styles/OpenReviewDetail.module.scss";
 import RecordDodokBar from "../components/MyTeam/RecordDodokBar";
 import Rating from "@mui/material/Rating";
+import RecordSideBar from "../components/RecordSideBar";
 import RecordAllPageReviewModal from "../components/MyTeam/Modal/RecordAllPageReviewModal";
 import { Api } from "../Api";
 
@@ -62,6 +63,7 @@ function OpenReviewDetailPage() {
 
   return (
     <div className={sidestyles["myteam-container"]}>
+      <RecordSideBar/>
       <div className={sidestyles.others}>
         <div className={openreviewtyles["wrap-content"]}>
           <div className={openreviewtyles["wrap-book"]}>
