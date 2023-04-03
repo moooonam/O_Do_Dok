@@ -34,7 +34,6 @@ function OpenReviewDetailPage() {
         endReviews: res.data.reviewEndList,
         dodokOpen: res.data.dodok.dodokOpen,
       });
-      // console.log(dodokRecord);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -116,7 +116,6 @@ function SignupPage() {
       setUserGenre([...userGenre, choice]);
     }
   };
-  // console.log("유저장르", userGenre);
 
   // axios 보낼 데이터
   const userInfo = {
@@ -139,7 +138,6 @@ function SignupPage() {
     if (form.email) {
       Api.get(`/user/checkEmail/${form.email}`)
         .then((res) => {
-          // console.log(res.data);
           if (res.data) {
             form.emailCheck = true;
             alert("사용 가능한 이메일입니다.");
@@ -157,7 +155,6 @@ function SignupPage() {
     if (form.nickname) {
       Api.get(`/user/checkNickname/${form.nickname}`)
         .then((res) => {
-          // console.log(res);
           if (res.data) {
             alert("사용 가능한 닉네임입니다.");
             form.nickCheck = true;
@@ -173,7 +170,6 @@ function SignupPage() {
 
   // 가입하기 함수
   const userSignup = () => {
-    // console.log(userInfo);
     if (userGenre.length !== 3) {
       alert("장르를 3가지 선택해주세요");
     } else {
@@ -208,7 +204,6 @@ function SignupPage() {
         ) {
           Api.post("/user", userInfo)
             .then((res) => {
-              // console.log(res);
               alert("회원가입 성공!");
               movePage("/login");
             })
@@ -223,7 +218,6 @@ function SignupPage() {
       }
     }
 
-    // console.log(userInfo);
   };
 
   // 유효성 검사

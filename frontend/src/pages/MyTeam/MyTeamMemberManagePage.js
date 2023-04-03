@@ -65,7 +65,6 @@ function MyTeamMemberManagePage() {
     Api.get(`/teams/member/${myTeamId}`)
       .then((res) => {
         setMembers(...members, res.data);
-        // console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -106,8 +105,6 @@ function MyTeamMemberManagePage() {
     Api.get(`teams/apply/${myTeamId}`)
       .then((res) => {
         setApllyMembers(...apllyMembers, res.data);
-        // console.log(res.data)
-        // console.log(apllyMembers)
       })
       .catch((err) => {
         console.log(err);
@@ -139,13 +136,10 @@ function MyTeamMemberManagePage() {
       applyId: applicantInfo.applyId,
       isAccept: true,
     };
-    console.log(acceptForm);
     Api.post("/teams/accept", acceptForm)
       .then((res) => {
         alert("수락이 완료되었습니다");
         window.location.reload();
-        // goMyTeamMemberManage()
-        console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -156,13 +150,10 @@ function MyTeamMemberManagePage() {
       applyId: applicantInfo.applyId,
       isAccept: false,
     };
-    console.log(rejectForm);
     Api.post("/teams/accept", rejectForm)
       .then((res) => {
         alert("가입신청 거절이 완료되었습니다");
         window.location.reload();
-        // goMyTeamMemberManage()
-        console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -192,7 +183,6 @@ function MyTeamMemberManagePage() {
       .then((res) => {
         alert('모임원을 퇴출했습니다')
         window.location.reload()
-        console.log(res)
       })
     }
   })
@@ -211,7 +201,6 @@ function MyTeamMemberManagePage() {
       .then((res) => {
         alert('권한변경을 성공했습니다.')
         window.location.reload()
-        console.log(res)
       })
     }
   })

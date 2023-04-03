@@ -60,7 +60,6 @@ function MyTeamManagePage() {
       },
     })
       .then((res) => {
-        console.log(res.data);
         setTeamDetail({
           ...teamDetail,
           teamName: res.data.teamName,
@@ -204,7 +203,6 @@ function MyTeamManagePage() {
 
   // 모임 정보 수정
   const teamInfoUpdate = () => {
-    console.log(teamGenre);
     if (teamGenre.length !== 3) {
       alert("장르를 3가지 선택해주세요");
     } else {
@@ -224,7 +222,6 @@ function MyTeamManagePage() {
       // 선호 장르를 선택하지 않았다면 기존의 정보로 다시 전송
       Api.patch(`/teams/${teamDetail.teamId}`, teamInfo)
         .then((res) => {
-          console.log(res);
           alert("모임 정보 수정이 완료되었습니다.");
           teamInfoModalClose();
           window.location.reload();
@@ -250,7 +247,6 @@ function MyTeamManagePage() {
   const deleteTeam = () => {
     Api.delete(`/teams/${teamDetail.teamId}`)
       .then((res) => {
-        console.log(res);
         alert("모임이 삭제되었습니다.");
         movePage("/");
         window.location.reload();
@@ -272,8 +268,6 @@ function MyTeamManagePage() {
 
   const clickImage = (image) => {
     setForm({ ...form, team_image: image });
-    console.log(form.team_image);
-    console.log(image);
   };
 
   const renderImage = images.map((image) => {

@@ -9,11 +9,8 @@ function TeamCard({genre}) {
   const [teams, setTeams] = useState([]);
 
   useEffect(() => {
-    console.log(genre)
     Api.get("/teams")
       .then((res) => {
-        // console.log('모임 데이터 불러오기 완료----------')
-        // console.log(res.data);
         setTeams(...teams, res.data)
       })
       .catch((err) => {
@@ -23,7 +20,6 @@ function TeamCard({genre}) {
   }, []);
 
   const teamClick = (team) => {
-    console.log(team.teamId)
     movePage(`/teams/${team.teamId}`);
     localStorage.setItem("nowTeam", team.teamId)
   }

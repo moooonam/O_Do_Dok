@@ -24,13 +24,9 @@ function TeamDetailPage() {
   });
 
   useEffect(() => {
-    // console.log(location.pathname.split('/')[2]);
-    // console.log(localStorage.getItem("nowTeam"));
     let Id = localStorage.getItem("nowTeam");
     Api.get(`/teams/info/${Id}`)
       .then((res) => {
-        // console.log("모임 디테일 정보 불러오기 완료  ");
-        // console.log(res.data);
         setTeamDetail({
           ...teamDetail,
           teamName: res.data.teamName,
@@ -44,8 +40,6 @@ function TeamDetailPage() {
           teamRule3: res.data.teamRule3,
           teamRecruitText: res.data.teamRecruitText,
         });
-        // console.log('저장된 팀 정보')
-        // console.log(teamDetail);
       })
       .catch((err) => {
         console.log(err);

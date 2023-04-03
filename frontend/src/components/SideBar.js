@@ -31,15 +31,12 @@ const SideBar = ({ location }) => {
     })
       .then((res) => {
         dispatch(getMyRole({ myRole: res.data }));
-        // console.log(res);
       })
       .catch((err) => {
         console.log(err);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // console.log(myRole)
   const movePage = useNavigate();
   function goMyTeamMain() {
     movePage(`/myteam/${myTeamId}/main`);

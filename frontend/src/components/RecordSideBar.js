@@ -12,7 +12,6 @@ const RecordSideBar = () => {
   useEffect(() => {
     const dodokRecordId = localStorage.getItem("dodokRecordId");
     Api.get(`/dodok/details/${dodokRecordId}`).then((res) => {
-      console.log("도독 상세조회", res.data.dodok);
       setDodokInfo({ ...dodokInfo, 
         teamName: res.data.dodok.team.teamName, 
         genre1: res.data.dodok.team.teamGenre1,

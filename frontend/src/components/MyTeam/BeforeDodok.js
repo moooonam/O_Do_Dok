@@ -34,7 +34,6 @@ function BeforeDodok() {
   const [selectedBook, setSelectedBook] = useState({});
   const [open, setOpen] = useState(false);
   const handleClickOpen = (book) => {
-    // console.log("왔냐", book);
     setSelectedBook({ ...book });
     setOpen(true);
 
@@ -61,13 +60,9 @@ function BeforeDodok() {
     }) 
     Api.get(`book/recommend/${myTeamId}`)
     .then((res) => {
-      // console.log('추천도서', res)
       const recomendBook = [...res.data];
       let newBook = recomendBook.splice(0,3);
-      console.log('뉴북', newBook)
       setRecommandBook([...newBook]);
-      // console.log('모임추천도서', res)
-      // console.log(recommandBook)
     })
   } 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -83,7 +78,6 @@ function BeforeDodok() {
   const [searchKeyword, setSearchKeyword] = useState("")
   const [searchBookData, setSearchBookData] = useState([])
   const hendelCallback = ((selectedBook) => {
-    // console.log('여기로옴 ', selectedBook)
     setForm({...form,
     bookTitle: selectedBook.bookTitle,
     author: selectedBook.bookAuthor,
@@ -92,12 +86,9 @@ function BeforeDodok() {
   })
   })
   const searchBook = (()=> {
-    console.log(searchKeyword)
     if (searchKeyword) {
-
       Api.get(`/book/search/${searchKeyword}`)
       .then((res) => {
-        console.log(res)
         if (res.data !== '검색 결과가 없습니다.'){
           setSearchBookData(res.data)
         }
@@ -137,7 +128,6 @@ function BeforeDodok() {
         },
       })
       .then((res) => {
-        console.log('도독시작', res)
         alert('도독을 시작합니다!')
         window.location.reload()
       })

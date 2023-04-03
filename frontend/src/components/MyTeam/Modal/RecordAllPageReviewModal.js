@@ -18,14 +18,11 @@ export default function RecordAllPageReviewModal() {
   React.useEffect(() => {
     const dodokRecordId = localStorage.getItem("dodokRecordId");
     Api.get(`/dodok/details/${dodokRecordId}`).then((res) => {
-      // console.log("지난활동 도독", res.data)
       setPageReviews([...res.data.reviewPageList]);
     });
     }, []);
   const sortedPageReviews = pageReviews.sort((a,b) => a.reviewPagePage - b.reviewPagePage)
-  // console.log('정렬됨?' ,sortedPageReviews)
   const renderPageReviews = sortedPageReviews.map((pageReview) => {
-    // console.log('여기여기', pageReview)
     return (
       <div key={pageReview.reviewPageId} className={styles["wrap-allpage-review"]}>
         <div className={styles["wrap-profile"]}>

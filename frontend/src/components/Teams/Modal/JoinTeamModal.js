@@ -39,10 +39,6 @@ export default function JoinTeamModal({ teamName }) {
     });
   };
   const allow = () => {
-    console.log({ form });
-    // localStorage.getItem("nowTeam");
-    // console.log(Id)
-    console.log(form.teamId)
     Api.post("/teams/apply", form, {
       headers: {
         "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
@@ -57,7 +53,6 @@ export default function JoinTeamModal({ teamName }) {
         else if (res.data === '신청 성공'){
           alert('가입 신청 성공!')
           handleClose()
-          console.log(res);
         }
       })
       .catch((err) => {

@@ -19,20 +19,16 @@ function TeamMoreInfo() {
     }).then((res) => {
       if (res.data !== "검색 결과가 없습니다.") {
         setLastDodoks([...res.data]);
-        console.log("지난도독", res.data);
-        console.log(lastDodoks);
       }
     });
     Api.get(`/teams/info/${Id}`)
     .then((res) => {
-      console.log("팀정보", res)
       setTeamName(res.data.teamName)
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const goRecordDetail = (dodok) => {
-    // console.log("여기");
     localStorage.setItem("dodokRecordId", dodok.dodok.dodokId);
     movePage(`/openreviews/${dodok.dodok.dodokId}`)
   };

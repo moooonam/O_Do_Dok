@@ -44,10 +44,8 @@ export default function WriteReviewModal() {
         alert('총평 작성이 완료되었습니다!')
         window.location.reload()
       }
-      console.log('총평 고고', res)
     })
 
-    console.log(form)
   };
 
   return (

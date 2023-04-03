@@ -39,7 +39,6 @@ function ArticleDetailPage() {
     const articleId = localStorage.getItem("articleId");
     Api.get(`/board/details/${articleId}`, articleId)
       .then((res) => {
-        console.log(res.data);
         setArticleDetail({
           ...articleDetail,
           boardType: res.data.board.boardType,
@@ -48,7 +47,6 @@ function ArticleDetailPage() {
           writeUserNickname: res.data.board.user.userNickname,
         });
         setComments(res.data.comments);
-        console.log("여기", res.data.comments);
         setForm({ ...form, updateComment: res.data.comments.commentContent });
       })
       .catch((err) => {
@@ -71,7 +69,6 @@ function ArticleDetailPage() {
       },
     })
       .then((res) => {
-        console.log(res.data);
         alert("게시글이 삭제되었습니다.");
         movePage(`/myteam/${myTeamId}/article`);
       })
@@ -81,13 +78,12 @@ function ArticleDetailPage() {
   }
 
   // 댓글 수정 axios에 보낼 데이터
-  const update = {
-    comment: form.updateComment,
-    commendId: "",
-  };
+  // const update = {
+  //   comment: form.updateComment,
+  //   commendId: "",
+  // };
 
   const updateInput = (id) => {
-    console.log(id);
     setForm({ ...form, updateStatus: true, clickComment: id });
   };
 
@@ -97,7 +93,6 @@ function ArticleDetailPage() {
       commentId: id,
       comment: form.updateComment,
     };
-    console.log(update)
     Api.put(
       "/board/comment",
       update,
@@ -109,7 +104,6 @@ function ArticleDetailPage() {
       }
     )
       .then((res) => {
-        console.log(res);
         setForm({ ...form, updateStatus: false });
         window.location.reload()
       })
@@ -119,9 +113,8 @@ function ArticleDetailPage() {
   };
 
   // 댓글 삭제
-  const boardId = localStorage.getItem("articleId");
+  // const boardId = localStorage.getItem("articleId");
   const deleteComment = (id) => {
-    console.log(id);
     Api.delete(`/board/comment/${id}`, {
       headers: {
         "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
@@ -129,7 +122,6 @@ function ArticleDetailPage() {
       },
     })
       .then((res) => {
-        console.log(res);
         alert("댓글이 삭제되었습니다.");
         window.location.reload();
       })
@@ -215,7 +207,6 @@ function ArticleDetailPage() {
         },
       })
         .then((res) => {
-          console.log(res);
           window.location.reload();
         })
         .catch((err) => {
