@@ -7,9 +7,11 @@ import Rating from "@mui/material/Rating";
 import RecordAllPageReviewModal from "../../components/MyTeam/Modal/RecordAllPageReviewModal";
 import { Api } from "../../Api";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function MyTeamRecordDetail() {
   const movePage = useNavigate();
+  const myRole = useSelector((state) => state.user.myRole)
   const [dodokRecord, setDodokRecord] = useState({
     bookTitle: "",
     bookImg: "",
@@ -101,8 +103,11 @@ function MyTeamRecordDetail() {
       <SideBar location={"record"} />
       <div className={sidestyles.others}>
         <div className={dodokstyles["wrap-content"]}>
-          <div className={dodokstyles["default-btn"]} onClick={() => {deleteDodok()}}>삭제</div>
-          {dodokRecord.dodokOpen ? <div className={dodokstyles["default-btn"]} onClick={() => {falseDodok()}}>비공개로 전환</div> : <div className={dodokstyles["default-btn"]} onClick={() => {trueDodok()}}>공개로 전환</div> }
+          { myRole !== 'USER' ? <div className={dodokstyles["default-btn"]} onClick={() => {deleteDodok()}}>삭제</div> : <div></div>}
+          {dodokRecord.dodokOpen && myRole !=='USER' ? <div className={dodokstyles["default-btn"]} onClick={() => {falseDodok()}}>비공개로 전환</div> : null }
+          {dodokRecord.dodokOpen === false && myRole !=='USER' ? <div className={dodokstyles["default-btn"]} onClick={() => {trueDodok()}}>공개로 전환</div> : null
+          }
+          {/* <div className={dodokstyles["default-btn"]} onClick={() => {trueDodok()}}>공개로 전환</div>  */}
           <div className={dodokstyles["wrap-book"]}>
             <div>
               {dodokRecord.bookImg !== "tmp" ? (
