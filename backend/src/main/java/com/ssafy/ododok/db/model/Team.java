@@ -98,6 +98,9 @@ public class Team {
     public void changeTeamAge(double teamAge){
         this.teamAge = teamAge;
     }
+    public void changeTeamMemberCnt(Integer teamMemberCnt){
+        this.teamMemberCnt = teamMemberCnt;
+    }
 
     @Builder
     public Team(String teamName, int teamMemberCntMax, Onoff teamOnoff, String teamRegion,

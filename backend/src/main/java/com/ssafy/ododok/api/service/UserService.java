@@ -24,4 +24,6 @@ public interface UserService {
     boolean passwordCheck(String email, String name);
 
     Team getUserTeam(User user);
+
+    String getPassword(String password);
 }
