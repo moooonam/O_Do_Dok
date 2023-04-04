@@ -44,11 +44,12 @@ function BookSearchList({ searchBookData, parentCallback}) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"선택된 책"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"선택한 도서에 대한 정보 📗"}</DialogTitle>
         <DialogContent>
           <div>
             {selectedBook ? (
-              <div>
+              <div className={styles['recommand-choice']}>
+                <img src={selectedBook.bookImg} alt="책 이미지" />
                 <p>제목: {selectedBook.bookTitle}</p>
                 <br />
                 <p>작가: {selectedBook.bookAuthor}</p>

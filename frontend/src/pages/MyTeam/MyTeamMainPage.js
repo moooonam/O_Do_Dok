@@ -7,6 +7,11 @@ import { Api } from "../../Api";
 // import { useSelector } from "react-redux";
 
 function MyTeamMainPage() {
+  const scrollToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })}
   // const movePage = useNavigate();
   // const myTeamId = useSelector((state) => state.user.myTeamId);
   const access_token = localStorage.getItem("access-token");
@@ -47,6 +52,7 @@ function MyTeamMainPage() {
   });
 
   useEffect(() => {
+    scrollToTop();
     Api.get("/user/myTeam", {
       headers: {
         "access-token": `Bearer ${access_token}`,

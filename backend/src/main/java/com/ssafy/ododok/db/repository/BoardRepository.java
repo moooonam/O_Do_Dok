@@ -19,4 +19,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     void deleteAllByTeam(Team team);
 
     List<Board> findAllByUser(User user);
+
+    Long countByUser(User user);
 }

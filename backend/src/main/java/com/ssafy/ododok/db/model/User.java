@@ -37,6 +37,9 @@ public class User {
     @ColumnDefault("0")
     private Integer userReviewcnt;
 
+    @ColumnDefault("0")
+    private Integer userDodokcnt;
+
     public void changeNickName(String nickname){
         this.userNickname = nickname;
     }
@@ -48,6 +51,9 @@ public class User {
     }
     public void changeReviewcnt(int userReviewcnt){
         this.userReviewcnt=userReviewcnt;
+    }
+    public void changeUserDodokcnt(int userDodokcnt){
+        this.userDodokcnt = userDodokcnt;
     }
 
     @Builder

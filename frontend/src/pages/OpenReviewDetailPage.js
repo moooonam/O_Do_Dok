@@ -8,6 +8,11 @@ import RecordAllPageReviewModal from "../components/MyTeam/Modal/RecordAllPageRe
 import { Api } from "../Api";
 
 function OpenReviewDetailPage() {
+  const scrollToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })}
   const [dodokRecord, setDodokRecord] = useState({
     bookTitle: "",
     bookImg: "",
@@ -20,6 +25,7 @@ function OpenReviewDetailPage() {
   });
 
   useEffect(() => {
+    scrollToTop();
     const dodokRecordId = localStorage.getItem("dodokRecordId");
     Api.get(`/dodok/details/${dodokRecordId}`).then((res) => {
       // console.log("도독 상세조회", res.data);

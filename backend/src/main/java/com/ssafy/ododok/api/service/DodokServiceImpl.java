@@ -1,6 +1,8 @@
 package com.ssafy.ododok.api.service;
 
 import com.ssafy.ododok.api.request.*;
+import com.ssafy.ododok.api.response.ReviewEndRes;
+import com.ssafy.ododok.api.response.ReviewPageRes;
 import com.ssafy.ododok.db.model.*;
 import com.ssafy.ododok.db.repository.*;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -116,16 +118,25 @@ public class DodokServiceImpl implements DodokService {
                 // 해당 도독의 팀 아이디를 가져오기, 해당 팀의 도독 활성화 여부를 false처리.
                 Team team = dodok.getTeam();
                 team.changeIsOngoingDodok(false);
+
+                List<TeamUser> teamUserlist = teamUserRepository.findTeamUsersByTeam_TeamId(team.getTeamId());
+                for(TeamUser teamUser : teamUserlist){
+                    teamUser.getUser().changeUserDodokcnt(teamUser.getUser().getUserDodokcnt()+1);
+                    userRepository.save(teamUser.getUser());
+                }
+
                 updateGenre(dodok);
                 String top = showFirst(team);
-                System.out.println("dd"+top);
-                team.changeTeamTopGenre(top);
+                if(top != null){
+                    team.changeTeamTopGenre(top);
+                }
                 teamRepository.save(team);
             }
         }
     }
 
     // 도독 종료시키기
+    // 도독을 종료시킬 때 작성한 총평이 없어도 종료가 되게끔 만들어야 함.
     @Override
     public int endDodok(Long dodokId) throws Exception {
         Dodok dodok = dodokRepository.findById(dodokId).get();
@@ -135,12 +146,23 @@ public class DodokServiceImpl implements DodokService {
         }else{
             dodok.changeComplete(true);
             dodokRepository.save(dodok);
+
             Team team = dodok.getTeam();
             team.changeIsOngoingDodok(false);
+
+            List<TeamUser> teamUserlist = teamUserRepository.findTeamUsersByTeam_TeamId(team.getTeamId());
+            for(TeamUser teamUser : teamUserlist){
+                teamUser.getUser().changeUserDodokcnt(teamUser.getUser().getUserDodokcnt()+1);
+                userRepository.save(teamUser.getUser());
+            }
+
             updateGenre(dodok);
             String top = showFirst(team);
             System.out.println("dd"+top);
-            team.changeTeamTopGenre(top);
+            if(top != null){
+                team.changeTeamTopGenre(top);
+            }
+
             teamRepository.save(team);
             return 1;
         }
@@ -179,7 +201,7 @@ public class DodokServiceImpl implements DodokService {
 
     // 지난 도독 조회하기 _ 팀별
     @Override
-    public List<Dodok> showLastAllDodoks(User user, Long teamId) {
+    public List<Dodok> showLastTeamAllDodoks(User user, Long teamId) {
         TeamUser teamUser = teamUserRepository.findByUser(user);
         Team userteam = teamUser.getTeam(); // 사용자의 팀
 
@@ -194,6 +216,14 @@ public class DodokServiceImpl implements DodokService {
             return lastDodokList;
         }
 
+    }
+
+    // 지난 도독 조회하기 _ 모든 공개된 도독
+    @Override
+    public List<Dodok> showLastAllDodoks() {
+        List<Dodok>lastDodokList = dodokRepository.findAllByDodokCompleteAndDodokOpen(true, true)
+                .orElseThrow(()-> new NoSuchElementException());
+        return lastDodokList;
     }
 
 
@@ -212,6 +242,42 @@ public class DodokServiceImpl implements DodokService {
     public List<ReviewEnd> getRivewEndList(Dodok dodok) {
         List<ReviewEnd> reviewEndList = reviewEndRepository.findAllByDodok(dodok);
         return reviewEndList;
+    }
+
+    @Override
+    public List<ReviewPageRes> getReviewPageList2(Dodok dodok) {
+        List<ReviewPage> reviewPageList = reviewPageRepository.findAllByDodok(dodok);
+        List<ReviewPageRes> res = new ArrayList<>();
+        for(ReviewPage reviewPage:reviewPageList){
+            ReviewPageRes reviewPageRes = ReviewPageRes.builder()
+                    .reviewPageId(reviewPage.getReviewPageId())
+                    .user(reviewPage.getUser())
+                    .reviewPagePage(reviewPage.getReviewPagePage())
+                    .reviewPageContent(reviewPage.getReviewPageContent())
+                    .reviewPageDate(reviewPage.getReviewPageDate())
+                    .build();
+            res.add(reviewPageRes);
+        }
+        return res;
+    }
+
+    @Override
+    public List<ReviewEndRes> getRivewEndList2(Dodok dodok) {
+        List<ReviewEnd> reviewEndList = reviewEndRepository.findAllByDodok(dodok);
+        List<ReviewEndRes> res = new ArrayList<>();
+        for(ReviewEnd reviewEnd:reviewEndList){
+            ReviewEndRes reviewEndRes = ReviewEndRes.builder()
+                    .reviewEndId(reviewEnd.getReviewEndId())
+                    .user(reviewEnd.getUser())
+                    .reviewEndContent(reviewEnd.getReviewEndContent())
+                    .reviewEndDate(reviewEnd.getReviewEndDate())
+                    .reviewEndGenrerating(reviewEnd.getReviewEndGenrerating())
+                    .reviewEndBookrating(reviewEnd.getReviewEndBookrating())
+                    .build();
+
+            res.add(reviewEndRes);
+        }
+        return res;
     }
 
     // 도독을 공개로 설정
@@ -275,9 +341,21 @@ public class DodokServiceImpl implements DodokService {
 
     }
 
+    @Override
+    public Dodok detailDodok(Long dodokId) {
+        Dodok dodok = dodokRepository.findById(dodokId).get();
+        return dodok;
+    }
+
     // 도독이 종료되었을 때 장르 평점 추가하기
     public void updateGenre(Dodok dodok){
+
+
         List<ReviewEnd> list = reviewEndRepository.findAllByDodok(dodok);
+
+        if(list.size()==0){
+            return;
+        }
         Double ans = 0.0;
         for(ReviewEnd reviewEnd : list){
             ans = ans + reviewEnd.getReviewEndGenrerating();
@@ -308,10 +386,15 @@ public class DodokServiceImpl implements DodokService {
     }
 
     public String showFirst(Team team){
-        Genre genre = genreRepository.findTopByTeamOrderByRatingDesc(team);
-        System.out.println(genre.getGenre()+" "+genre.getRating());
-        // Team 인 것 중에서 rating이 max인거
-        String res = genre.getGenre();
-        return res;
+        try{
+            Genre genre = genreRepository.findTopByTeamOrderByRatingDesc(team);
+            System.out.println(genre.getGenre()+" "+genre.getRating());
+            // Team 인 것 중에서 rating이 max인거
+            String res = genre.getGenre();
+            return res;
+        } catch (Exception e){
+            return null;
+        }
+
     }
 }
