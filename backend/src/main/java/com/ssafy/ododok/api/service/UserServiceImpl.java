@@ -234,4 +234,10 @@ public class UserServiceImpl implements UserService{
         Team team = teamUser.getTeam();
         return team;
     }
+
+    @Override
+    public String getPassword(String password) {
+        String res = passwordEncoder.encode(password);
+        return res;
+    }
 }
