@@ -149,9 +149,7 @@ function TeamsMainPage() {
   // 검색
   const searchTeam = () => {
     if (searchKeyword) {
-      console.log(searchKeyword);
       Api.get(`/teams/${searchKeyword}`).then((res) => {
-        console.log(res.data);
         setSearchedTeamData(...searchedTeamData, res.data);
         setIsSearched(true);
       });
@@ -189,7 +187,6 @@ function TeamsMainPage() {
               },
             })
           .then((res) => {
-            // console.log(res);
             alert("모임 생성이 완료되었습니다");
             teamCreateModalClose();
             window.location.reload();
@@ -217,7 +214,6 @@ function TeamsMainPage() {
       if (form.team_name) {
         Api.get(`teams/check/${form.team_name}`)
         .then((res) => {
-          console.log(res);
           if (res.data) {
             alert("사용 가능한 모임 이름 입니다");
             form.team_name_check = true;
@@ -252,7 +248,6 @@ function TeamsMainPage() {
   };
 
   const clickOption = (option) => {
-    // console.log(option)
     setMenu({ ...menu, choice: option });
   };
 

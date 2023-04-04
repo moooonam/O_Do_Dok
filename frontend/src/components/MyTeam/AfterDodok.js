@@ -36,7 +36,6 @@ function AfterDodok() {
       const dday = new Date(`${Number(res.data.dodokEnddate.split('-')[0])}-${Number(res.data.dodokEnddate.split('-')[1])}-${Number(res.data.dodokEnddate.split('-')[2])}`);
       const gap = dday.getTime() - today.getTime();
       const result = Math.ceil(gap/(1000*60*60*24));
-      console.log(res)
       setBookDetail({
         ...bookDetail,
         bookImg: res.data.book.bookImg,

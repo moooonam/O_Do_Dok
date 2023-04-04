@@ -57,7 +57,6 @@ function Header() {
         },
       })
         .then((res) => {
-          // console.log(res);
           dispatch(
             getUserInfo({
               profileImg: res.data.userImage,
@@ -74,7 +73,6 @@ function Header() {
               userAge: res.data.userAge,
             })
           );
-          // console.log(res.data.userImage)
         })
         .catch((err) => {
           console.log(err);

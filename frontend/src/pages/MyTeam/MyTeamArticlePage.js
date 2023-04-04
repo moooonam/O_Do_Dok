@@ -27,11 +27,7 @@ function MyTeamArticlePage() {
       },
     })
       .then((res) => {
-        console.log("전체 게시글 불러오기 완료----------");
-        console.log(res.data);
-
         setArticles(...articles, res.data);
-        console.log(articles);
       })
       .catch((err) => {
         console.log(err);
@@ -47,7 +43,7 @@ function MyTeamArticlePage() {
   const renderAll = articles.map((article) => {
     return (
       <div key={article.boardId} className={articlestyles["articleOne"]} onClick={() => {goArticle(article.boardId);}}>
-        <p className={articlestyles["articleType"]}>{article.boardType === 'notice' ? <p>공지</p> : <p>자유</p>}</p>
+        <p className={articlestyles["articleType"]}>{article.boardType === 'notice' ? '공지' : '자유'}</p>
         <p className={articlestyles["articleTitle"]}>{article.boardTitle}</p>
         <p className={articlestyles["articleUser"]}>
           {article.user.userNickname}

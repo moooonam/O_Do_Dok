@@ -39,7 +39,6 @@ function OpenReviewsPage() {
   useEffect(() => {
     Api.get('/dodok/lastdodoks')
     .then((res) => {
-      console.log('dd',res)
       if (res.data !== '검색 결과가 없습니다.') {
         setOpenDodok([...res.data])
       }
@@ -74,8 +73,7 @@ function OpenReviewsPage() {
     movePage(`/openreviews/${dodokId}`)
   }
 
-  // 전체 장르 책 보여주기
-  
+  // 전체 장르 책 보여주기 
   const renderBooks =  openDodok.map((book) => {
     return (
       <div key={book.dodok.dodokId} onClick={() => {goOpenReview(book.dodok.dodokId)}}>

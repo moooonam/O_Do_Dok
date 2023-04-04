@@ -31,7 +31,6 @@ function MyPage() {
         "access-token": `Bearer ${localStorage.getItem("access-token")}`,
       },})
       .then((res) => {
-        // console.log('나의정보', res)
         setMyData({ ...myData, reviewCnt : res.data.userReviewcnt, articleCnt : res.data.boardcnt, dodokCnt: res.data.completeDodokCnt})
       })
     .catch((err) => {
@@ -55,7 +54,6 @@ function MyPage() {
         "access-token": `Bearer ${localStorage.getItem("access-token")}`,
       },})
       .then((res) => {
-        // console.log(res.data)
         setMyPageReviews(res.data.reviewPageList)
       })
     .catch((err) => {
