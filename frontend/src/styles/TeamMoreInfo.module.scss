@@ -1,0 +1,30 @@
+.records-container {
+    margin-top: 50px;
+    margin-left: 200px;
+    min-height: 100vh;
+}
+
+.record-wrap-bookimg {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 50px;
+    margin-left: 50px;
+    
+    img {
+        margin: 0 3vw;
+        width: 10vw;
+        aspect-ratio: 1.5 / 2;
+        // height: ;
+        cursor: pointer;
+        :hover {
+            filter: brightness(60%);  
+        }
+    }
+    p {
+        margin: 0 0 4vw 8vw;
+    }
+}
+.booktitle {
+    text-align: center;
+    margin-bottom: 50px;
+}

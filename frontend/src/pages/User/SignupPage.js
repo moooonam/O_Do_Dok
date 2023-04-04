@@ -3,7 +3,6 @@ import TextField from "@mui/material/TextField";
 import styles from "../../styles/Signup.module.scss";
 import Grid from "@mui/material/Grid"; // Grid version 1
 import Button from "@mui/material/Button";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 // radio
@@ -117,7 +116,6 @@ function SignupPage() {
       setUserGenre([...userGenre, choice]);
     }
   };
-  // console.log("유저장르", userGenre);
 
   // axios 보낼 데이터
   const userInfo = {
@@ -138,14 +136,8 @@ function SignupPage() {
 
   const emailDuplication = () => {
     if (form.email) {
-      axios({
-        methods: "get",
-        url: `http://localhost:8080/api/v1/user/checkEmail/${form.email}`,
-        // headers: { "withCredentials": true},
-        //false가 이미 있는 이메일
-      })
+      Api.get(`/user/checkEmail/${form.email}`)
         .then((res) => {
-          console.log(res.data);
           if (res.data) {
             form.emailCheck = true;
             alert("사용 가능한 이메일입니다.");
@@ -157,19 +149,12 @@ function SignupPage() {
           console.log(err);
         });
     }
-    // else {
-    //   alert("이메일을 입력해주세요")
-    // }
   };
 
   const nickDuplication = () => {
     if (form.nickname) {
-      axios({
-        methods: "get",
-        url: `http://localhost:8080/api/v1/user/checkNickname/${form.nickname}`,
-      })
+      Api.get(`/user/checkNickname/${form.nickname}`)
         .then((res) => {
-          // console.log(res);
           if (res.data) {
             alert("사용 가능한 닉네임입니다.");
             form.nickCheck = true;
@@ -181,14 +166,10 @@ function SignupPage() {
           console.log(err);
         });
     }
-    // else {
-    //   alert("닉네임을 입력해주세요.")
-    // }
   };
 
   // 가입하기 함수
   const userSignup = () => {
-    // console.log(userInfo);
     if (userGenre.length !== 3) {
       alert("장르를 3가지 선택해주세요");
     } else {
@@ -223,7 +204,6 @@ function SignupPage() {
         ) {
           Api.post("/user", userInfo)
             .then((res) => {
-              console.log(res);
               alert("회원가입 성공!");
               movePage("/login");
             })
@@ -238,7 +218,6 @@ function SignupPage() {
       }
     }
 
-    console.log(userInfo);
   };
 
   // 유효성 검사
@@ -273,7 +252,7 @@ function SignupPage() {
       justifyContent="center"
       alignItems="center"
     >
-      <h2>Oh Do Dok!</h2>
+      <h2>O Do Dok!</h2>
       <div className={styles["signupBox"]}>
         <h3 className={styles["title"]}>회원가입</h3>
         <Grid container direction="row" columnGap={10}>
@@ -567,10 +546,13 @@ function SignupPage() {
         <Grid container direction="row" columnGap={8}>
           <p className={styles["signup-blank"]}>활동지역</p>
           <TextField
+            sx={{
+              width: { md: 310 },
+            }}
             required
             id="region"
             label="Required"
-            placeholder="활동지역을 입력해주세요"
+            placeholder="온라인의 경우 '전지역'으로 입력해주세요"
             value={form.region}
             variant="standard"
             onChange={(e) => setForm({ ...form, region: e.target.value })}

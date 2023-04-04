@@ -23,10 +23,8 @@ function LoginPage() {
     movePage("/");
   };
   const userLogin = () => {
-    // console.log(form)
     Api.post("/login", form)
       .then((res) => {
-        // console.log(res.data['refresh-token'])
         localStorage.setItem("refresh-token", res.data["refresh-token"]);
         localStorage.setItem("access-token", res.data["access-token"]);
         dispatch(login());
@@ -53,7 +51,6 @@ function LoginPage() {
                 userAge: res.data.userAge,
               })
             );
-            // console.log(res.data)
           })
           .catch((err) => {
             console.log(err);
@@ -87,7 +84,7 @@ function LoginPage() {
       justifyContent="center"
       alignItems="center"
     >
-      <h2>Oh Do Dok!</h2>
+      <h2>O Do Dok!</h2>
       <div className={styles["loginBox"]}>
         <h3 className={styles["title"]}>로그인</h3>
         <Grid container direction="row" columnGap={10}>
