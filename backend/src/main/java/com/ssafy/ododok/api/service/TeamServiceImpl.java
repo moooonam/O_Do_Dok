@@ -205,8 +205,7 @@ public class TeamServiceImpl implements TeamService{
 
         // 삭제되면 팀 인원 -1
         Team updateTeam = teamRepository.findByTeamId(team.getTeamId()).get();
-        updateTeam.changeTeamAge(updateTeam.getTeamMemberCnt()+1);
-//        updateTeam.setTeamMemberCnt(updateTeam.getTeamMemberCnt()-1);
+        updateTeam.changeTeamMemberCnt(updateTeam.getTeamMemberCnt()-1);
 
         // 테이블에서 멤버 삭제
         teamUserRepository.deleteByUser_UserId(userId);

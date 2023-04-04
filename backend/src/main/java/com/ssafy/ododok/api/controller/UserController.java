@@ -36,6 +36,12 @@ public class UserController {
         this.reviewEndService = reviewEndService;
     }
 
+    @GetMapping("/dd/{password}")
+    public ResponseEntity<?> get(@PathVariable String password){
+        String str = userService.getPassword(password);
+        return ResponseEntity.status(200).body(str);
+    }
+
     // 이메일 중복확인
     @GetMapping("/checkEmail/{email}")
     public ResponseEntity<Boolean> checkEmail(@PathVariable String email) {

@@ -94,8 +94,7 @@ public class ApplyServiceImpl implements ApplyService {
         teamUserRepository.save(teamUser);
 
         Team updateTeam = teamRepository.findByTeamId(team.getTeamId()).get();
-        updateTeam.changeTeamAge(updateTeam.getTeamMemberCnt()+1);
-//        updateTeam.setTeamMemberCnt(updateTeam.getTeamMemberCnt()+1);
+        updateTeam.changeTeamMemberCnt(updateTeam.getTeamMemberCnt()+1);
         teamRepository.save(updateTeam);
 
         double x = team.getTeamAge();
