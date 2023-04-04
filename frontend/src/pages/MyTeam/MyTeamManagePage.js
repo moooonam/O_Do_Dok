@@ -454,7 +454,7 @@ function MyTeamManagePage() {
                   <div
                     onClick={() => {
                       clickhorror();
-                      clickGenre("horror");
+                      clickGenre("호러");
                     }}
                     className={
                       genreList.horror
