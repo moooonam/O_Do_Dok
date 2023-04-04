@@ -561,7 +561,7 @@ function SignupPage() {
         <br />
         <br />
         <FormControl>
-          <p id="demo-row-radio-buttons-group-label">독서빈도</p>
+          <p id="demo-row-radio-buttons-group-label">독서빈도 (한 달 기준)</p>
           <br />
           <RadioGroup
             row

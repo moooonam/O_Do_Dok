@@ -81,13 +81,15 @@ function MyTeamMainPage() {
         "access-token": `Bearer ${localStorage.getItem("access-token")}`,
       },
     }).then((res) => {
-      console.log("진행중", res);
-      setDodokInfo({ ...dodokInfo,
-      bookImg : res.data.book.bookImg,
-      booTitle: res.data.book.bookTitle,
-      dodokStartdate: res.data.dodokStartdate,
-      dodokEnddate: res.data.dodokEnddate,
-      });
+      if (res.data !== '참여한 팀이 없거나 현재 진행중인 도독이 없습니다.'){
+
+        setDodokInfo({ ...dodokInfo,
+          bookImg : res.data.book.bookImg,
+          booTitle: res.data.book.bookTitle,
+          dodokStartdate: res.data.dodokStartdate,
+          dodokEnddate: res.data.dodokEnddate,
+        });
+      }
     });
     Api.get("/board", {
       headers: {
@@ -96,7 +98,6 @@ function MyTeamMainPage() {
       },
     })
       .then((res) => {
-        console.log(res);
         const cnt = res.data.length;
         if (cnt >= 3) {
           setTeamArticle({
@@ -150,16 +151,19 @@ function MyTeamMainPage() {
             className={mainstyles["teamImg"]}
           />
           <h2>
-            <b>{teamDetail.teamName}</b>
+            <b>모임정보</b>
           </h2>
           <div className={mainstyles["secondBox"]}>
             <div className={mainstyles["infoBox"]}>
               <div className={mainstyles["myteam-title"]}>
+                <p>모임명</p>
                 <p>모임원</p>
                 {/* <p>모임 시작일</p> */}
                 {/* <p>첫 도독</p> */}
               </div>
               <div className={mainstyles["myteam-content"]}>
+
+                <p>{teamDetail.teamName}</p>
                 <p>
                   {teamDetail.teamMemberCnt}/{teamDetail.teamMemberCntMax}
                 </p>
@@ -171,7 +175,7 @@ function MyTeamMainPage() {
               <div className={mainstyles["onoffRegionBox"]}>
                 <div className={mainstyles["myteam-onoff"]}>
                   {teamDetail.teamOnoff === 'ON' ? '온라인' : ( teamDetail.teamOnoff === 'OFF' ? '오프라인' :
-                  '병행'
+                  '온오프라인'
                   )} 
                 </div>
                 <div className={mainstyles["myteam-region"]}>
