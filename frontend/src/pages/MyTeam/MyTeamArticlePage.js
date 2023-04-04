@@ -7,6 +7,11 @@ import { Api } from "../../Api";
 import { useSelector } from "react-redux";
 
 function MyTeamArticlePage() {
+  const scrollToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })}
   const myTeamId = useSelector((state) => state.user.myTeamId)
   const movePage = useNavigate();
   function goArticleCreate() {
@@ -20,6 +25,7 @@ function MyTeamArticlePage() {
   });
 
   useEffect(() => {
+    scrollToTop();
     Api.get("/board", {
       headers: {
         "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,

@@ -87,7 +87,7 @@ function LoginPage() {
       <h2>O Do Dok!</h2>
       <div className={styles["loginBox"]}>
         <h3 className={styles["title"]}>로그인</h3>
-        <Grid container direction="row" columnGap={6}>
+        <Grid container direction="row" columnGap={5.5}>
           <p className={styles["login-blank"]}>이메일</p>
           <TextField
             required
