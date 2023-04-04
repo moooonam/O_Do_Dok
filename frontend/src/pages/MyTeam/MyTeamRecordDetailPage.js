@@ -10,6 +10,11 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 function MyTeamRecordDetail() {
+  const scrollToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })}
   const movePage = useNavigate();
   const myRole = useSelector((state) => state.user.myRole)
   const [dodokRecord, setDodokRecord] = useState({
@@ -24,6 +29,7 @@ function MyTeamRecordDetail() {
   });
   
   useEffect(() => {
+    scrollToTop();
     const dodokRecordId = localStorage.getItem("dodokRecordId");
     Api.get(`/dodok/details/${dodokRecordId}`).then((res) => {
       setDodokRecord({

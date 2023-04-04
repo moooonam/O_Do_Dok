@@ -11,11 +11,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-// onClick={() => {
-//     addComment();
-//     count();
-//     }}
 function MyTeamMemberManagePage() {
+  const scrollToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })}
   // 선택한 모임원 정보 저장
   const [memberInfo, setMemberInfo] = useState({
     name: "",
@@ -62,6 +63,7 @@ function MyTeamMemberManagePage() {
   const myTeamId = localStorage.getItem("myTeamId");
   const [members, setMembers] = useState([]);
   useEffect(() => {
+    scrollToTop()
     Api.get(`/teams/member/${myTeamId}`)
       .then((res) => {
         setMembers(...members, res.data);

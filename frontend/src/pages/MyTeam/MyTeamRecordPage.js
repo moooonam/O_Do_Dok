@@ -6,11 +6,17 @@ import { Api } from "../../Api";
 import { useNavigate } from "react-router-dom";
 
 function MyTeamRecordPage() {
+  const scrollToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })}
   const movePage = useNavigate();
   const [lastDodoks, setLastDodoks] = useState([]);
   const myTeamId = localStorage.getItem("myTeamId");
 
   useEffect(() => {
+    scrollToTop();
     Api.get(`/dodok/lastdodoks/${myTeamId}`, {
       headers: {
         "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,

@@ -14,7 +14,7 @@ function RecomendBook() {
     Api.get("/book/bestBook").then((res) => {
       const recomendBook = [...res.data];
       let newBook = [];
-      while (recomendBook.length > 15) {
+      while (recomendBook.length > 16) {
         let movenum = recomendBook.splice(
           Math.floor(Math.random() * recomendBook.length),
           1
@@ -37,14 +37,52 @@ function RecomendBook() {
     setOpen(false);
   };
 
+  // 원래 추천 도서 render
+  // const renderRecomendBook = best5Book.map((book) => {
+  //   return (
+  //     <div key={book.bookId}>
+  //       <img
+  //         src={book.bookImg}
+  //         alt="책"
+  //         onClick={() => handleClickOpen(book)}
+  //       />
+  //     </div>
+  //   );
+  // });
   const renderRecomendBook = best5Book.map((book) => {
     return (
-      <div key={book.bookId}>
-        <img
-          src={book.bookImg}
-          alt="책"
-          onClick={() => handleClickOpen(book)}
-        />
+      <div
+        key={book.bookId}
+        className={styles["component"]}
+        onClick={() => handleClickOpen(book)}
+      >
+        <ul className={styles["align"]}>
+          <li>
+            <figure className={styles["book"]}>
+              <ul className={styles["hardcover_front"]}>
+                <li>
+                  <img className={styles["book-img"]}src={book.bookImg} alt="" width="100%" height="100%" />
+                </li>
+                <li></li>
+              </ul>
+              <ul className={styles["page"]}>
+                <li></li>
+                <li><p>책 정보 더보기👆</p></li>
+                <li></li>
+                <li></li>
+                <li></li>
+              </ul>
+              <ul className={styles["hardcover_back"]}>
+                <li></li>
+                <li></li>
+              </ul>
+              <ul className={styles["book_spine"]}>
+                <li></li>
+                <li></li>
+              </ul>
+            </figure>
+          </li>
+        </ul>
       </div>
     );
   });
@@ -55,7 +93,7 @@ function RecomendBook() {
       <Dialog
         open={open}
         onClose={handleClose}
-        maxWidth='xl'
+        maxWidth="xl"
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
