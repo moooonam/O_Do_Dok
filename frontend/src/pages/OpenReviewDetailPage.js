@@ -93,10 +93,12 @@ function OpenReviewDetailPage() {
               </div>
             </div>
           </div>
+          <br /><br />
+          <h3 className={openreviewtyles["page-review-name"]}>페이지 리뷰 📖</h3>
           <RecordAllPageReviewModal/>
           <RecordDodokBar propPageReviews={dodokRecord.pageReviews} />
           <div className={openreviewtyles["wrap-reviews-title"]}>
-            <h3>총평</h3>
+            <h3>총평 📔</h3>
           </div>
           {renderReview}
         </div>

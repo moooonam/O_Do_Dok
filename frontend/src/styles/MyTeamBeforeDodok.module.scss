@@ -24,7 +24,7 @@
 
 .secondBox {
     margin-left: 50px;
-    margin-top: 50px;
+    margin-top: 10px;
     margin-right: 100px;
 }
 
@@ -196,4 +196,13 @@
 }
 .booktitle {
     text-align: center;
+    margin-top: 10px;
+}
+
+.recommand-choice {
+    img {
+        margin-bottom: 20px;
+        width: 360px;
+        height: 450px;
+    }
 }
