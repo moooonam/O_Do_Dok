@@ -57,7 +57,9 @@ function TeamDetailPage() {
       <div className={styles.teamname}>{teamDetail.teamName}</div>
       <div className={styles["wrap-content"]}>
         <div className={styles["wrap-genres"]}>
-          <div className={styles["hashtag"]}>#{teamDetail.teamOnoff}</div>
+          <div className={styles["hashtag"]}># {teamDetail.teamOnoff === 'ON' ? '온라인' : ( teamDetail.teamOnoff === 'OFF' ? '오프라인' :
+                  '온오프라인'
+                  )} </div>
           <div className={styles["hashtag"]}>#{teamDetail.teamRegion}</div>
         </div>
         <div className={styles["wrap-genres"]}>

@@ -329,7 +329,9 @@ function MyTeamManagePage() {
               </div>
               <div className={teamstyles["right-bottom-content"]}>
                 <div className={teamstyles["tag-top"]}>
-                  <div>{teamDetail.teamOnoff}</div>
+                   {teamDetail.teamOnoff === 'ON' ? <div>온라인</div>  : ( teamDetail.teamOnoff === 'OFF' ? <div>오프라인</div> :
+                  <div>온오프라인</div>
+                  )} 
                   <div>{teamDetail.teamRegion}</div>
                 </div>
                 <div className={teamstyles["tag-bottom"]}>

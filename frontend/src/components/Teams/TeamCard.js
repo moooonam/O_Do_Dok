@@ -36,13 +36,9 @@ function TeamCard({ genre }) {
         <img src={team.teamImage} alt="" />
         <div className={styles.teamname}>{team.teamName}</div>
         <div className={styles["wrap-isonline-genre"]}>
-          {team.teamOnoff === "ON" ? (
-            <div>온라인</div>
-          ) : team.teamOOnoff === "OFF" ? (
-            <div>오프라인</div>
-          ) : (
-            <div>온오프라인</div>
-          )}
+        {team.teamOnoff === 'ON' ? <div>온라인</div>  : ( team.teamOnoff === 'OFF' ? <div>오프라인</div> :
+                  <div>온오프라인</div>
+                  )} 
           <div>#{team.teamGenre2}</div>
           <div>#{team.teamGenre3}</div>
         </div>

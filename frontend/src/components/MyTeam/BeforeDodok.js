@@ -210,7 +210,7 @@ function BeforeDodok() {
                     }
                     autoWidth
                   >
-                    <MenuItem value={'추리/미스터리'}>추리</MenuItem>
+                    <MenuItem value={'추리'}>추리</MenuItem>
                     <MenuItem value={'판타지'}>판타지</MenuItem>
                     <MenuItem value={'SF'}>SF</MenuItem>
                     <MenuItem value={'호러'}>호러</MenuItem>
