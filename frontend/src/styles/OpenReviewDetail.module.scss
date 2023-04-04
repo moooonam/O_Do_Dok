@@ -39,6 +39,7 @@
 .wrap-book {
     display: flex;
     margin-top: 20px;
+    margin-left: 15%;
 
     img {
         width: 13vw;
@@ -61,6 +62,7 @@
     margin-bottom: 10px;
     border-radius: 10px;
 }
+
 
 //총평쪽
 .wrap-review{
@@ -92,4 +94,8 @@
 }
 .review-content {
     margin-top: 10px;
+}
+
+.page-review-name {
+    margin-bottom: 0px;
 }

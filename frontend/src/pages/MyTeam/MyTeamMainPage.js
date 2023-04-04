@@ -196,8 +196,8 @@ function MyTeamMainPage() {
             </div>
             <div className={mainstyles["ruleBox"]}>
               <p>1. {teamDetail.teamRule1}</p>
-              <p>2. {teamDetail.teamRule1}</p>
-              <p>3. {teamDetail.teamRule1}</p>
+              <p>2. {teamDetail.teamRule2}</p>
+              <p>3. {teamDetail.teamRule3}</p>
             </div>
           </div>
           <div className={mainstyles["thirdBox"]}>
