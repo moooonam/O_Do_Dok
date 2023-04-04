@@ -140,7 +140,7 @@ function MyTeamRecordDetail() {
           <RecordAllPageReviewModal/>
           <RecordDodokBar propPageReviews={dodokRecord.pageReviews} />
           <div className={dodokstyles["wrap-reviews-title"]}>
-            <h3>총평</h3>
+            <h3>총평 📔</h3>
           </div>
           {renderReview}
         </div>

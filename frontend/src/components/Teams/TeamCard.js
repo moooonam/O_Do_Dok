@@ -82,7 +82,7 @@ function TeamCard({ genre }) {
   });
   return (
     <div>
-      {genre === "장르" ? (
+      {genre === "전체" ? (
         <div className={styles["wrap-teamcards"]}>{renderTeamCard}</div>
       ) : (
         <div className={styles["wrap-teamcards"]}> {renderGenreTeamCard}</div>

@@ -149,7 +149,7 @@ function BeforeDodok() {
       <SideBar location={"dodok"}/>
       <div className={sidestyles.others}>
         <div className={dodokstyles["firstBox"]}>
-          <h2>'{teamName}' 모임을 위한 추천 도서</h2>
+          <h2>'{teamName}' 모임을 위한 추천 도서 📚</h2>
           <div className={dodokstyles["myteam-wrap-bookimg"]}>
             {renderTeamRecomendBook}
           </div>
@@ -159,11 +159,12 @@ function BeforeDodok() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"선택된 책"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"선택한 도서에 대한 정보📗"}</DialogTitle>
         <DialogContent>
           <div>
             {selectedBook ? (
-              <div>
+              <div className={dodokstyles["recommand-choice"]}>
+                <img src={selectedBook.bookImg} alt="" />
                 <p>제목: {selectedBook.bookTitle}</p>
                 <br />
                 <p>작가: {selectedBook.bookAuthor}</p>
@@ -188,6 +189,7 @@ function BeforeDodok() {
             {myRole !== 'USER' ? <div className={dodokstyles["startDodokBtn"]} onClick={startDodok}>도독 시작</div> : null}
           </div>
           <hr />
+          <br />
           <div className={dodokstyles["dodokInfo-content"]}>
             <div className={dodokstyles["content-left"]}>
               <div className={dodokstyles["left-bookname"]}>

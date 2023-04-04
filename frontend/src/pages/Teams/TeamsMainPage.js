@@ -231,10 +231,10 @@ function TeamsMainPage() {
 
   // 필터
   const [menu, setMenu] = useState({
-    choice: "장르",
+    choice: "전체",
   });
 
-  const options = ["장르", "추리", "스릴러", "공포", "SF", "판타지", "무협", "로맨스"];
+  const options = ["전체", "추리", "스릴러", "공포", "SF", "판타지", "무협", "로맨스"];
 
   const ITEM_HEIGHT = 48;
 
