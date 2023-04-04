@@ -13670,7 +13670,7 @@ insert into book values ('13669','9.8','추종남','로맨스','https://image.al
 insert into book values ('13670','9','고영주','로맨스','https://image.aladin.co.kr/product/4282/42/cover500/1155112083_1.jpg','0','392','0','짐승이라 미안해',FALSE);
 insert into book values ('13671','8','정이연','로맨스','https://image.aladin.co.kr/product/4213/41/cover500/1156300991_1.jpg','0','384','0','설표',FALSE);
 
-insert into recom_book values ('0','1','20','9.3','방주');
+
 insert into recom_book values ('1','1','20','10','N');
 insert into recom_book values ('2','1','20','9.6','희망의 끈');
 insert into recom_book values ('3','1','40','9.1','세계 미스터리 걸작선 01 : 살인자 외');
@@ -17592,8 +17592,8 @@ insert into recom_book values ('4488','2','50','10','데스티니 가디언즈 :
 insert into recom_book values ('4489','2','40','10','아르카 1');
 insert into recom_book values ('4490','2','50','8.9','태양의 탑 6');
 insert into recom_book values ('4491','2','40','7.7','다크 타워 1');
-"insert into recom_book values ('4492','2','30','10','크툴루 님이 엄청 대충 가르쳐주시는 크툴루 신화 용어사전
-');"
+insert into recom_book values ('4492','2','30','10','크툴루 님이 엄청 대충 가르쳐주시는 크툴루 신화 용어사전
+');
 insert into recom_book values ('4493','2','20','8.7','세상을 가리키는 말은 숲');
 insert into recom_book values ('4494','2','20','6','실마릴리온');
 insert into recom_book values ('4495','2','30','9','피를 마시는 새 2');
