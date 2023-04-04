@@ -12,7 +12,6 @@ function RecomendBook() {
   const [best5Book, setBest5Book] = useState([]);
   useEffect(() => {
     Api.get("/book/bestBook").then((res) => {
-      console.log(res);
       const recomendBook = [...res.data];
       let newBook = [];
       while (recomendBook.length > 15) {
@@ -23,25 +22,29 @@ function RecomendBook() {
         newBook.push(movenum);
       }
       setBest5Book([...newBook]);
-      console.log(best5Book);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const [open, setOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState({});
   const handleClickOpen = (book) => {
-    // console.log("왔냐", book);
     setSelectedBook({ ...book });
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
-  }
+  };
 
   const renderRecomendBook = best5Book.map((book) => {
     return (
       <div key={book.bookId}>
-        <img src={book.bookImg} alt="책" onClick={() =>handleClickOpen(book)}/>
+        <img
+          src={book.bookImg}
+          alt="책"
+          onClick={() => handleClickOpen(book)}
+        />
       </div>
     );
   });
@@ -52,17 +55,23 @@ function RecomendBook() {
       <Dialog
         open={open}
         onClose={handleClose}
+        maxWidth='xl'
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"선택된 책"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {"오도독이 추천하는 책이에요📗"}
+        </DialogTitle>
         <DialogContent>
           <div>
             {selectedBook ? (
-              <div>
-                <p>제목: {selectedBook.bookTitle}</p>
-                <br />
-                <p>작가: {selectedBook.bookAuthor}</p>
+              <div className={styles["one-info"]}>
+                <img src={selectedBook.bookImg} alt="" />
+                <div>
+                  <p>제목 : {selectedBook.bookTitle}</p>
+                  <br />
+                  <p>작가 : {selectedBook.bookAuthor}</p>
+                </div>
               </div>
             ) : null}
           </div>

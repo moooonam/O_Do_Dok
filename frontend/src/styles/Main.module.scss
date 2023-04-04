@@ -25,11 +25,11 @@
 .img1 {
     width: 100vw;
     height: 60vh;
-    background-position: 50% 50%;
+    background-position: 50% 5%;
     background-repeat: no-repeat;
     background-size: cover;
     flex: none;
-    background-image: url("../assets/img/testimg.png");
+    background-image: url("../assets/img/main_img1.jpg");
     margin: 0 0;
 }
 
@@ -57,6 +57,17 @@
     }
     img:hover {
         transform: scale(1.2);
+    }
+}
+
+.one-info {
+    // display: flex;
+    margin-right: 50px;
+
+    img {
+        margin-bottom: 20px;
+        width: 360px;
+        height: 450px;
     }
 }
 

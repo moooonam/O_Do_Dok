@@ -60,7 +60,6 @@ function MyTeamManagePage() {
       },
     })
       .then((res) => {
-        console.log(res.data);
         setTeamDetail({
           ...teamDetail,
           teamName: res.data.teamName,
@@ -103,7 +102,7 @@ function MyTeamManagePage() {
     team_onoff: "",
     team_region: "",
     team_image: "",
-    team_membercnt_max: "",
+    team_membercnt_max: null,
     team_recruit: null,
     team_recruit_text: "",
     team_rule1: "",
@@ -191,7 +190,7 @@ function MyTeamManagePage() {
     teamOnoff: "",
     teamRegion: "",
     teamImage: "",
-    teamMembercntMax: null,
+    teamMemberCntMax: null,
     teamRecruit: null,
     teamRecruitText: "",
     teamRule1: "",
@@ -204,14 +203,13 @@ function MyTeamManagePage() {
 
   // 모임 정보 수정
   const teamInfoUpdate = () => {
-    console.log(teamGenre);
     if (teamGenre.length !== 3) {
       alert("장르를 3가지 선택해주세요");
     } else {
       teamInfo.teamOnoff = form.team_onoff;
       teamInfo.teamRegion = form.team_region;
       teamInfo.teamImage = form.team_image;
-      teamInfo.teamMembercntMax = form.team_membercnt_max;
+      teamInfo.teamMemberCntMax = form.team_membercnt_max;
       teamInfo.teamRecruit = form.team_recruit;
       teamInfo.teamRecruitText = form.team_recruit_text;
       teamInfo.teamRule1 = form.team_rule1;
@@ -224,7 +222,6 @@ function MyTeamManagePage() {
       // 선호 장르를 선택하지 않았다면 기존의 정보로 다시 전송
       Api.patch(`/teams/${teamDetail.teamId}`, teamInfo)
         .then((res) => {
-          console.log(res);
           alert("모임 정보 수정이 완료되었습니다.");
           teamInfoModalClose();
           window.location.reload();
@@ -250,7 +247,6 @@ function MyTeamManagePage() {
   const deleteTeam = () => {
     Api.delete(`/teams/${teamDetail.teamId}`)
       .then((res) => {
-        console.log(res);
         alert("모임이 삭제되었습니다.");
         movePage("/");
         window.location.reload();
@@ -272,13 +268,11 @@ function MyTeamManagePage() {
 
   const clickImage = (image) => {
     setForm({ ...form, team_image: image });
-    console.log(form.team_image);
-    console.log(image);
   };
 
   const renderImage = images.map((image) => {
     return (
-      <div>
+      <div key={image}>
         <div className={teamstyles["image"]}>
           <img
             src={image}
@@ -324,18 +318,20 @@ function MyTeamManagePage() {
                     {teamDetail.teamMemberCnt}명 / {teamDetail.teamMemberCntMax}
                     명
                   </p>
-                  <p>
+                  <div>
                     {teamDetail.teamRecruit === true ? (
                       <p>공개</p>
                     ) : (
                       <p>비공개</p>
                     )}
-                  </p>
+                  </div>
                 </div>
               </div>
               <div className={teamstyles["right-bottom-content"]}>
                 <div className={teamstyles["tag-top"]}>
-                  <div>{teamDetail.teamOnoff}</div>
+                   {teamDetail.teamOnoff === 'ON' ? <div>온라인</div>  : ( teamDetail.teamOnoff === 'OFF' ? <div>오프라인</div> :
+                  <div>온오프라인</div>
+                  )} 
                   <div>{teamDetail.teamRegion}</div>
                 </div>
                 <div className={teamstyles["tag-bottom"]}>
@@ -460,7 +456,7 @@ function MyTeamManagePage() {
                   <div
                     onClick={() => {
                       clickhorror();
-                      clickGenre("horror");
+                      clickGenre("호러");
                     }}
                     className={
                       genreList.horror

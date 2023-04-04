@@ -4,10 +4,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import styles from "../../../styles/MyTeamAfterDodok.module.scss";
 import { Api } from "../../../Api";
-export default function AllPageReviewModal() {
+export default function RecordAllPageReviewModal() {
   const [open, setOpen] = React.useState(false);
   const [pageReviews, setPageReviews] = React.useState([])
-  const [myId, setMyId] = React.useState('')
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -15,40 +14,12 @@ export default function AllPageReviewModal() {
   const handleClose = () => {
     setOpen(false);
   };
-  const deletePageReview = ((pageReviewId) => {
-    Api.delete(`/dodok/pageReview/${pageReviewId}`, {
-      headers: {
-        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
-        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
-      },
-    })
-    .then((res) => {
-      alert('페이지 리뷰를 삭제했습니다.')
-      window.location.reload()
-    })
 
-  })
   React.useEffect(() => {
-    Api.get('/dodok/pageReview/list', {
-      headers: {
-        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
-        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
-      },
-    })
-    .then((res) => {
-      if (res.data.length !== 0) {
-        setPageReviews([...res.data])
-      }
-    })
-    Api.get('/user/me',  {
-      headers: {
-        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
-        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
-      },
-    })
-    .then((res) => {
-      setMyId(res.data.id)
-    })
+    const dodokRecordId = localStorage.getItem("dodokRecordId");
+    Api.get(`/dodok/details/${dodokRecordId}`).then((res) => {
+      setPageReviews([...res.data.reviewPageList]);
+    });
     }, []);
   const sortedPageReviews = pageReviews.sort((a,b) => a.reviewPagePage - b.reviewPagePage)
   const renderPageReviews = sortedPageReviews.map((pageReview) => {
@@ -64,10 +35,7 @@ export default function AllPageReviewModal() {
               <div className={styles['flex-bok']}> 
                 <div>
                 {pageReview.reviewPagePage} 페이지
-                </div>
-                {myId === pageReview.user.userId ? <p onClick={()=> {deletePageReview(pageReview.reviewPageId)
-                }}>삭제</p> : null}
-                
+                </div>       
               </div>
             </div>
             <div>{pageReview.reviewPageContent}</div>

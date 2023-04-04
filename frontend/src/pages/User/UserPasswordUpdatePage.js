@@ -43,7 +43,6 @@ function UserPasswordUpdatePage() {
     .catch((err) => {
       console.log(err)
     })
-    console.log(form)
   })
   const password_validation = () => {
     let check = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$/;
@@ -51,7 +50,7 @@ function UserPasswordUpdatePage() {
   };
   return (
     <div className={styles["passwordupdate-container"]}>
-      <h2>Oh Do Dok!</h2>
+      <h2>O Do Dok!</h2>
       <div className={styles["contents-container"]}>
         <h3>비밀번호 변경</h3>
         <div className={styles["contents"]}>
