@@ -6,9 +6,9 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ssafy.ododok.db.model.Book;
+import com.ssafy.ododok.db.model.RecomBook;
 import com.ssafy.ododok.db.model.Team;
-import com.ssafy.ododok.db.repository.TeamRepository;
+import com.ssafy.ododok.db.repository.RecomBookRepository;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -21,9 +21,24 @@ import java.util.*;
 @Controller
 public class KNN {
 
+    private final RecomBookRepository recomBookRepository;
+
+    public KNN(RecomBookRepository recomBookRepository) {
+        this.recomBookRepository = recomBookRepository;
+    }
+
     public List<String> knn(Team team) {
         // csv���Ͽ��� ��� ������ �о����
-        List<Point> dataset = readCSVFile("Book_dataset.csv");
+        //
+//        List<Point> dataset = readCSVFile("Book_dataset.csv");
+        List<Point> dataset = new ArrayList<>();
+        List<RecomBook> recomlist = recomBookRepository.findAll();
+        for(RecomBook recomBook : recomlist){
+            dataset.add(new Point(recomBook.getRecomBookGenre(), recomBook.getRecomBookAge(), recomBook.getRecomBookTitle()));
+        }
+        System.out.println(dataset.toString());
+
+
 
         // ��ȣ�帣1,2,3, �� �������� ��õ
         List<String> list = new ArrayList<>();
