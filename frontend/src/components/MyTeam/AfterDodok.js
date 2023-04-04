@@ -148,12 +148,12 @@ function AfterDodok() {
             </div>
             <div className={dodokstyles.dday}>D-{bookDetail.dday}</div>
           </div>
-          <h3 className={dodokstyles['pagereview-title']}>페이지 리뷰</h3>
+          <h3 className={dodokstyles['pagereview-title']}>페이지 리뷰 📖</h3>
           <WritePageReviewModal />
           <AllPageReviewModal/>
           <DodokBar />
           <div className={dodokstyles["wrap-reviews-title"]}>
-            <h3>총평</h3>
+            <h3>총평 📔</h3>
             <WriteReviewModal />
           </div>
           {allReviews.length !== 0 ? renderReview : null}
