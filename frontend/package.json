@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@mui/icons-material": "^5.11.11",
     "@mui/x-date-pickers": "^6.0.1",
