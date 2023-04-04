@@ -67,9 +67,9 @@ export default function WritePageReviewModal() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">페이지 리뷰 작성</DialogTitle>
+        <DialogTitle id="alert-dialog-title" className={styles['font-font']}>페이지 리뷰 작성</DialogTitle>
         <DialogContent>
-          <div>
+          <div className={styles['font-font']}>
             페이지
             <input
               type="number"
@@ -77,7 +77,7 @@ export default function WritePageReviewModal() {
               onChange={(e) => setForm({ ...form, page: e.target.value })}
             />
           </div>
-          <div>리뷰</div>
+          <div className={styles["review-text"]}>리뷰</div>
           <textarea
             type="textfield"
             className={styles["review-input"]}

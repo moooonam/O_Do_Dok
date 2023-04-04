@@ -39,6 +39,7 @@ function TeamCard({ genre }) {
         {team.teamOnoff === 'ON' ? <div>온라인</div>  : ( team.teamOnoff === 'OFF' ? <div>오프라인</div> :
                   <div>온오프라인</div>
                   )} 
+          <div>#{team.teamGenre1}</div>
           <div>#{team.teamGenre2}</div>
           <div>#{team.teamGenre3}</div>
         </div>

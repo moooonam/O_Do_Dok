@@ -20,7 +20,7 @@
 .sidebar-list {
     list-style-type: none;
     padding-top: 10px;
-    font-family: 'Noto Serif KR', serif;
+    font-family:'Pretendard-Regular';
     font-size: 20px;
 
     li {
@@ -43,10 +43,12 @@
     font-weight: bold;
     margin-bottom: 20px;
     margin-top: 60px;
+    margin-left: 10px;
     font-size: 1.5rem;
 }
 
 .side-content {
+    margin-left: 10px;
     font-size: 1.2rem;
     margin-bottom: 12px;
     // border: solid 1px black;

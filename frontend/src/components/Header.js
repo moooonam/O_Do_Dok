@@ -127,7 +127,7 @@ function Header() {
   } else {
     profilOrLogin = (
       <div className={styles["header-login-btn"]} onClick={goLogin}>
-        로그인
+        Login
       </div>
     );
   }
