@@ -179,7 +179,7 @@ function BeforeDodok() {
         </DialogActions>
       </Dialog>
           <h3 className={dodokstyles["recommend-reason"]}>
-          '{teamName}' 모임의 78%가 추리소설을 좋아합니다
+          {/* '{teamName}' 모임의 78%가 추리소설을 좋아합니다 */}
           </h3>
         </div>
         <div className={dodokstyles["secondBox"]}>
