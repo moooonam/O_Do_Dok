@@ -52,7 +52,14 @@ function MyTeamManagePage() {
     teamId: null,
   });
 
+  const scrollToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })}
+
   useEffect(() => {
+    scrollToTop();
     Api.get("/user/myTeam", {
       headers: {
         "access-token": `Bearer ${access_token}`,
