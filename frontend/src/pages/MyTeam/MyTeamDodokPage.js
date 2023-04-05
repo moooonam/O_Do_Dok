@@ -4,17 +4,21 @@ import AfterDodok from "../../components/MyTeam/AfterDodok";
 import { Api } from "../../Api";
 
 function MyTeamDodokPage() {
+  const scrollToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })}
   const [dodokCheck, setDodokCheck] = useState({
     ongoingDodok : null,
   })
   useEffect(() => {
+    scrollToTop();
     Api.get('/user/myTeam',{headers: {
       "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
       "access-token": `Bearer ${localStorage.getItem("access-token")}`,
     }})
       .then((res) => {
-        console.log('여기')
-        console.log(res);
         setDodokCheck({ ...dodokCheck, ongoingDodok: res.data.ongoingDodok})
       })
       .catch((err) => {

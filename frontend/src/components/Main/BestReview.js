@@ -1,39 +1,50 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from '../../styles/Main.module.scss'
+import { Api } from '../../Api'
+import { useNavigate } from "react-router-dom";
+
 function BestReview() {
-  const books = [
-    {
-      id:1,
-      imgurl:'https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg'
-    },
-    {
-      id:2,
-      imgurl:'https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg'
-    },
-    {
-      id:3,
-      imgurl:'https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg'
-    },
-    {
-      id:4,
-      imgurl:'https://image.aladin.co.kr/product/31273/7/cover500/k542832564_1.jpg'
-    },
-    {
-      id:5,
-      imgurl:'https://image.aladin.co.kr/product/30876/42/cover500/k892831289_1.jpg'
-    },
-  ]
-  const renderBestReview = books.map(book => {
+  const movePage = useNavigate()
+  const [openDodok, setOpenDodok] = useState([])
+
+  useEffect(() => {
+    Api.get('/dodok/lastdodoks')
+    .then((res) => {
+      if (res.data !== '검색 결과가 없습니다.') {
+        if (res.data.length >= 6) {
+          setOpenDodok([...openDodok, res.data[0], res.data[1], res.data[2],res.data[3], res.data[4]])
+        } else {
+          setOpenDodok([...res.data])
+        }
+      }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const goOpenReview = (dodokId) => {
+    localStorage.setItem("dodokRecordId", dodokId)
+    movePage(`/openreviews/${dodokId}`)
+  }
+  
+  const renderBestReview = openDodok.map(book => {
     return (
-      <div key={book.id}>
-        <img src={book.imgurl} alt="책" />
+      <div key={book.dodok.dodokId} onClick={() => {goOpenReview(book.dodok.dodokId)}}>
+        {book.dodok.book.bookImg !== "tmp" ? (
+            <img src={book.dodok.book.bookImg} alt="책" />
+          ) : (
+            <img
+              src="https://cdn.pixabay.com/photo/2018/01/17/18/43/book-3088777__340.png"
+              alt="책"
+            />
+          )}
+          <p className={styles["team-name"]}>"{book.dodok.team.teamName}" 모임</p>
       </div>
     )
   })
   return (
   <div className={styles['wrap-bestreview']}>
     <div className={styles['bestreview-title']}>
-    베스트 리뷰
+    최신 리뷰
     </div>
     <div className={styles['wrap-bookimg'] }>
         {renderBestReview}

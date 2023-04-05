@@ -52,7 +52,14 @@ function MyTeamManagePage() {
     teamId: null,
   });
 
+  const scrollToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })}
+
   useEffect(() => {
+    scrollToTop();
     Api.get("/user/myTeam", {
       headers: {
         "access-token": `Bearer ${access_token}`,
@@ -60,7 +67,6 @@ function MyTeamManagePage() {
       },
     })
       .then((res) => {
-        console.log(res.data);
         setTeamDetail({
           ...teamDetail,
           teamName: res.data.teamName,
@@ -82,6 +88,7 @@ function MyTeamManagePage() {
         setForm({
           ...form,
           team_onoff: res.data.teamOnoff,
+          team_image: res.data.teamImage,
           team_region: res.data.teamMemberCnt,
           team_membercnt_max: res.data.teamMemberCntMax,
           team_recruit: res.data.teamRecruit,
@@ -101,7 +108,8 @@ function MyTeamManagePage() {
   const [form, setForm] = useState({
     team_onoff: "",
     team_region: "",
-    team_membercnt_max: "",
+    team_image: "",
+    team_membercnt_max: null,
     team_recruit: null,
     team_recruit_text: "",
     team_rule1: "",
@@ -160,13 +168,6 @@ function MyTeamManagePage() {
       setGenreList({ ...genreList, fantasy: true });
     }
   };
-  const clickdrama = () => {
-    if (genreList.drama) {
-      setGenreList({ ...genreList, drama: false });
-    } else {
-      setGenreList({ ...genreList, drama: true });
-    }
-  };
   const clickgame = () => {
     if (genreList.game) {
       setGenreList({ ...genreList, game: false });
@@ -181,18 +182,11 @@ function MyTeamManagePage() {
       setGenreList({ ...genreList, romance: true });
     }
   };
-  const clickanimation = () => {
-    if (genreList.animation) {
-      setGenreList({ ...genreList, animation: false });
-    } else {
-      setGenreList({ ...genreList, animation: true });
-    }
-  };
   // 유저 정보에 선호 장르 담기
   const clickGenre = (choice) => {
     if (teamGenre.includes(choice)) {
-      console.log(2222222222);
-      setTeamGenre(teamGenre.filter((genre) => genre !== choice));
+      let newGenres = teamGenre.filter((genre) => genre !== choice);
+      setTeamGenre(newGenres);
     } else {
       setTeamGenre([...teamGenre, choice]);
     }
@@ -202,7 +196,8 @@ function MyTeamManagePage() {
   const teamInfo = {
     teamOnoff: "",
     teamRegion: "",
-    teamMembercntMax: null,
+    teamImage: "",
+    teamMemberCntMax: null,
     teamRecruit: null,
     teamRecruitText: "",
     teamRule1: "",
@@ -215,34 +210,33 @@ function MyTeamManagePage() {
 
   // 모임 정보 수정
   const teamInfoUpdate = () => {
-    console.log(teamGenre);
-    teamInfo.teamOnoff = form.team_onoff;
-    teamInfo.teamRegion = form.team_region;
-    teamInfo.teamMembercntMax = form.team_membercnt_max;
-    teamInfo.teamRecruit = form.team_recruit;
-    teamInfo.teamRecruitText = form.team_recruit_text;
-    teamInfo.teamRule1 = form.team_rule1;
-    teamInfo.teamRule2 = form.team_rule2;
-    teamInfo.teamRule3 = form.team_rule3;
-    teamInfo.teamGenre1 = teamGenre[0];
-    teamInfo.teamGenre2 = teamGenre[1];
-    teamInfo.teamGenre3 = teamGenre[2];
+    if (teamGenre.length !== 3) {
+      alert("장르를 3가지 선택해주세요");
+    } else {
+      teamInfo.teamOnoff = form.team_onoff;
+      teamInfo.teamRegion = form.team_region;
+      teamInfo.teamImage = form.team_image;
+      teamInfo.teamMemberCntMax = form.team_membercnt_max;
+      teamInfo.teamRecruit = form.team_recruit;
+      teamInfo.teamRecruitText = form.team_recruit_text;
+      teamInfo.teamRule1 = form.team_rule1;
+      teamInfo.teamRule2 = form.team_rule2;
+      teamInfo.teamRule3 = form.team_rule3;
+      teamInfo.teamGenre1 = teamGenre[0];
+      teamInfo.teamGenre2 = teamGenre[1];
+      teamInfo.teamGenre3 = teamGenre[2];
 
-    // 선호 장르를 선택하지 않았다면 기존의 정보로 다시 전송
-    if (teamGenre.length === 0) {
-      teamInfo.teamGenre1 = teamDetail.teamGenre1;
-      teamInfo.teamGenre2 = teamDetail.teamGenre2;
-      teamInfo.teamGenre3 = teamDetail.teamGenre3;
+      // 선호 장르를 선택하지 않았다면 기존의 정보로 다시 전송
+      Api.patch(`/teams/${teamDetail.teamId}`, teamInfo)
+        .then((res) => {
+          alert("모임 정보 수정이 완료되었습니다.");
+          teamInfoModalClose();
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-    Api.patch(`/teams/${teamDetail.teamId}`, teamInfo)
-      .then((res) => {
-        console.log(res);
-        alert("모임 정보 수정이 완료되었습니다.");
-        window.location.reload();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   // 모임 삭제 모달
@@ -260,10 +254,9 @@ function MyTeamManagePage() {
   const deleteTeam = () => {
     Api.delete(`/teams/${teamDetail.teamId}`)
       .then((res) => {
-        console.log(res);
         alert("모임이 삭제되었습니다.");
         movePage("/");
-        window.location.reload()
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
@@ -271,13 +264,39 @@ function MyTeamManagePage() {
   };
 
   // 모임 이미지 수정
-  const [files, setFiles] = useState('')
-  const onLoadFile = (e) => {
-    const file = e.target.files;
-    console.log(file)
-    setFiles(file);
-  }
+  const images = [
+    "https://cdn.pixabay.com/photo/2017/08/30/01/05/milky-way-2695569__340.jpg",
+    "https://cdn.pixabay.com/photo/2018/04/28/22/03/tree-3358468__340.jpg",
+    "https://cdn.pixabay.com/photo/2016/05/05/02/37/sunset-1373171__340.jpg",
+    "https://cdn.pixabay.com/photo/2017/03/25/03/18/white-2172682__340.jpg",
+    "https://cdn.pixabay.com/photo/2018/11/03/21/42/sunflowers-3792914__340.jpg",
+    "https://cdn.pixabay.com/photo/2017/08/05/10/44/sunset-2582691__340.jpg",
+  ];
 
+  const clickImage = (image) => {
+    setForm({ ...form, team_image: image });
+  };
+
+  const renderImage = images.map((image) => {
+    return (
+      <div key={image}>
+        <div className={teamstyles["image"]}>
+          <img
+            src={image}
+            alt=""
+            onClick={() => {
+              clickImage(image);
+            }}
+          />
+        </div>
+        {image === form.team_image ? (
+          <p className={teamstyles["teamImg-check"]}>✔</p>
+        ) : (
+          <p></p>
+        )}
+      </div>
+    );
+  });
 
   return (
     <div className={sidestyles["myteam-container"]}>
@@ -306,18 +325,20 @@ function MyTeamManagePage() {
                     {teamDetail.teamMemberCnt}명 / {teamDetail.teamMemberCntMax}
                     명
                   </p>
-                  <p>
+                  <div>
                     {teamDetail.teamRecruit === true ? (
                       <p>공개</p>
                     ) : (
                       <p>비공개</p>
                     )}
-                  </p>
+                  </div>
                 </div>
               </div>
               <div className={teamstyles["right-bottom-content"]}>
                 <div className={teamstyles["tag-top"]}>
-                  <div>{teamDetail.teamOnoff}</div>
+                   {teamDetail.teamOnoff === 'ON' ? <div>온라인</div>  : ( teamDetail.teamOnoff === 'OFF' ? <div>오프라인</div> :
+                  <div>온오프라인</div>
+                  )} 
                   <div>{teamDetail.teamRegion}</div>
                 </div>
                 <div className={teamstyles["tag-bottom"]}>
@@ -344,33 +365,24 @@ function MyTeamManagePage() {
               {teamDetail.teamRecruitText}
             </div>
           </div>
-
           {/* 모임 정보 수정 모달 */}
           <Dialog
             open={teamInfoModal}
             onClose={teamInfoModalClose}
-            fullWidth
+            fullScreen
             scroll={"paper"}
           >
             <DialogTitle>{"모임 정보 수정"}</DialogTitle>
             <DialogContent>
               <DialogContentText>
                 <FormControl>
+                  <br />
                   <div className={teamstyles["teamImg-box"]}>
-                    <p>모임 대표 이미지</p>
-                    <Button
-                      variant="outlined"
-                      component="label"
-                      color="success"
-                    >
-                      Upload
-                      <input hidden accept="image/*" multiple type="file" onChange={onLoadFile}/>
-                    </Button>
+                    <p>모임 대표 이미지 선택</p>
                   </div>
-                  <div className={teamstyles["teamImg-div"]}>
-                    <img src={teamDetail.teamImage} alt="" />
+                  <div className={teamstyles["teammanage-images"]}>
+                    {renderImage}
                   </div>
-                  
                   <br />
                   <br />
                   <FormLabel id="demo-controlled-radio-buttons-group">
@@ -425,7 +437,7 @@ function MyTeamManagePage() {
                   <div
                     onClick={() => {
                       clickreason();
-                      clickGenre("reason");
+                      clickGenre("추리");
                     }}
                     className={
                       genreList.reason
@@ -438,7 +450,7 @@ function MyTeamManagePage() {
                   <div
                     onClick={() => {
                       clickthril();
-                      clickGenre("thril");
+                      clickGenre("스릴러");
                     }}
                     className={
                       genreList.thril
@@ -451,7 +463,7 @@ function MyTeamManagePage() {
                   <div
                     onClick={() => {
                       clickhorror();
-                      clickGenre("horror");
+                      clickGenre("호러");
                     }}
                     className={
                       genreList.horror
@@ -459,12 +471,12 @@ function MyTeamManagePage() {
                         : teamstyles["notActive"]
                     }
                   >
-                    #공포
+                    #호러
                   </div>
                   <div
                     onClick={() => {
                       clicksf();
-                      clickGenre("sf");
+                      clickGenre("SF");
                     }}
                     className={
                       genreList.sf
@@ -472,12 +484,12 @@ function MyTeamManagePage() {
                         : teamstyles["notActive"]
                     }
                   >
-                    #과학
+                    #SF
                   </div>
                   <div
                     onClick={() => {
                       clickfantasy();
-                      clickGenre("fantasy");
+                      clickGenre("판타지");
                     }}
                     className={
                       genreList.fantasy
@@ -489,21 +501,8 @@ function MyTeamManagePage() {
                   </div>
                   <div
                     onClick={() => {
-                      clickdrama();
-                      clickGenre("drama");
-                    }}
-                    className={
-                      genreList.drama
-                        ? teamstyles["active"]
-                        : teamstyles["notActive"]
-                    }
-                  >
-                    #드라마
-                  </div>
-                  <div
-                    onClick={() => {
                       clickgame();
-                      clickGenre("game");
+                      clickGenre("무협");
                     }}
                     className={
                       genreList.game
@@ -511,12 +510,12 @@ function MyTeamManagePage() {
                         : teamstyles["notActive"]
                     }
                   >
-                    #게임
+                    #무협
                   </div>
                   <div
                     onClick={() => {
                       clickromance();
-                      clickGenre("romance");
+                      clickGenre("로맨스");
                     }}
                     className={
                       genreList.romance
@@ -525,19 +524,6 @@ function MyTeamManagePage() {
                     }
                   >
                     #로맨스
-                  </div>
-                  <div
-                    onClick={() => {
-                      clickanimation();
-                      clickGenre("animation");
-                    }}
-                    className={
-                      genreList.animation
-                        ? teamstyles["active"]
-                        : teamstyles["notActive"]
-                    }
-                  >
-                    #만화
                   </div>
                 </div>
                 <br />
@@ -648,7 +634,7 @@ function MyTeamManagePage() {
                   <Button onClick={teamInfoModalClose}>취소</Button>
                   <Button
                     onClick={() => {
-                      teamInfoModalClose();
+                      // teamInfoModalClose();
                       teamInfoUpdate();
                     }}
                   >

@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import styles from "../../styles/TeamDetail.module.scss";
 import JoinTeamModal from "../../components/Teams/Modal/JoinTeamModal";
 import { Api } from "../../Api";
+import { useNavigate } from "react-router-dom";
 // import { useSelector } from "react-redux";
 // import { useLocation } from "react-router-dom";
 
 function TeamDetailPage() {
   // const location = useLocation();
-  
+  const movePage = useNavigate();
 
   const [teamDetail, setTeamDetail] = useState({
     teamName: "",
@@ -23,13 +24,9 @@ function TeamDetailPage() {
   });
 
   useEffect(() => {
-    // console.log(location.pathname.split('/')[2]);
-    // console.log(localStorage.getItem("nowTeam"));
     let Id = localStorage.getItem("nowTeam");
     Api.get(`/teams/info/${Id}`)
       .then((res) => {
-        // console.log("모임 디테일 정보 불러오기 완료  ");
-        // console.log(res.data);
         setTeamDetail({
           ...teamDetail,
           teamName: res.data.teamName,
@@ -43,8 +40,6 @@ function TeamDetailPage() {
           teamRule3: res.data.teamRule3,
           teamRecruitText: res.data.teamRecruitText,
         });
-        // console.log('저장된 팀 정보')
-        // console.log(teamDetail);
       })
       .catch((err) => {
         console.log(err);
@@ -52,12 +47,19 @@ function TeamDetailPage() {
       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const goMoreInfo = () => {
+    let Id = localStorage.getItem("nowTeam");
+    movePage(`/teams/${Id}/moreinfo`)
+  }
+
   return (
     <div className={styles["wrap-all"]}>
       <div className={styles.teamname}>{teamDetail.teamName}</div>
       <div className={styles["wrap-content"]}>
         <div className={styles["wrap-genres"]}>
-          <div className={styles["hashtag"]}>#{teamDetail.teamOnoff}</div>
+          <div className={styles["hashtag"]}># {teamDetail.teamOnoff === 'ON' ? '온라인' : ( teamDetail.teamOnoff === 'OFF' ? '오프라인' :
+                  '온오프라인'
+                  )} </div>
           <div className={styles["hashtag"]}>#{teamDetail.teamRegion}</div>
         </div>
         <div className={styles["wrap-genres"]}>
@@ -81,7 +83,7 @@ function TeamDetailPage() {
         </div>
       </div>
       <div className={styles["wrap-btn"]}>
-        <div className={styles["godetail-btn"]}>더 알아보기</div>
+        <div className={styles["godetail-btn"]} onClick={() => {goMoreInfo()}}>더 알아보기</div>
         <JoinTeamModal teamName={teamDetail.teamName} />
       </div>
     </div>

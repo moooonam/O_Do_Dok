@@ -23,10 +23,8 @@ function LoginPage() {
     movePage("/");
   };
   const userLogin = () => {
-    // console.log(form)
     Api.post("/login", form)
       .then((res) => {
-        // console.log(res.data['refresh-token'])
         localStorage.setItem("refresh-token", res.data["refresh-token"]);
         localStorage.setItem("access-token", res.data["access-token"]);
         dispatch(login());
@@ -53,7 +51,6 @@ function LoginPage() {
                 userAge: res.data.userAge,
               })
             );
-            // console.log(res.data)
           })
           .catch((err) => {
             console.log(err);
@@ -87,10 +84,10 @@ function LoginPage() {
       justifyContent="center"
       alignItems="center"
     >
-      <h2>Oh Do Dok!</h2>
+      <h2>O Do Dok!</h2>
       <div className={styles["loginBox"]}>
         <h3 className={styles["title"]}>로그인</h3>
-        <Grid container direction="row" columnGap={10}>
+        <Grid container direction="row" columnGap={5.5}>
           <p className={styles["login-blank"]}>이메일</p>
           <TextField
             required
@@ -102,7 +99,7 @@ function LoginPage() {
             onChange={(e) => setForm({ ...form, userEmail: e.target.value })}
           />
         </Grid>
-        <Grid container direction="row" columnGap={8}>
+        <Grid container direction="row" columnGap={4}>
           <p className={styles["login-blank"]}>비밀번호</p>
           <TextField
             required
@@ -116,13 +113,12 @@ function LoginPage() {
             onKeyUp={(e) => {if (e.key === "Enter") {userLogin()}}}
           />
         </Grid>
-        <Grid container direction="row" justifyContent={"space-between"}>
-          <p className={styles["small"]}>아이디/비밀번호 찾기</p>
+        <Grid container  >
+          {/* <p className={styles["small"]}>아이디/비밀번호 찾기</p> */}
           <p className={styles["small"]} onClick={goSignup}>
-            가입하기
+            
           </p>
         </Grid>
-        <hr />
         <br />
         <Grid
           container
@@ -131,7 +127,7 @@ function LoginPage() {
           alignItems="center"
           columnGap={2}
         >
-          <Button variant="contained">취소</Button>
+          <Button variant="contained" onClick={goSignup}>회원가입</Button>
           <Button variant="contained" color="success" onClick={userLogin}>
             로그인
           </Button>

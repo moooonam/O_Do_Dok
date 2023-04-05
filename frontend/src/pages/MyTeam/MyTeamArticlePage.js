@@ -7,10 +7,15 @@ import { Api } from "../../Api";
 import { useSelector } from "react-redux";
 
 function MyTeamArticlePage() {
+  const scrollToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })}
   const myTeamId = useSelector((state) => state.user.myTeamId)
   const movePage = useNavigate();
   function goArticleCreate() {
-    movePage("/myteam/:teamId/article/create");
+    movePage(`/myteam/${myTeamId}/article/create`);
   }
   const [articles, setArticles] = useState([]);
   const [form, setForm] = useState({
@@ -20,6 +25,7 @@ function MyTeamArticlePage() {
   });
 
   useEffect(() => {
+    scrollToTop();
     Api.get("/board", {
       headers: {
         "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
@@ -27,11 +33,7 @@ function MyTeamArticlePage() {
       },
     })
       .then((res) => {
-        console.log("전체 게시글 불러오기 완료----------");
-        console.log(res.data);
-
         setArticles(...articles, res.data);
-        console.log(articles);
       })
       .catch((err) => {
         console.log(err);
@@ -47,7 +49,7 @@ function MyTeamArticlePage() {
   const renderAll = articles.map((article) => {
     return (
       <div key={article.boardId} className={articlestyles["articleOne"]} onClick={() => {goArticle(article.boardId);}}>
-        <p className={articlestyles["articleType"]}>{article.boardType === 'notice' ? <p>공지</p> : <p>자유</p>}</p>
+        <p className={articlestyles["articleType"]}>{article.boardType === 'notice' ? '공지' : '자유'}</p>
         <p className={articlestyles["articleTitle"]}>{article.boardTitle}</p>
         <p className={articlestyles["articleUser"]}>
           {article.user.userNickname}

@@ -110,6 +110,10 @@
 .myteam-newuserBox {
     width: 40%;
     margin-right: 100px;
+    h3 {
+        border-bottom: 1px solid black;
+        padding-bottom: 20px;
+    }
 }
 
 .myteam-dodokBox {
@@ -117,7 +121,7 @@
 }
 
 .myteam-newuser {
-    border-top: 1px solid black;
+    // border-top: 1px solid black;
     display: flex;
     justify-content: space-between;
 }
@@ -125,15 +129,15 @@
 .myteam-newuser-content {
     text-align: start;
     line-height: 40px;
-    padding-top: 15px; 
-    font-size: 20px;
+    padding-top: 10px; 
+    font-size: 18px;
 }
 
 .myteam-newuser-name {
     text-align: end;
     line-height: 40px;
-    padding-top: 15px; 
-    font-size: 20px;
+    padding-top: 10px; 
+    font-size: 18px;
 }
 
 .myteam-nododok {

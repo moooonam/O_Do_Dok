@@ -2,7 +2,12 @@ package com.ssafy.ododok.api.controller;
 
 import com.ssafy.ododok.api.request.*;
 import com.ssafy.ododok.api.response.DodokInfoRes;
+import com.ssafy.ododok.api.response.DodokInfoRes2;
+import com.ssafy.ododok.api.response.ReviewEndRes;
+import com.ssafy.ododok.api.response.ReviewPageRes;
 import com.ssafy.ododok.api.service.DodokService;
+import com.ssafy.ododok.api.service.ReviewEndService;
+import com.ssafy.ododok.api.service.ReviewPageService;
 import com.ssafy.ododok.common.auth.PrincipalDetails;
 import com.ssafy.ododok.db.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +52,16 @@ public class DodokController {
     public ResponseEntity<?> deleteDodok(Authentication authentication,@PathVariable Long dodokId) throws Exception {
         dodokService.deleteDodok(authentication,dodokId);
         return new ResponseEntity<>("도독이 삭제됐습니다.",HttpStatus.OK);
+    }
+
+    //도독 상세보기
+    @GetMapping("/details/{dodokId}")
+    public ResponseEntity<?> detailDodok(@PathVariable Long dodokId) throws Exception {
+        Dodok dodok = dodokService.detailDodok(dodokId);
+        List<ReviewPageRes> reviewPageList = dodokService.getReviewPageList2(dodok);
+        List<ReviewEndRes> reviewEndList = dodokService.getRivewEndList2(dodok);
+        DodokInfoRes2 dodokInfoRes2 =new DodokInfoRes2(dodok,reviewPageList,reviewEndList);
+        return new ResponseEntity<>(dodokInfoRes2,HttpStatus.OK);
     }
 
     @GetMapping("/nowdodoks")

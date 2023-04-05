@@ -57,7 +57,6 @@ function Header() {
         },
       })
         .then((res) => {
-          // console.log(res);
           dispatch(
             getUserInfo({
               profileImg: res.data.userImage,
@@ -74,7 +73,6 @@ function Header() {
               userAge: res.data.userAge,
             })
           );
-          // console.log(res.data.userImage)
         })
         .catch((err) => {
           console.log(err);
@@ -129,14 +127,14 @@ function Header() {
   } else {
     profilOrLogin = (
       <div className={styles["header-login-btn"]} onClick={goLogin}>
-        로그인
+        Login
       </div>
     );
   }
   return (
     <div className={styles["wrap-header"]}>
       <div className={styles["header-logo-btn"]} onClick={goMain}>
-        Oh Do Dok!
+        O Do Dok!
       </div>
       <div className={styles["wrap-content"]}>
         <div className={styles["header-btn"]} onClick={goAboutUs}>

@@ -6,7 +6,6 @@ function SearchedTeamCard({teams}) {
   const movePage = useNavigate();
 
   const teamClick = (team) => {
-    console.log(team.teamId)
     movePage(`/teams/${team.teamId}`);
     localStorage.setItem("nowTeam", team.teamId)
   }

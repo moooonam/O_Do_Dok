@@ -1,7 +1,8 @@
 .teammanage-container {
-    margin-top: 10px;
-    margin-left: 50px;
+    margin-top: 20px;
+    margin-left: 70px;
     margin-right: 100px;
+    width: 85%;
 }
 
 .teammanage-header {
@@ -83,6 +84,29 @@
             }
         }
     }
+}
+
+.teammanage-images {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.image {
+    width: 400px;
+    height: 250px;
+    overflow: hidden;
+    margin: 45px 45px 30px 45px;
+    background-color: white;
+    img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    }
+}
+
+.teamImg-check {
+    margin-left: 48%;
 }
 
 .second-box {

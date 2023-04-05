@@ -17,7 +17,25 @@ function MyPage() {
   // 유저정보
   const [myTeamName, setMyTeamName] = useState("")
   const [myTeamImg, setMyTeamImg] = useState("")
+  const [myPageReviews, setMyPageReviews] = useState([])
+  const [myData, setMyData] = useState({
+    reviewCnt: 0,
+    articleCnt: 0,
+    dodokCnt: 0,
+  })
+
   useEffect(() => {
+    Api.get("/user/me",{
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },})
+      .then((res) => {
+        setMyData({ ...myData, reviewCnt : res.data.userReviewcnt, articleCnt : res.data.boardcnt, dodokCnt: res.data.completeDodokCnt})
+      })
+    .catch((err) => {
+      console.log(err)
+    })
     Api.get("/user/myTeam",{
       headers: {
         "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
@@ -30,55 +48,35 @@ function MyPage() {
     .catch((err) => {
       console.log(err)
     })
+    Api.get("/user/showReviewList",{
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },})
+      .then((res) => {
+        setMyPageReviews(res.data.reviewPageList)
+      })
+    .catch((err) => {
+      console.log(err)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
     const userInfo = useSelector((state) => state.user);
-    
-  const reviews = [
-    {
-      id: 1,
-      date: "2023.03.09",
-      name: "세이노의 가르침",
-      page: 72,
-      context:
-        "페이지 리뷰가 들어갈 자리입니다. 페이지 리뷰가 들어갈 자리입니다. 페이지 리뷰가 들어갈 자리입니다. 페이지 리뷰가 들어갈 자리입니다.",
-      imgurl:
-        "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
-    },
-    {
-      id: 2,
-      date: "2023.03.09",
-      name: "제주 탐묘생활",
-      page: 25,
-      context:
-        "페이지 리뷰가 들어갈 자리입니다. 페이지 리뷰가 들어갈 자리입니다. 페이지 리뷰가 들어갈 자리입니다. 페이지 리뷰가 들어갈 자리입니다.",
-      imgurl:
-        "https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg",
-    },
-    {
-      id: 3,
-      date: "2023.03.09",
-      name: "반지의 제왕",
-      page: 159,
-      context:
-        "페이지 리뷰가 들어갈 자리입니다. 페이지 리뷰가 들어갈 자리입니다. 페이지 리뷰가 들어갈 자리입니다. 페이지 리뷰가 들어갈 자리입니다.",
-      imgurl:
-        "https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg",
-    },
-  ];
 
-  const renderMyAllPageReview = reviews.map((review) => {
+  const renderMyAllPageReview = myPageReviews.map((review) => {
     return (
-      <div key={review.id} className={styles["review-box"]}>
-        <img src={review.imgurl} alt="책" />
+      <div key={review.dodok.book.bookId} className={styles["review-box"]}>
+        { review.dodok.book.bookImg !== "tmp" ? <img src={review.dodok.book.bookImg} alt="책" /> : <img src="https://cdn.pixabay.com/photo/2018/01/17/18/43/book-3088777__340.png" alt="책" />}
+        
         <div className={styles["review-info"]}>
           <div>
             <div className={styles["book-info"]}>
-              <p>[{review.name}]</p>
-              <p>{review.page} 페이지</p>
+              <p>[{review.dodok.book.bookTitle}]</p>
+              <p>{review.reviewPagePage} 페이지</p>
             </div>
-            <p>{review.date}</p>
+            <p>{review.reviewPageDate}</p>
           </div>
-          <p>{review.context}</p>
+          <p>{review.reviewPageContent}</p>
         </div>
       </div>
     );
@@ -119,29 +117,35 @@ function MyPage() {
           <div className={styles["center-activity"]}>
             <p>활동 현황</p>
             <div className={styles["activity-box"]}>
-              <div className={styles["box-left"]}>3</div>
+              <div className={styles["box-left"]}>{myData.dodokCnt}</div>
               <div className={styles["line"]}></div>
-              <div className={styles["box-center"]}>12</div>
+              <div className={styles["box-center"]}>{myData.reviewCnt}</div>
               <div className={styles["line"]}></div>
-              <div className={styles["box-right"]}>7</div>
+              <div className={styles["box-right"]}>{myData.articleCnt}</div>
             </div>
             <div className={styles["activity-title"]}>
               <p>완료한 도독</p>
-              <p>작성한 페이지 리뷰</p>
+              <p>작성한 리뷰</p>
               <p>작성한 게시글</p>
             </div>
           </div>
         </div>
         <div className={styles["myinfo-right"]}>
           {myTeamName ? <div>
-            <h4>가입한 모임 : {myTeamName}</h4>
+            <h4>가입한 모임</h4>
           <img
             src={myTeamImg}
             alt="팀 대표 이미지"
             /> 
             </div>
-            : <h4> 가입한모임이 없습니다</h4>}
-        
+            : <div>
+            <h4>가입한 모임이 없습니다.</h4>
+          <img
+            src="https://cdn.pixabay.com/photo/2018/05/31/15/06/see-no-evil-3444212__340.jpg"
+            alt="팀 없을때 이미지"
+            /> 
+            </div>}
+            <h3>📚 {myTeamName} 📚</h3>
         </div>
       </div>
       <div className={styles["myinfo-bottom"]}>

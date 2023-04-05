@@ -10,11 +10,13 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-// onClick={() => {
-//     addComment();
-//     count();
-//     }}
+
 function MyTeamMemberManagePage() {
+  const scrollToTop = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })}
   // 선택한 모임원 정보 저장
   const [memberInfo, setMemberInfo] = useState({
     name: "",
@@ -61,10 +63,10 @@ function MyTeamMemberManagePage() {
   const myTeamId = localStorage.getItem("myTeamId");
   const [members, setMembers] = useState([]);
   useEffect(() => {
+    scrollToTop()
     Api.get(`/teams/member/${myTeamId}`)
       .then((res) => {
         setMembers(...members, res.data);
-        // console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -87,8 +89,10 @@ function MyTeamMemberManagePage() {
         </div>
 
         <div className={memberstyles["name-container"]}>
-          {member.role === "ADMIN" ? <div>👑</div> : null}
-          {member.role === "MANAGER" ? <div>👒</div> : null}
+          {member.role === "ADMIN" ? <div>🍀</div> : null}
+          {member.role === "MANAGER" ? <div>☘️</div> : null}
+          {member.role === "USER" ? <div>🌱</div> : null}
+          
           <div className={memberstyles["username"]}>
             {member.user.userNickname}
           </div>
@@ -103,8 +107,6 @@ function MyTeamMemberManagePage() {
     Api.get(`teams/apply/${myTeamId}`)
       .then((res) => {
         setApllyMembers(...apllyMembers, res.data);
-        // console.log(res.data)
-        // console.log(apllyMembers)
       })
       .catch((err) => {
         console.log(err);
@@ -136,13 +138,10 @@ function MyTeamMemberManagePage() {
       applyId: applicantInfo.applyId,
       isAccept: true,
     };
-    console.log(acceptForm);
     Api.post("/teams/accept", acceptForm)
       .then((res) => {
         alert("수락이 완료되었습니다");
         window.location.reload();
-        // goMyTeamMemberManage()
-        console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -153,13 +152,10 @@ function MyTeamMemberManagePage() {
       applyId: applicantInfo.applyId,
       isAccept: false,
     };
-    console.log(rejectForm);
     Api.post("/teams/accept", rejectForm)
       .then((res) => {
         alert("가입신청 거절이 완료되었습니다");
         window.location.reload();
-        // goMyTeamMemberManage()
-        console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -189,7 +185,6 @@ function MyTeamMemberManagePage() {
       .then((res) => {
         alert('모임원을 퇴출했습니다')
         window.location.reload()
-        console.log(res)
       })
     }
   })
@@ -208,7 +203,6 @@ function MyTeamMemberManagePage() {
       .then((res) => {
         alert('권한변경을 성공했습니다.')
         window.location.reload()
-        console.log(res)
       })
     }
   })

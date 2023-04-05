@@ -36,6 +36,12 @@ public class UserController {
         this.reviewEndService = reviewEndService;
     }
 
+    @GetMapping("/dd/{password}")
+    public ResponseEntity<?> get(@PathVariable String password){
+        String str = userService.getPassword(password);
+        return ResponseEntity.status(200).body(str);
+    }
+
     // 이메일 중복확인
     @GetMapping("/checkEmail/{email}")
     public ResponseEntity<Boolean> checkEmail(@PathVariable String email) {
@@ -86,8 +92,8 @@ public class UserController {
     public ResponseEntity<?> getUserInfoSurvey(Authentication authentication) {
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         User user = principal.getUser();
-            UserDto.Basic ud = userService.getUserInfo(user);
-            return ResponseEntity.status(200).body(ud);
+        UserDto.Basic ud = userService.getUserInfo(user);
+        return ResponseEntity.status(200).body(ud);
     }
 
     // 회원 정보 수정하기
@@ -183,6 +189,16 @@ public class UserController {
             return new ResponseEntity<>(reviewInfoRes,HttpStatus.OK);
         }
     }
+
+//    // 작성한 게시글 개수
+//    @GetMapping("/boardCnt")
+//    public ResponseEntity<?> boardCnt(Authentication auth){
+//        PrincipalDetails principal = (PrincipalDetails) auth.getPrincipal();
+//        User user = principal.getUser();
+//        long cnt = userService.boardCnt(user);
+//        return new ResponseEntity<>(null,HttpStatus.OK);
+//    }
+
 
     // /check/findPassword에서 true가 나왔다면, 해당 회원의 임시비밀번호를 이메일로 발급
     // 임시 비밀번호로 구현해야함 -> 이는 고도화로

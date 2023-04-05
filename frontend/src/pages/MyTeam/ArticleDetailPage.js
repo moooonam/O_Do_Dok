@@ -12,10 +12,13 @@ import { useSelector } from "react-redux";
 
 function ArticleDetailPage() {
   const userNickname = useSelector((state) => state.user.userNickname);
-  const myTeamId = useSelector((state) => state.user.myTeamId)
+  const myTeamId = useSelector((state) => state.user.myTeamId);
 
   const [form, setForm] = useState({
     comment: "",
+    updateComment: "",
+    updateStatus: false,
+    clickComment: "",
   });
 
   const [articleDetail, setArticleDetail] = useState({
@@ -24,6 +27,8 @@ function ArticleDetailPage() {
     boardContent: "",
     writeUserNickname: "",
   });
+
+  const [comments, setComments] = useState([]);
 
   const movePage = useNavigate();
   function goMyTeamArticle() {
@@ -34,14 +39,15 @@ function ArticleDetailPage() {
     const articleId = localStorage.getItem("articleId");
     Api.get(`/board/details/${articleId}`, articleId)
       .then((res) => {
-        console.log(res.data);
         setArticleDetail({
           ...articleDetail,
-          boardType: res.data.boardType,
-          boardContent: res.data.boardContent,
-          boardTitle: res.data.boardTitle,
-          writeUserNickname: res.data.user.userNickname,
+          boardType: res.data.board.boardType,
+          boardContent: res.data.board.boardContent,
+          boardTitle: res.data.board.boardTitle,
+          writeUserNickname: res.data.board.user.userNickname,
         });
+        setComments(res.data.comments);
+        setForm({ ...form, updateComment: res.data.comments.commentContent });
       })
       .catch((err) => {
         console.log(err);
@@ -54,84 +60,162 @@ function ArticleDetailPage() {
     movePage(`/myteam/${myTeamId}/article/${articleId}/update`);
   }
 
+  const articleId = localStorage.getItem("articleId");
   function goArticleDelete() {
-    const articleId = localStorage.getItem("articleId");
-    Api.delete(`/board/${articleId}`, {headers: {
-      "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
-      "access-token": `Bearer ${localStorage.getItem("access-token")}`,
-    }})
+    Api.delete(`/board/${articleId}`, {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
       .then((res) => {
-        console.log(res.data);
-        alert('게시글이 삭제되었습니다.')
-        movePage(`/myteam/${myTeamId}/article`)
+        alert("게시글이 삭제되었습니다.");
+        movePage(`/myteam/${myTeamId}/article`);
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
+  // 댓글 수정 axios에 보낼 데이터
+  // const update = {
+  //   comment: form.updateComment,
+  //   commendId: "",
+  // };
 
+  const updateInput = (id) => {
+    setForm({ ...form, updateStatus: true, clickComment: id });
+  };
 
-  const comments = [
-    {
-      id: 1,
-      name: "정채은바부",
-      profileImg:
-        "https://mblogthumb-phinf.pstatic.net/MjAxNzA2MTNfMSAg/MDAxNDk3MzI2NTk0Njcx.bs5-ntFT9Fv0PXd1yw_SSphKAYczGEUy7nn8eYqk1Hkg._6H5JZ-4ZVMaXDvjsWNOADSpwMbRNyNsaYwJcZI1ok4g.PNG.dksrnjscjf85/1.png?type=w800",
-      rating: 5,
-      content:
-        "어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구",
-    },
-    {
-      id: 2,
-      name: "독린이",
-      profileImg:
-        "https://item.kakaocdn.net/do/8d209a3c00ed5f23eeaa3758a1c7d59c7e6f47a71c79378b48860ead6a12bf11",
-      rating: 4,
-      content:
-        "어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구 어쩌구 저쩌구",
-    },
-  ];
+  // 댓글 수정
+  const commentUpdate = (id) => {
+    const update = {
+      commentId: id,
+      comment: form.updateComment,
+    };
+    Api.put(
+      "/board/comment",
+      update,
+      {
+        headers: {
+          "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+          "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+        },
+      }
+    )
+      .then((res) => {
+        setForm({ ...form, updateStatus: false });
+        window.location.reload()
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  // 댓글 삭제
+  // const boardId = localStorage.getItem("articleId");
+  const deleteComment = (id) => {
+    Api.delete(`/board/comment/${id}`, {
+      headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+      .then((res) => {
+        alert("댓글이 삭제되었습니다.");
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const renderComment = comments.map((comment) => {
     return (
-      <div key={comment.id} className={detailstyles["wrap-comment"]}>
-        <div className={detailstyles["wrap-user-info"]}>
-          <div className={detailstyles["user-img-div"]}>
-            <img src={comment.profileImg} alt="프로필이미지" />
+      <div key={comment.commentId} className={detailstyles["wrap-comment"]}>
+        <div className={detailstyles["wrap-user-update"]}>
+          <div className={detailstyles["wrap-user-info"]}>
+            <div className={detailstyles["user-img-div"]}>
+              <img src={comment.user.userImage} alt="프로필이미지" />
+            </div>
+            <p>{comment.user.userNickname}</p>
           </div>
-          <p>{comment.name}</p>
+          {userNickname === comment.user.userNickname &&
+          form.updateStatus === false ? (
+            <div className={detailstyles["comment-update-delete"]}>
+              <p onClick={() => updateInput(comment.commentId)}>수정</p>
+              <p onClick={() => deleteComment(comment.commentId)}>삭제</p>
+            </div>
+          ) : (
+            <div></div>
+          )}
         </div>
-        <div className={detailstyles["comment-content"]}>{comment.content}</div>
+        {form.updateStatus && form.clickComment === comment.commentId ? (
+          <div className={detailstyles["update-box"]}>
+            <TextField
+              // multiline
+              required
+              id="comment"
+              variant="standard"
+              value={form.updateComment}
+              fullWidth
+              onChange={(e) =>
+                setForm({ ...form, updateComment: e.target.value })
+              }
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                    commentUpdate(comment.commentId);
+                }
+              }}
+            />
+            <div>
+              <p onClick={() => setForm({ ...form, updateStatus: false })}>
+                취소
+              </p>
+              <p
+                onClick={() => {
+                  commentUpdate(comment.commentId);
+                }}
+              >
+                완료
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className={detailstyles["comment-content"]}>
+            {comment.commentContent}
+          </div>
+        )}
       </div>
     );
   });
 
-  // 댓글 axios 보낼 데이터
+  // 댓글 생성 axios 보낼 데이터
   const data = {
     comment: "",
-    boardId: localStorage.getItem("articleId")
-  }
+    boardId: localStorage.getItem("articleId"),
+  };
 
-  //댓글
+  // 댓글 생성
   const createComment = () => {
-    data.comment = form.comment
-
+    data.comment = form.comment.split("\n")[0];
     if (data.comment) {
-      Api.post('/board/comment', data, {headers: {
-        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
-        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
-      }} )
-      .then((res) => {
-        console.log(res)
+      Api.post("/board/comment", data, {
+        headers: {
+          "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+          "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+        },
       })
-      .catch((err) => {
-        console.log(err)
-      })
+        .then((res) => {
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
-      alert('댓글을 입력해주세요.')
+      alert("댓글을 입력해주세요.");
     }
-  }
+  };
 
   return (
     <div className={sidestyles["myteam-container"]}>
@@ -152,7 +236,13 @@ function ArticleDetailPage() {
               {userNickname === articleDetail.writeUserNickname ? (
                 <div>
                   <p onClick={goArticleUpdate}>수정</p>
-                  <p onClick={() => {goArticleDelete()}}>삭제</p>
+                  <p
+                    onClick={() => {
+                      goArticleDelete();
+                    }}
+                  >
+                    삭제
+                  </p>
                 </div>
               ) : (
                 <div></div>
@@ -168,7 +258,7 @@ function ArticleDetailPage() {
               <p>댓글</p>
               {/* <CommentIcon fontSize="large" /> */}
               <TextField
-                multiline
+                // multiline
                 required
                 id="comment"
                 value={form.comment}
@@ -176,10 +266,21 @@ function ArticleDetailPage() {
                 placeholder=" 내용을 입력해주세요."
                 fullWidth
                 onChange={(e) => setForm({ ...form, comment: e.target.value })}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") {
+                    createComment();
+                  }
+                }}
               />
-              <AddIcon onClick={() => {createComment()}}/>
+              <AddIcon
+                onClick={() => {
+                  createComment();
+                }}
+              />
             </div>
             {renderComment}
+            <br />
+            <br />
           </div>
         </div>
       </div>

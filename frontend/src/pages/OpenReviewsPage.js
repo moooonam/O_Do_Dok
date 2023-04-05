@@ -4,12 +4,16 @@ import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import { lightGreen } from "@mui/material/colors";
+import { useNavigate } from "react-router-dom";
 
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
+import { Api } from "../Api";
+
 function OpenReviewsPage() {
+  const movePage = useNavigate();
   const [form, setForm] = useState({
     search: "",
   });
@@ -29,110 +33,53 @@ function OpenReviewsPage() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+// 공개된 도독들 불러오기
+  const [openDodok, setOpenDodok] = useState([])
 
-  const books = [
-    {
-      id: 1,
-      name: "책 이름",
-      genre: "추리",
-      team: "오도독짱",
-      imgurl:
-        "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
-    },
-    {
-      id: 2,
-      name: "책 이름",
-      genre: "판타지",
-      team: "오도독짱",
-      imgurl:
-        "https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg",
-    },
-    {
-      id: 3,
-      name: "책 이름",
-      genre: "호러",
-      team: "오도독짱",
-      imgurl:
-        "https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg",
-    },
-    {
-      id: 4,
-      name: "책 이름",
-      genre: "SF",
-      team: "오도독짱",
-      imgurl:
-        "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
-    },
-    {
-      id: 5,
-      name: "책 이름",
-      genre: "로맨스",
-      team: "오도독짱",
-      imgurl:
-        "https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg",
-    },
-    {
-      id: 6,
-      name: "책 이름",
-      genre: "스릴러",
-      team: "오도독짱",
-      imgurl:
-        "https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg",
-    },
-    {
-      id: 7,
-      name: "책 이름",
-      genre: "무협",
-      team: "오도독짱",
-      imgurl:
-        "https://image.aladin.co.kr/product/30929/51/cover500/k732831392_2.jpg",
-    },
-    {
-      id: 8,
-      name: "책 이름",
-      genre: "무협",
-      team: "오도독짱",
-      imgurl:
-        "https://image.aladin.co.kr/product/30872/82/cover500/s412832889_1.jpg",
-    },
-    {
-      id: 9,
-      name: "책 이름",
-      genre: "스릴러",
-      team: "오도독짱",
-      imgurl:
-        "https://image.aladin.co.kr/product/30818/49/cover500/s072831276_1.jpg",
-    },
-  ];
+  useEffect(() => {
+    Api.get('/dodok/lastdodoks')
+    .then((res) => {
+      if (res.data !== '검색 결과가 없습니다.') {
+        setOpenDodok([...res.data])
+      }
+    })
 
+  }, [])
   const [genreBooks, setGenreBooks] = useState([]);
 
   const clickOption = (option) => {
     setMenu({ ...menu, genre: option });
-    setGenreBooks(books.filter((book) => book.genre === menu.genre));
+    setGenreBooks(openDodok.filter((book) => book.dodok.book.bookGenre === menu.genre));
   };
   
   useEffect(() => {
-    setGenreBooks(books.filter((book) => book.genre === menu.genre));
+    setGenreBooks(openDodok.filter((book) => book.dodok.book.bookGenre === menu.genre));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [genreBooks]);
 
   // 장르별로 책 보여주기
   const renderBooksByGenre = genreBooks.map((genrebook) => {
     return (
-      <div key={genrebook.id}>
-        <img src={genrebook.imgurl} alt="책" />
-        <p>{genrebook.team}</p>
+      <div key={genrebook.dodok.dodokId} onClick={() => {goOpenReview(genrebook.dodok.dodokId)}}>
+        <p className={openstyles["team-name"]}>"{genrebook.dodok.team.teamName}" 모임</p>
+        {genrebook.dodok.book.bookImg !== 'tmp' ? <img src={genrebook.dodok.book.bookImg} alt="책" /> : <img src="https://cdn.pixabay.com/photo/2018/01/17/18/43/book-3088777__340.png" alt="책" />}
+        <p className={openstyles["book-title"]}>{genrebook.dodok.book.bookTitle}</p>
       </div>
     );
-  });
+  }); 
 
-  // 전체 장르 책 보여주기
-  const renderBooks = books.map((book) => {
+  const goOpenReview = (dodokId) => {
+    localStorage.setItem("dodokRecordId", dodokId)
+    movePage(`/openreviews/${dodokId}`)
+  }
+
+  // 전체 장르 책 보여주기 
+  const renderBooks =  openDodok.map((book) => {
     return (
-      <div key={book.id}>
-        <img src={book.imgurl} alt="책" />
-        <p>{book.team} 모임</p>
+      <div key={book.dodok.dodokId} onClick={() => {goOpenReview(book.dodok.dodokId)}}>
+        <p className={openstyles["team-name"]}>"{book.dodok.team.teamName}" 모임</p>
+        { book.dodok.book.bookImg !== 'tmp' ? <img src={book.dodok.book.bookImg} alt="책" /> : <img src="https://cdn.pixabay.com/photo/2018/01/17/18/43/book-3088777__340.png" alt="책" />}
+        <p className={openstyles["book-title"]}>{book.dodok.book.bookTitle}</p>
       </div>
     );
   });
@@ -200,13 +147,13 @@ function OpenReviewsPage() {
           <div className={openstyles["header-line"]}></div>
         </div>
         <div className={openstyles["book-wrap-bookimg"]}>
-          {renderBooksByGenre}
+          {genreBooks.length !== 0 ? renderBooksByGenre : null}
         </div>
         <div className={openstyles["all-book"]}>
           <h2>모든 리뷰</h2>
           <div className={openstyles["header-line"]}></div>
         </div>
-        <div className={openstyles["book-wrap-bookimg"]}>{renderBooks}</div>
+        <div className={openstyles["book-wrap-bookimg"]}>{openDodok.length !== 0 ? renderBooks : null}</div>
       </div>
     </div>
   );
