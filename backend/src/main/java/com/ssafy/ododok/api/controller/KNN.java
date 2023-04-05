@@ -28,8 +28,6 @@ public class KNN {
     }
 
     public List<String> knn(Team team) {
-        // csv���Ͽ��� ��� ������ �о����
-        //
 //        List<Point> dataset = readCSVFile("Book_dataset.csv");
         List<Point> dataset = new ArrayList<>();
         List<RecomBook> recomlist = recomBookRepository.findAll();
@@ -38,9 +36,6 @@ public class KNN {
         }
         System.out.println(dataset.toString());
 
-
-
-        // ��ȣ�帣1,2,3, �� �������� ��õ
         List<String> list = new ArrayList<>();
         list.add(team.getTeamGenre1());
         list.add(team.getTeamGenre2());
@@ -84,7 +79,7 @@ public class KNN {
         else if(age >= 40 && age < 50) age = 40;
         else age = 50;
 
-        System.out.println("나이? : " + age);
+        System.out.println("age? : " + age);
 
         Point testPoint1 = new Point(numList.get(0),age, null);
         int K1 = 10;
