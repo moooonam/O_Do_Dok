@@ -1,6 +1,5 @@
 package com.ssafy.ododok.db.model;
 
-import com.ssafy.ododok.api.request.BookAddPostReq;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -43,6 +42,12 @@ public class Book {
 
     @ColumnDefault("0")
     private double award;
+
+    @ColumnDefault("0")
+    private double recomBookGenre;
+
+    @ColumnDefault("0")
+    private double recomBookAge;
 
     @Builder
     public Book(String bookTitle,String bookAuthor,String bookGenre,int bookPagecnt, boolean needCheck){
