@@ -16,4 +16,6 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
     Genre findTopByTeamOrderByRatingDesc(Team team);
 
     Genre findByTeamAndGenre(Team team, String genre);
+
+    List<Genre> findAllByTeam_TeamId(Long teamId);
 }
