@@ -6,9 +6,9 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ssafy.ododok.db.model.RecomBook;
+import com.ssafy.ododok.db.model.Book;
 import com.ssafy.ododok.db.model.Team;
-import com.ssafy.ododok.db.repository.RecomBookRepository;
+import com.ssafy.ododok.db.repository.BookRepository;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -21,26 +21,22 @@ import java.util.*;
 @Controller
 public class KNN {
 
-    private final RecomBookRepository recomBookRepository;
+    private final BookRepository bookRepository;
 
-    public KNN(RecomBookRepository recomBookRepository) {
-        this.recomBookRepository = recomBookRepository;
+
+    public KNN(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
     }
 
     public List<String> knn(Team team) {
-        // csv���Ͽ��� ��� ������ �о����
-        //
 //        List<Point> dataset = readCSVFile("Book_dataset.csv");
         List<Point> dataset = new ArrayList<>();
-        List<RecomBook> recomlist = recomBookRepository.findAll();
-        for(RecomBook recomBook : recomlist){
-            dataset.add(new Point(recomBook.getRecomBookGenre(), recomBook.getRecomBookAge(), recomBook.getRecomBookTitle()));
+        List<Book> recomlist = bookRepository.findAll();
+        for(Book recomBook : recomlist){
+            dataset.add(new Point(recomBook.getRecomBookGenre(), recomBook.getRecomBookAge(), recomBook.getBookTitle()));
         }
         System.out.println(dataset.toString());
 
-
-
-        // ��ȣ�帣1,2,3, �� �������� ��õ
         List<String> list = new ArrayList<>();
         list.add(team.getTeamGenre1());
         list.add(team.getTeamGenre2());
@@ -84,7 +80,7 @@ public class KNN {
         else if(age >= 40 && age < 50) age = 40;
         else age = 50;
 
-        System.out.println("나이? : " + age);
+        System.out.println("age? : " + age);
 
         Point testPoint1 = new Point(numList.get(0),age, null);
         int K1 = 10;

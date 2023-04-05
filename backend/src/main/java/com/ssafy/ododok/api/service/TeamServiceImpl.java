@@ -9,7 +9,6 @@ import com.ssafy.ododok.db.repository.UserSurveyRepository;
 import com.ssafy.ododok.db.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,9 +30,10 @@ public class TeamServiceImpl implements TeamService{
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
     private final UserSurveyRepository userSurveyRepository;
+    private final GenreRepository genreRepository;
 
     public TeamServiceImpl(TeamRepository teamRepository, TeamUserRepository teamUserRepository,
-                           DodokRepository dodokRepository, ReviewPageRepository reviewPageRepository, ReviewEndRepository reviewEndRepository, UserRepository userRepository, CommentRepository commentRepository, BoardRepository boardRepository, UserSurveyRepository userSurveyRepository) {
+                           DodokRepository dodokRepository, ReviewPageRepository reviewPageRepository, ReviewEndRepository reviewEndRepository, UserRepository userRepository, CommentRepository commentRepository, BoardRepository boardRepository, UserSurveyRepository userSurveyRepository, GenreRepository genreRepository) {
         this.teamRepository = teamRepository;
         this.teamUserRepository = teamUserRepository;
         this.dodokRepository = dodokRepository;
@@ -43,6 +43,7 @@ public class TeamServiceImpl implements TeamService{
         this.commentRepository = commentRepository;
         this.boardRepository = boardRepository;
         this.userSurveyRepository = userSurveyRepository;
+        this.genreRepository = genreRepository;
     }
 
     // 팀 생성
@@ -100,16 +101,20 @@ public class TeamServiceImpl implements TeamService{
         return teamRepository.save(team);
     }
 
-
     // 팀 삭제
     @Transactional
     @Override
     public void deleteTeam(Long teamId) {
+        // GenreRepository에서도 삭제
+        List<Genre> genreList = genreRepository.findAllByTeam_TeamId(teamId);
+        for(Genre genre : genreList){
+            genreRepository.delete(genre);
+        }
+
         // 도독이 삭제되어야 함
         // 도독이 삭제되려면 페이지별 리뷰 책별 리뷰 다 삭제되어야 함
         List<Dodok> dodokList = dodokRepository.findAllByTeam_TeamId(teamId);
         for(Dodok dodok : dodokList){
-
             // 페이지별 리뷰, 총평 삭제
             List<ReviewPage> pageReviewList =reviewPageRepository.findAllByDodok(dodok);
             for(ReviewPage reviewPage: pageReviewList){
@@ -131,6 +136,7 @@ public class TeamServiceImpl implements TeamService{
             dodokRepository.delete(dodok);
         }
 
+        // 게시판 글 삭제
         List<Board> list_board = boardRepository.findAllByTeam_TeamId(teamId);
         for(Board board : list_board){
             commentRepository.deleteAllByBoard_BoardId(board.getBoardId());
