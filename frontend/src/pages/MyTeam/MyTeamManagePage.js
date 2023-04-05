@@ -89,7 +89,7 @@ function MyTeamManagePage() {
           ...form,
           team_onoff: res.data.teamOnoff,
           team_image: res.data.teamImage,
-          team_region: res.data.teamMemberCnt,
+          team_region: res.data.teamRegion,
           team_membercnt_max: res.data.teamMemberCntMax,
           team_recruit: res.data.teamRecruit,
           team_recruit_text: res.data.teamRecruitText,
