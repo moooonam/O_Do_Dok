@@ -37,6 +37,12 @@ BackEnd
 - Mysql
 
 FrontEnd
+- React.js(18.2.0)
+- Router
+- Material UI
+- Redux
+- React-redux
+- Redux toolkit
 
 CI/CD
 
