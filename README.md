@@ -45,6 +45,10 @@ FrontEnd
 - Redux toolkit
 
 CI/CD
+- Ubuntu 20.04 LTS
+- Docker 23.0.1
+- Jenkins 2.387.1
+- nginx/1.18.0 (Ubuntu)
 
 Big Data
 - KNN
