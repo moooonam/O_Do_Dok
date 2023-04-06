@@ -23,6 +23,10 @@ function TeamDetailPage() {
     teamRecruitText: "",
   });
 
+  const [myTeam, setMyTeam] = useState({
+    team: false,
+  })
+
   useEffect(() => {
     let Id = localStorage.getItem("nowTeam");
     Api.get(`/teams/info/${Id}`)
@@ -41,9 +45,18 @@ function TeamDetailPage() {
           teamRecruitText: res.data.teamRecruitText,
         });
       })
-      .catch((err) => {
-        console.log(err);
-      });
+
+      Api.get("user/myTeam", {headers: {
+        "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
+        "access-token": `Bearer ${localStorage.getItem("access-token")}`,
+      }})
+      .then((res) => {
+        if (res.data === "") {
+          setMyTeam({...myTeam, team:false})
+        } else {
+          setMyTeam({...myTeam, team:true})
+        }
+      })
       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -84,7 +97,7 @@ function TeamDetailPage() {
       </div>
       <div className={styles["wrap-btn"]}>
         <div className={styles["godetail-btn"]} onClick={() => {goMoreInfo()}}>더 알아보기</div>
-        <JoinTeamModal teamName={teamDetail.teamName} />
+        { myTeam.team ? null : <JoinTeamModal teamName={teamDetail.teamName} />}
       </div>
     </div>
   );

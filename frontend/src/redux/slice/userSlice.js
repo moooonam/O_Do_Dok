@@ -7,6 +7,7 @@ export const userSlice = createSlice({
     userEmail:"",
     profileImg:"",
     userNickname: "",
+    userPhone: "",
     userGenre1:"",
     userGenre2:"",
     userGenre3:"",
@@ -32,6 +33,7 @@ export const userSlice = createSlice({
       state.userEmail = action.payload.userEmail;
       state.profileImg = action.payload.profileImg;
       state.userNickname = action.payload.userNickname;
+      state.userPhone = action.payload.userPhone;
       state.userGenre1 = action.payload.userGenre1;
       state.userGenre2 = action.payload.userGenre2;
       state.userGenre3 = action.payload.userGenre3;

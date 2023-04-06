@@ -245,6 +245,13 @@ function SignupPage() {
     }
   };
 
+  const phone_validation = () => {
+    if (form.phone) {
+      let check = /^(01[016789]{1})[0-9]{3,4}[0-9]{4}$/;
+      return check.test(form.phone)
+    }
+  }
+
   return (
     <Grid
       container
@@ -393,6 +400,12 @@ function SignupPage() {
             value={form.phone}
             variant="standard"
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            error={!phone_validation() && form.phone.length > 0}
+            helperText={
+              !phone_validation() && form.phone.length > 0
+                ? "휴대폰 번호를 올바르게 입력해주세요"
+                : ""
+            }
           />
         </Grid>
         <br /> <br />
