@@ -86,10 +86,9 @@ function MyTeamMainPage() {
       },
     }).then((res) => {
       if (res.data !== '참여한 팀이 없거나 현재 진행중인 도독이 없습니다.'){
-
         setDodokInfo({ ...dodokInfo,
           bookImg : res.data.book.bookImg,
-          bookGenre : res.data.bookGenre,
+          bookGenre : res.data.book.bookGenre,
           bookTitle: res.data.book.bookTitle,
           dodokStartdate: res.data.dodokStartdate,
           dodokEnddate: res.data.dodokEnddate,
