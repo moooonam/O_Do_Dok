@@ -78,9 +78,7 @@ function MyTeamMainPage() {
           ongoingDodok: res.data.ongoingDodok,
         });
       })
-      .catch((err) => {
-        console.log(err);
-      });
+
     Api.get("/dodok/nowdodoks", {
       headers: {
         "refresh-token": `Bearer ${localStorage.getItem("refresh-token")}`,
@@ -91,7 +89,8 @@ function MyTeamMainPage() {
 
         setDodokInfo({ ...dodokInfo,
           bookImg : res.data.book.bookImg,
-          booTitle: res.data.book.bookTitle,
+          bookGenre : res.data.bookGenre,
+          bookTitle: res.data.book.bookTitle,
           dodokStartdate: res.data.dodokStartdate,
           dodokEnddate: res.data.dodokEnddate,
         });
@@ -135,9 +134,7 @@ function MyTeamMainPage() {
         } else {
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

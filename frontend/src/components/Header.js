@@ -62,6 +62,7 @@ function Header() {
               profileImg: res.data.userImage,
               userEmail: res.data.userEmail,
               userNickname: res.data.userNickname,
+              userPhone: res.data.userPhone,
               userGenre1: res.data.userGenre1,
               userGenre2: res.data.userGenre2,
               userGenre3: res.data.userGenre3,

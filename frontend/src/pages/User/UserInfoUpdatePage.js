@@ -36,6 +36,7 @@ function UserInfoUpdatePage() {
     userName: userInfo.userName,
     userEmail: userInfo.userEmail,
     userNickname: userInfo.userNickname,
+    userPhone : userInfo.userPhone,
     userImage: userInfo.profileImg,
     userOnoff: userInfo.userOnoff,
     userRegion: userInfo.userRegion,
@@ -165,6 +166,7 @@ function UserInfoUpdatePage() {
                 userEmail: form.userEmail,
                 profileImg: form.userImage,
                 userNickname: form.userNickname,
+                userPhone: form.userPhone,
                 userGenre1: form.userGenre1,
                 userGenre2: form.userGenre2,
                 userGenre3: form.userGenre3,
@@ -254,7 +256,7 @@ function UserInfoUpdatePage() {
   const renderImage = images.map((image) => {
     return (
       <div>
-        <div key={image.id} className={styles["userImg-div"]}>
+        <div key={image} className={styles["userImg-div"]}>
           <img
             src={image}
             alt=""
@@ -339,7 +341,21 @@ function UserInfoUpdatePage() {
             중복확인
           </Button>
         </Grid>
-        <br /> <br />
+        <br />
+        <Grid container direction="row" columnGap={4}>
+          <p className={styles["update-blank-little"]}>휴대폰 번호</p>
+          <TextField
+            required
+            id="phone"
+            disabled
+            value={userInfo.userPhone}
+            variant="standard"
+          />
+          <br />
+          <br />
+          <br />
+        </Grid>
+        <br /><br />
         <FormControl>
           <p id="demo-row-radio-buttons-group-label">성별</p>
           <RadioGroup
